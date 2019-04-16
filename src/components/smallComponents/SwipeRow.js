@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import { Grid, Segment, Icon, Item, Button } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import { sizeArr } from "../../setupGlobals";
 import SwipeRowElem from "./SwipeRowElem";
 
@@ -68,8 +69,8 @@ class SwipeRow extends React.Component {
 	configureInputList = (list, configObj) => {
 		if (!list) return;
 
-
 		let localList = list.map(elem => {
+			console.log('elem', elem);
 			let image;
 			elem[configObj.imageP2] === null
 				? (image = configObj.imageD)
@@ -80,7 +81,8 @@ class SwipeRow extends React.Component {
 				text1: elem[configObj.text1],
 				title2: configObj.text2,
 				text2: elem[configObj.text2],
-				cast_id: elem.cast_id
+				cast_id: elem.cast_id,
+				id: elem.ID
 			};
 		});
 		//console.log(localList);
@@ -170,7 +172,10 @@ class SwipeRow extends React.Component {
 		let elems = list.map(elem => {
 			return (
 				<Grid.Column key={elem.cast_id}>
-					<SwipeRowElem key={elem.cast_id} elem={elem} />
+					<Link to = '/movie/'>
+						poop
+						<SwipeRowElem key={elem.cast_id} elem={elem} />
+					</Link>
 				</Grid.Column>
 			);
 		});
@@ -184,6 +189,7 @@ class SwipeRow extends React.Component {
 			let tempList = [];
 			for (let j = 0; j < newSize; j++) {
 				if (i + j < list.length) tempList.push(list[i + j]);
+				if (i + j >= list.length) tempList.push([]);
 			}
 			lists2.push(tempList);
 		}
@@ -196,9 +202,13 @@ class SwipeRow extends React.Component {
 			return (
 				<Grid.Row stretched>
 					{list.map(elem => {
+						console.log(elem);
 						return (
 							<Grid.Column key={elem.cast_id}>
-								<SwipeRowElem elem={elem} />
+								<Link to ={`${this.props.cType}/${elem.id}`}>	
+									<SwipeRowElem elem={elem} />
+								</Link>
+								
 							</Grid.Column>
 						);
 					})}
@@ -255,12 +265,10 @@ class SwipeRow extends React.Component {
 	}
 
 	render() {
-		//console.log("props b4", this.props);
-
 		if (this.state.list.length === 0) {
 			return null;
 		}
-		//console.log("props", this.props);
+
 		return this.state.size > 0
 			? this.props.rows
 				? this.renderRows()

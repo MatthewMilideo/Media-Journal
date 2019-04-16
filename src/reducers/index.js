@@ -7,7 +7,7 @@ import {  searchHOR, journalHOR } from "./higherOrderReducers";
 const types = [T.MOVIE, T.TV_SEASON, T.BOOK, T.GAME]; 
 
 const defaultState = {
-	status: null,
+	status: T.UNLOADED,
 	type: null,
 	query: null,
 	data: [],
@@ -51,15 +51,6 @@ export const getItemNotes = (store) => {
 	return store[T.NOTE].data;
 };
 
-/*
-export function getSearchStatus(store) {
-	return search._getSearchStatus(store['search']);
-}
-
-export function getSearchData(store) {
-	return search._getSearchData(store['search']);
-}
-*/
 
 export function getItemStatus(store) {
 	return item._getItemStatus(store["item"]);

@@ -107,20 +107,6 @@ export const fetchMediaPage = (type, id) => async (dispatch, getState) => {
 	dispatch(fetchTags);
 };
 
-// Bring this function in line with all the others
-export const fetchEntries = () => async dispatch => {
-	let response;
-
-	try {
-		response = await myData.get("notes/");
-	} catch (err) {
-		console.log(err);
-	}
-
-	//console.log(response);
-	dispatch({ type: "MY_DB", payload: response.data });
-};
-
 export const fetchTags = () => async dispatch => {
 	let response;
 

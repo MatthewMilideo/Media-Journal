@@ -12,33 +12,19 @@ import SwipeRow from "../smallComponents/SwipeRow";
 class Home extends React.Component {
 	state = { searchType: T.MOVIE };
 
-	componentDidMount() {
-		this.props.fetchEntries();
-	}
-
-	searchBarConfig = {
-		MOVIE: [{ name: T.MOVIE, label: "Movie", placeholder: "Blue Velvet" }],
-		TV_SEASON: [{ label: "Televison Show", placeholder: "The Sopranos" }],
-		BOOK: [
-			{ label: "Book", placeholder: "The Castle" },
-			{ label: "Author", placeholder: "Franz Kafka" }
-		],
-		GAME: [
-			{ label: "Game", placeholder: "Half Life 2" },
-			{ label: "Platform", placeholder: "PC" }
-		],
-		textValues: ["", ""]
+	handleItemClick = (e, data) => {
+		this.setState({ searchType: data.name });
 	};
 
-	menuConfig = [
-		{ const: T.MOVIE, name: "Movies" },
-		{ const: T.TV_SEASON, name: "TV Show" },
-		{ const: T.BOOK, name: "Book" },
-		{ const: T.GAME, name: "Video Game" }
-	];
-
 	renderMenu = list => {
-		let returnList = list.map(item => {
+		let menuConfig = [
+			{ const: T.MOVIE, name: "Movies" },
+			{ const: T.TV_SEASON, name: "TV Show" },
+			{ const: T.BOOK, name: "Book" },
+			{ const: T.GAME, name: "Video Game" }
+		];
+
+		let returnList = menuConfig.map(item => {
 			return (
 				<Menu.Item
 					name={item.const}
@@ -57,11 +43,27 @@ class Home extends React.Component {
 		);
 	};
 
-	handleItemClick = (e, data) => {
-		this.setState({ searchType: data.name });
+	renderSearchBar = searchType => {
+		let searchBarConfig = {
+			MOVIE: [{ name: T.MOVIE, label: "Movie", placeholder: "Blue Velvet" }],
+			TV_SEASON: [{ label: "Televison Show", placeholder: "The Sopranos" }],
+			BOOK: [
+				{ label: "Book", placeholder: "The Castle" },
+				{ label: "Author", placeholder: "Franz Kafka" }
+			],
+			GAME: [
+				{ label: "Game", placeholder: "Half Life 2" },
+				{ label: "Platform", placeholder: "PC" }
+			],
+			textValues: ["", ""]
+		};
+
+		return <SearchBar searchType={searchType} config={searchBarConfig} />;
 	};
 
-	render() {
+	//
+	renderContent = (type, searchData) => {
+		console.log(type, searchData);
 		const configObj = {
 			imageP1: "",
 			imageP2: "largeImage",
@@ -70,20 +72,56 @@ class Home extends React.Component {
 			text1: "title",
 			text2: "character"
 		};
+
+		let swipeRow = (
+			<SwipeRow
+				cType = {type}
+				type={0}
+				rows={1}
+				eSize={215}
+				list={searchData.data}
+				listConfig={configObj}
+			/>
+		);
+
+		switch (searchData.status) {
+			case T.UNLOADED:
+				return <div> please choose some content above. </div>;
+			case `${type}${T._BEGAN_SEARCH}`:
+				return <div> loading </div>;
+			case `${type}${T._BEGAN_SEARCH_NEXT}`:
+				return <div> loading next </div>;
+			case `${type}${T._FINISHED_SEARCH}`:
+				return (
+					<div>
+						{swipeRow}
+						<div> loading next </div>{" "}
+					</div>
+				);
+			case `${type}${T._FINISHED_SEARCH_NEXT}`:
+				return swipeRow;
+			case `${type}${T._ERRORED_SEARCH}`:
+				return <div> there was an error with your search please try again</div>;
+			case `${type}${T._ERRORED_SEARCH_NEXT}`:
+				return (
+					<div>
+						{swipeRow}
+						there was an error with your next search
+					</div>
+				);
+		}
+	};
+
+	render() {
+		const searchType =  this.state.searchType;
+		const searchData = this.props[searchType];
+		
 		return (
 			<Container>
-				{this.renderMenu(this.menuConfig)}
-				<SearchBar
-					searchType={this.state.searchType}
-					config={this.searchBarConfig}
-				/>
-				<SwipeRow
-					type={0}
-					rows={1}
-					eSize={215}
-					list={this.props[this.state.searchType].data}
-					listConfig={configObj}
-				/>
+			
+				{this.renderMenu()}
+				{this.renderSearchBar(searchType)}
+				{this.renderContent(searchType, searchData)}
 			</Container>
 		);
 	}
@@ -102,5 +140,5 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ fetchEntries }
+	{}
 )(Home);

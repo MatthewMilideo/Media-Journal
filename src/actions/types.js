@@ -39,6 +39,7 @@ export const _DELETE = '_DELETE';
 export const GET = 'GET';
 export const POST = 'POST';
 export const DELETE = 'POST';
+export const UNLOADED= 'UNLOADED';
 
 
 //Journal Constants
