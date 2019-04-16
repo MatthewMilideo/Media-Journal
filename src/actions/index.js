@@ -53,14 +53,17 @@ itemObj[T.GAME] = gameItemQuery;
 
 // Fetches data for an individual item
 export const fetchItem = (type, id) => dispatch => {
+	console.log(' in fetch item' , type, id);
 	const itemFunc = itemObj[type];
+	console.log(itemFunc);
 
 	dispatch(itemFunc(type, id));
 };
 
 export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 	let loc; 
-	type === T.NOTE ? loc = 'notes/' : loc = 'tags/'
+	qType === T.NOTE ? loc = 'notes/' : loc = 'tags/'
+	console.log(type, qType, params, id );
 	
 	const crudConfig = {
 		get: { aType: T._GET, func: myData.get, loc, params: {params}, id: null},
@@ -80,12 +83,13 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 			id: id 
 		}
 	};
-	let config = crudConfig[qType];
+	let config = crudConfig[type];
 	console.log(config);
 	dispatch(journalQuery(config));
 };
 
 export const journalQuery = ( config ) => async dispatch => {
+
 	const {aType, func, loc, params, id} = config; 
 	let response;
 

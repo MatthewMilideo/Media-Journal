@@ -2,8 +2,8 @@ import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Container} from "semantic-ui-react";
 
-import Home from "./Navigation/Home";
-
+import Home from './Navigation/Home';
+import JournalHome from './Navigation/JournalHome'
 import MediaPage from "./Navigation/MediaPage";
 
 import history from "../history";
@@ -23,10 +23,9 @@ class App extends React.Component {
 						
 							<Switch>
 								<Route path="/" exact component={Home} />
-								<Route path="/movie/:id" exact component={MediaPage} />
-								<Route path="/TV/:id" exact component={MediaPage} />
-								<Route path="/book/:id" exact component={MediaPage} />
-								<Route path="/entries/" exact component={MediaPage} />
+								<Route path="/media/:type?/:id?" exact component={MediaPage} />
+
+								<Route path="/journal/" exact component={JournalHome} />
 							</Switch>
 							
 						</Container>

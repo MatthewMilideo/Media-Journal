@@ -172,10 +172,7 @@ class SwipeRow extends React.Component {
 		let elems = list.map(elem => {
 			return (
 				<Grid.Column key={elem.cast_id}>
-					<Link to = '/movie/'>
-						poop
 						<SwipeRowElem key={elem.cast_id} elem={elem} />
-					</Link>
 				</Grid.Column>
 			);
 		});
@@ -205,7 +202,7 @@ class SwipeRow extends React.Component {
 						console.log(elem);
 						return (
 							<Grid.Column key={elem.cast_id}>
-								<Link to ={`${this.props.cType}/${elem.id}`}>	
+								<Link to ={`/media/${this.props.cType}/${elem.id}`}>	
 									<SwipeRowElem elem={elem} />
 								</Link>
 								

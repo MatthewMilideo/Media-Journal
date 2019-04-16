@@ -13,9 +13,8 @@ class MediaPage extends React.Component {
 	state = { noteCount: 1, type: "movie", castlist: [], castNum: 5 };
 
 	componentDidMount() {
-		let id = this.props.match.params.id;
-		//console.log('mounted');
-		this.props.fetchItem(MOVIE, id);
+		const {id, type} = this.props.match.params;
+		this.props.fetchItem(type, id);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -30,22 +29,22 @@ class MediaPage extends React.Component {
 		}
 	}
 
-	renderMedia = media => {
+	renderMovie = movie => {
 		return (
 			<Grid stackable>
 				<Grid.Row stretched>
 					<Grid.Column width={5}>
 						<Segment raised>
-							<Image src={media.largeImage} />
+							<Image src={movie.largeImage} />
 						</Segment>
 					</Grid.Column>
 
 					<Grid.Column divided="vertically" width={7}>
 						<Segment>
-							<h1> {media.title} </h1>
+							<h1> {movie.title} </h1>
 							<Divider />
 							<h4> Overview </h4>
-							<p> {media.overview} </p>
+							<p> {movie.overview} </p>
 						</Segment>
 					</Grid.Column>
 					<Grid.Column divided="vertically" width={4}>
@@ -53,13 +52,13 @@ class MediaPage extends React.Component {
 							<h2> Notable Facts </h2>
 							<Divider />
 							<div>
-								Released {media.release_date}
+								Released {movie.release_date}
 								<br />
-								Budget: {media.budget}
+								Budget: {movie.budget}
 								<br />
-								Revenue: {media.revenue}
+								Revenue: {movie.revenue}
 								<br />
-								Runtime: {media.runtime} minutes.
+								Runtime: {movie.runtime} minutes.
 							</div>
 						</Segment>
 					</Grid.Column>
@@ -133,7 +132,7 @@ class MediaPage extends React.Component {
 		return (
 			<div>
 				<Segment inverted color="olive">
-					{this.renderMedia(this.props.itemData)}
+					{this.renderMovie(this.props.itemData)}
 					<NoteManager cID={id} type={type} />
 				</Segment>
 			</div>

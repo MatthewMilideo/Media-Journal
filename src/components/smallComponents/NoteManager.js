@@ -3,6 +3,7 @@ import Note from "./Note";
 import { Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 
+import * as T from '../../actions/types';
 import { buildCrudQuery, addTag, } from "../../actions";
 import { getItemNotes } from "../../reducers";
 
@@ -10,7 +11,8 @@ class NoteManager extends React.Component {
 	state = { activeNote: null, noteCount: 0 };
 
 	componentDidMount() {
-		this.props.buildCrudQuery('get', {type: this.props.type, cID: this.props.cID});
+		console.log('in note man',this.props.type);
+		this.props.buildCrudQuery('get', T.NOTE, {type: this.props.type, cID: this.props.cID}, );
 	}
 
 	componentWillUpdate(newProps) {
