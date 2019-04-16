@@ -58,22 +58,24 @@ export const fetchItem = (type, id) => dispatch => {
 	dispatch(itemFunc(type, id));
 };
 
-export const buildCrudQuery = (qType, params, id = null) => dispatch => {
+export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
+	let loc; 
+	type === T.NOTE ? loc = 'notes/' : loc = 'tags/'
 	
 	const crudConfig = {
-		get: { aType: T._GET, func: myData.get, loc: "notes/", params: {params}, id: null},
-		post: { aType: T._POST, func: myData.post, loc: "notes/", params: params, id: null},
+		get: { aType: T._GET, func: myData.get, loc, params: {params}, id: null},
+		post: { aType: T._POST, func: myData.post, loc, params: params, id: null},
 		patch: {
 			aType: T._PATCH,
 			func: myData.patch,
-			loc: `notes/${id}`,
+			loc: `${loc}/${id}`,
 			params: params,
 			id: id 
 		},
 		delete: {
 			aType: T._DELETE,
 			func: myData.delete,
-			loc: `notes/${id}`,
+			loc: `${loc}/${id}`,
 			params: params,
 			id: id 
 		}
