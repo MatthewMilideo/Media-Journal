@@ -1,0 +1,19 @@
+.note-segment{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.header{
+display: inline-block;
+}
+
+.icon{
+display: inline-block;
+float: right;
+}
+
+
+
+.hell2o{
+    background-color: blue;
+}

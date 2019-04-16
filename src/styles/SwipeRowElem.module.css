@@ -1,0 +1,12 @@
+.segmentHeight{
+    height: 400px; 
+}
+
+.segmentImage{
+    top: 0;
+}
+
+.title{
+    font-size: 13px;
+    font-weight: bolder;
+}
