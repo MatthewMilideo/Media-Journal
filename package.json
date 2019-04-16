@@ -18,7 +18,7 @@
     "semantic-ui-react": "^0.86.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start & json-server ./server/db.json --port 3001",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts --coverage",
