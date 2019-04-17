@@ -17,3 +17,12 @@ float: right;
 .hell2o{
     background-color: blue;
 }
+
+.mainH1{
+    margin-top: 0px; 
+    margin-bottom: 5px;
+}
+
+.thisDiv{
+    display: inline-block;
+}

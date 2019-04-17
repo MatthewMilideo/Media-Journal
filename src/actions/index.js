@@ -107,9 +107,6 @@ export const journalQuery = ( config ) => async dispatch => {
 	});
 };
 
-export const noteState = (id, state) => {
-	return {type:  payload: }
-}
 
 
 

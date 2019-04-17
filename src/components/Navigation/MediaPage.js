@@ -3,11 +3,12 @@ import { connect } from "react-redux";
 
 import { MOVIE } from "../../actions/types";
 
-import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
+import { Grid, Image, Button, Segment, Divider, Icon } from "semantic-ui-react";
 import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
 import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
+import '../../styles/style.css'
 
 class MediaPage extends React.Component {
 	state = { type: "movie", castlist: [], castNum: 5 };
@@ -43,7 +44,7 @@ class MediaPage extends React.Component {
 	renderMovie = movie => {
 		return (
 			<Grid stackable>
-				<Grid.Row stretched>
+				<Grid.Row verticalAlign='middle' >
 					<Grid.Column width={5}>
 						<Segment raised>
 							<Image src={movie.largeImage} />
@@ -54,21 +55,15 @@ class MediaPage extends React.Component {
 
 						<Grid.Row> 
 							<Segment>
-								<h1> {movie.title} </h1>
+								<h1 > {movie.title} </h1>
 								<Divider />
-								<h4> Overview </h4>
+								<h4 className = 'mainH1'> Overview </h4>
 								<p> {movie.overview} </p>
-								<h4> Genres </h4>
-								<p> {movie.genres.map( genre => ` ${genre.name} ` )} </p>
-								 
-							</Segment>
-						</Grid.Row>
-
-						<Grid.Row>
-							<Segment>
-								<h2> Notable Facts </h2>
-								<Divider />
-								<div>
+								<h4 className = 'mainH1'> Genres </h4>
+								 {movie.genres.map( genre => {
+									return( <div className = 'thisDiv'>  {genre.name}  <Icon size = 'tiny' name= 'plus'/> </div> );
+							})}
+								<h4> Notable Facts </h4>
 									Released {movie.release_date}
 									<br />
 									Budget: {movie.budget}
@@ -76,9 +71,14 @@ class MediaPage extends React.Component {
 									Revenue: {movie.revenue}
 									<br />
 									Runtime: {movie.runtime} minutes.
-								</div>
+		
+							
+								
+								 
 							</Segment>
 						</Grid.Row>
+
+						
 
 					</Grid.Column>
 		
