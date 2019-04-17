@@ -20,7 +20,6 @@ class NoteManager extends React.Component {
 			this.setState({ noteCount: newProps.notes.length });
 		}
 	}
-	
 
 	renderNotes = () => {
 		let notes = [];
@@ -52,7 +51,6 @@ class NoteManager extends React.Component {
 				/>
 			);
 		}
-
 		return notes;
 	};
 

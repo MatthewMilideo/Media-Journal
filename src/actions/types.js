@@ -20,6 +20,8 @@ export const FINISHED_ITEM = 'FINISHED_ITEM';
 export const ERRORED_ITEM = 'ERRORED_ITEM';
 
 
+export const NOTE_STATUS = 'NOTE_STATUS'
+
 //Internal Data Types
 export const NOTE_GROUP = 'NOTE_GROUP';
 export const NOTE = 'NOTE';

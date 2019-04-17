@@ -68,6 +68,13 @@ export const journalHOR = (type, reducer) => (state, action) => {
 	
 
 	switch (action.type) {
+		case T.NOTE_STATUS:
+			index = localCurNotes.findIndex(elem => elem.id === action.payload.id);
+			if (index !== -1) localCurNotes[index].status = action.payload.status;
+			return {
+				...state,
+				data: []
+			};
 		case `${type}${T._BEGAN_GET}${T._ALL}`:
 			return {
 				...state,

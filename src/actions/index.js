@@ -107,11 +107,12 @@ export const journalQuery = ( config ) => async dispatch => {
 	});
 };
 
-export const fetchMediaPage = (type, id) => async (dispatch, getState) => {
-	dispatch(fetchItem(type, id));
+export const noteState = (id, state) => {
+	return {type:  payload: }
+}
 
-	dispatch(fetchTags);
-};
+
+
 
 export const fetchTags = () => async dispatch => {
 	let response;

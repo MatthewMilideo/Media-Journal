@@ -10,7 +10,7 @@ import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
 
 class MediaPage extends React.Component {
-	state = { noteCount: 1, type: "movie", castlist: [], castNum: 5 };
+	state = { type: "movie", castlist: [], castNum: 5 };
 
 	componentDidMount() {
 		const {id, type} = this.props.match.params;
@@ -29,6 +29,17 @@ class MediaPage extends React.Component {
 		}
 	}
 
+	makeRenderObject = content => {
+		let returnObj = {};
+	}
+
+	renderTagList = list => {
+		let retList = []; 
+
+
+		return retList; 
+	}
+
 	renderMovie = movie => {
 		return (
 			<Grid stackable>
@@ -39,29 +50,38 @@ class MediaPage extends React.Component {
 						</Segment>
 					</Grid.Column>
 
-					<Grid.Column divided="vertically" width={7}>
-						<Segment>
-							<h1> {movie.title} </h1>
-							<Divider />
-							<h4> Overview </h4>
-							<p> {movie.overview} </p>
-						</Segment>
+					<Grid.Column divided="vertically" width={11}>
+
+						<Grid.Row> 
+							<Segment>
+								<h1> {movie.title} </h1>
+								<Divider />
+								<h4> Overview </h4>
+								<p> {movie.overview} </p>
+								<h4> Genres </h4>
+								<p> {movie.genres.map( genre => ` ${genre.name} ` )} </p>
+								 
+							</Segment>
+						</Grid.Row>
+
+						<Grid.Row>
+							<Segment>
+								<h2> Notable Facts </h2>
+								<Divider />
+								<div>
+									Released {movie.release_date}
+									<br />
+									Budget: {movie.budget}
+									<br />
+									Revenue: {movie.revenue}
+									<br />
+									Runtime: {movie.runtime} minutes.
+								</div>
+							</Segment>
+						</Grid.Row>
+
 					</Grid.Column>
-					<Grid.Column divided="vertically" width={4}>
-						<Segment>
-							<h2> Notable Facts </h2>
-							<Divider />
-							<div>
-								Released {movie.release_date}
-								<br />
-								Budget: {movie.budget}
-								<br />
-								Revenue: {movie.revenue}
-								<br />
-								Runtime: {movie.runtime} minutes.
-							</div>
-						</Segment>
-					</Grid.Column>
+		
 				</Grid.Row>
 			</Grid>
 		);

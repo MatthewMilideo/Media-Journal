@@ -67,12 +67,14 @@ class Note extends React.Component {
 					text: this.state.noteValue,
 					type: this.props.type,
 					cID: this.props.cID,
+					status: false, 
 					id: ''
 			  })
 			: this.props.patch('patch', {
 					
 					title: this.state.noteTitle,
-					text: this.state.noteValue
+					text: this.state.noteValue,
+					status: false, 
 			  }, this.props.noteData.id );
 	};
 
