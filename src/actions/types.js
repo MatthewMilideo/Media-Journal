@@ -36,6 +36,7 @@ export const _ERRORED = '_ERRORED';
 export const _GET = '_GET';
 export const _PATCH = '_PATCH';
 export const _POST = '_POST';
+export const _PUT = '_PUT';
 export const _DELETE = '_DELETE';
 
 export const GET = 'GET';
@@ -61,7 +62,9 @@ export const _BEGAN_PATCH = '_BEGAN_PATCH';
 export const _FINISHED_PATCH = '_FINISHED_PATCH';
 export const _ERRORED_PATCH = 'ERRORED_PATCH';
 
-
+export const _BEGAN_PUT = '_BEGAN_PUT';
+export const _FINISHED_PUT = '_FINISHED_PUT';
+export const _ERRORED_PUT = 'ERRORED_PUT';
 
 
 

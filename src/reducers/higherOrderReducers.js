@@ -55,17 +55,15 @@ const defaultJournalState = {
 	Status: null
 };
 
-
 export const journalHOR = (type, reducer) => (state, action) => {
 	//console.log(state, action);
 	let index;
-	let localCurNotes 
-	let localAllNotes 
+	let localCurNotes;
+	let localAllNotes;
 	if (state) {
 		localCurNotes = state.data;
 		localAllNotes = state.allData;
 	}
-	
 
 	switch (action.type) {
 		case T.NOTE_STATUS:
@@ -75,6 +73,24 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				...state,
 				data: []
 			};
+		case `${type}${T._BEGAN_PUT}`:
+			return {
+				...state,
+				status: action.type
+			};
+		case `${type}${T._FINISHED_PUT}`:
+			console.log(action.payload.data);
+			return {
+				...state,
+				status: action.type,
+				data: [...state.data, action.payload.data]
+			};
+		case `${type}${T._ERRORED_PUT}`:
+			return {
+				...state,
+				status: action.type
+			};
+
 		case `${type}${T._BEGAN_GET}${T._ALL}`:
 			return {
 				...state,

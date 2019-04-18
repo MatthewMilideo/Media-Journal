@@ -3,64 +3,63 @@ import Note from "./Note";
 import { Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 
-import * as T from '../../actions/types';
-import { buildCrudQuery, addTag, } from "../../actions";
+import * as T from "../../actions/types";
+import { buildCrudQuery, addTag } from "../../actions";
 import { getItemNotes } from "../../reducers";
 
 class NoteManager extends React.Component {
-	state = { activeNote: null, noteCount: 0 };
+	state = { notes: [] };
 
 	componentDidMount() {
-		console.log('in note man',this.props.type);
-		this.props.buildCrudQuery('get', T.NOTE, {type: this.props.type, cID: this.props.cID}, );
+		this.props.buildCrudQuery("get", T.NOTE, {
+			type: this.props.type,
+			cID: this.props.cID
+		});
 	}
 
 	componentWillUpdate(newProps) {
 		if (this.props.notes.length !== newProps.notes.length) {
-			this.setState({ noteCount: newProps.notes.length });
+			this.setState({
+				notes: newProps.notes
+			});
 		}
 	}
 
 	renderNotes = () => {
 		let notes = [];
-		if (this.props.notes.length > 0) {
-			notes = this.props.notes.map(note => {
+		if (this.state.notes.length > 0) {
+			notes = this.state.notes.map(note => {
 				return (
 					<Note
 						key={note.id}
-						new={false}
-						noteData={note}
+						data={note}
 						tags={null}
 						addTag={null}
-						patch={this.props.buildCrudQuery}
-						delete = {this.props.buildCrudQuery}
+						query={this.props.buildCrudQuery}
 					/>
 				);
 			});
 		}
-		while (notes.length < this.state.noteCount) {
-			notes.push(
-				<Note
-					key={notes.length + 900000 + 1}
-					new={true}
-					cID={this.props.cID}
-					type = {this.props.type}
-					tags={null}
-					addTag={null}
-					add={this.props.buildCrudQuery}
-				/>
-			);
-		}
-		return notes;
-	};
+		return notes; 
+	}
 
 	handleClick = e => {
-		this.setState({ noteCount: this.state.noteCount + 1 });
+		let { notes } = this.state;
+		const newNote = {
+			title: "",
+			text: "",
+			type: this.props.type,
+			cID: this.props.cID,
+			id: 9000000 + notes.length,
+			new: true
+		};
+
+		notes.push(newNote)
+		this.setState({ notes: notes });
 	};
 
 	render() {
-		if (this.props.notes === undefined )
-			return null;
+		if (this.state.notes === []) return null;
 		return (
 			<div>
 				{this.renderNotes()}

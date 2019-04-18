@@ -1,8 +1,8 @@
 {
   "notes": [
     {
-      "title": "Star Wars is a great movie",
-      "text": "I love carrie Fisher",
+      "title": "I just edited the first note. ",
+      "text": "This note has edited text. ",
       "type": "MOVIE",
       "cID": "11",
       "id": 10
@@ -41,6 +41,20 @@
       "type": "MOVIE",
       "cID": "793",
       "id": 15
+    },
+    {
+      "title": "Fart Poop",
+      "text": "Hello",
+      "type": "MOVIE",
+      "cID": "11",
+      "id": 16
+    },
+    {
+      "title": "This is a new note. ",
+      "text": "Added",
+      "type": "MOVIE",
+      "cID": "11",
+      "id": 17
     }
   ],
   "tags": [

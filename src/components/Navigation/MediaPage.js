@@ -1,21 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
-
-import { MOVIE } from "../../actions/types";
-
-import { Grid, Image, Button, Segment, Divider, Icon } from "semantic-ui-react";
+import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
 import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
 import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
-import '../../styles/style.css'
+import * as T from '../../actions/types'
+import { sizeArr } from "../../setupGlobals";
+import _ from "lodash";
+import "../../styles/style.css";
 
 class MediaPage extends React.Component {
-	state = { type: "movie", castlist: [], castNum: 5 };
+	state = { size: -1, type: T.MOVIE, tag: null, castlist: [], castNum: 5 };
 
 	componentDidMount() {
-		const {id, type} = this.props.match.params;
+		window.addEventListener("resize", this.debounceOnResize, false);
+
+		const { id, type } = this.props.match.params;
 		this.props.fetchItem(type, id);
+		this.setState({type});
 	}
 
 	componentDidUpdate(prevProps) {
@@ -30,58 +33,65 @@ class MediaPage extends React.Component {
 		}
 	}
 
-	makeRenderObject = content => {
-		let returnObj = {};
+	componentWillUnmount() {
+		window.removeEventListener("resize", this.debounceOnResize, false);
 	}
 
-	renderTagList = list => {
-		let retList = []; 
+	// Finds the container size by comparing window size to max breakpoints from Semantic UI.
+	// Sets container size and uses it to determine the number of elemnts that can fit in the
+	// Swipe Row component. Size is currently predetermined.
+	onResize = e => {
+		let curSize = window.innerWidth;
+		for (let i = 0; i < sizeArr.length; i++) {
+			if (curSize <= sizeArr[i].max) {
+				if (this.state.size !== i) {
+					curSize = sizeArr[i].min;
+					this.setState({
+						size: i
+					});
+				}
+				break;
+			}
+		}
+	};
 
-
-		return retList; 
-	}
+	debounceOnResize = _.debounce(() => this.onResize(), 200);
 
 	renderMovie = movie => {
 		return (
-			<Grid stackable>
-				<Grid.Row verticalAlign='middle' >
-					<Grid.Column width={5}>
-						<Segment raised>
-							<Image src={movie.largeImage} />
-						</Segment>
+			<Grid equal stackable>
+
+				<Grid.Row verticalAlign="top">
+					<Grid.Column width={6}>
+						<Image src={movie.largeImage} />
 					</Grid.Column>
-
-					<Grid.Column divided="vertically" width={11}>
-
-						<Grid.Row> 
-							<Segment>
-								<h1 > {movie.title} </h1>
-								<Divider />
-								<h4 className = 'mainH1'> Overview </h4>
-								<p> {movie.overview} </p>
-								<h4 className = 'mainH1'> Genres </h4>
-								 {movie.genres.map( genre => {
-									return( <div className = 'thisDiv'>  {genre.name}  <Icon size = 'tiny' name= 'plus'/> </div> );
-							})}
-								<h4> Notable Facts </h4>
-									Released {movie.release_date}
-									<br />
-									Budget: {movie.budget}
-									<br />
-									Revenue: {movie.revenue}
-									<br />
-									Runtime: {movie.runtime} minutes.
-		
-							
-								
-								 
+					<Grid.Column divided="vertically" width={10}>
+						<Grid.Row>
+							<Segment compact>
+								<div className="title-div">
+									<h1 className="media-title"> {movie.title} </h1>
+									<span className="media-title-descriptor">
+										<h5>  Released: {movie.release_date} </h5> | <h5> Runtime: {movie.runtime} minutes</h5>
+										
+									</span>
+								</div>
+								<Divider className="divide" />
+								<h4 className="mainH1"> Overview </h4>
+								<p className="overview"> {movie.overview} </p>
+								<span className="media-title-descriptor">
+									Budget: $ {movie.budget}| Revenue: $ {movie.revenue}
+								</span>
+								<h4 className="mainH1"> Genres </h4>
+								{movie.genres.map(genre => {
+									return (
+										<div className="thisDiv">
+											<span>{genre.name},</span>
+										</div>
+									);
+								})}
 							</Segment>
 						</Grid.Row>
-
-						
-
 					</Grid.Column>
-		
 				</Grid.Row>
 			</Grid>
 		);
@@ -139,8 +149,8 @@ class MediaPage extends React.Component {
 		);
 	};
 
-
 	render() {
+		console.log(this.state);
 		if (
 			Object.keys(this.props.itemData).length === 0 &&
 			this.props.itemData.constructor === Object
@@ -151,7 +161,7 @@ class MediaPage extends React.Component {
 
 		return (
 			<div>
-				<Segment inverted color="olive">
+				<Segment inverted color="blue">
 					{this.renderMovie(this.props.itemData)}
 					<NoteManager cID={id} type={type} />
 				</Segment>

@@ -70,7 +70,7 @@ class SwipeRow extends React.Component {
 		if (!list) return;
 
 		let localList = list.map(elem => {
-			console.log('elem', elem);
+		//	console.log('elem', elem);
 			let image;
 			elem[configObj.imageP2] === null
 				? (image = configObj.imageD)

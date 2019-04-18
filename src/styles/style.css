@@ -25,4 +25,40 @@ float: right;
 
 .thisDiv{
     display: inline-block;
+    font-size: 25px; 
+}
+
+.icon{
+    padding: 0;
+    margin: 0;
+}
+.butt{
+    height: 10px; 
+}
+
+.title-div{ 
+    position: relative;
+    display: inline-block;
+}
+
+.title-div h1{ 
+    margin-bottom: 2px;
+}
+
+.title-div h5{ 
+    display: inline;
+    font-size: 12px;
+}
+
+.media-title-descriptor{ 
+    font-size: 13px; 
+
+}
+
+.overview{
+    margin-bottom: 3px; 
+    padding: 0;
+}
+.divider{
+    margin: 0;
 }

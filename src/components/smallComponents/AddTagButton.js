@@ -1,19 +1,41 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button } from "semantic-ui-react";
+import { Button, Dropdown } from "semantic-ui-react";
 
-import {addTag} from '../../actions'
+import { addTag } from "../../actions";
+
+
+
+/* Props: 
+curNotes: a list of the current notes.   
+*/
 
 class AddTagButton extends React.Component {
+	state = { clicked: false };
 
+	handleClick = e => {
+		this.setState({ clicked: true });
+	};
 
-    handleClick = (e) => {
-        this.props.addTag({id: this.props.tag, value:this.props.tag, text:this.props.tag})
+	renderDropdown() {
+		return (
+			<Dropdown button size="tiny" multipule icon="book">
+				<Dropdown.Menu>
+					{/*xthis.props.curNotes.map( note => <Dropdown.item text = {note.title}/>) */}
+					<Dropdown.Item text="Add to note 1" />
+				</Dropdown.Menu>
+			</Dropdown>
+		);
+	}
 
-    }
+	renderButton() {
+		return <Button size="tiny" icon="book" onClick={this.handleClick} />;
+	}
 
 	render() {
-		return <Button onClick = {this.handleClick}> Add {this.props.type} Tag </Button>;
+		let clicked = this.state.clicked;
+
+		return <div>{this.renderDropdown()}</div>;
 	}
 }
 

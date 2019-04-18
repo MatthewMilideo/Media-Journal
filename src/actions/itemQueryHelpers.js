@@ -8,7 +8,7 @@ export const TMDBItemQuery = (type, id) => async dispatch => {
     
     let loc = type === T.MOVIE ? `/movie/${id}` : `/tv/${id}`;
     let formatter = type === T.MOVIE ? movieItemFormatter : showItemFormatter
-    let params = type === T.MOVIE ? {'append_to_response': 'credits,images,release_dates'  }  : {'append_to_response': 'credits,images' }
+    let params = type === T.MOVIE ? {'append_to_response': 'credits,images,release_dates,releases'  }  : {'append_to_response': 'credits,images' }
 
 
 	dispatch({

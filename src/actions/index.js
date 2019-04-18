@@ -67,7 +67,6 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 	
 	const crudConfig = {
 		get: { aType: T._GET, func: myData.get, loc, params: {params}, id: null},
-		post: { aType: T._POST, func: myData.post, loc, params: params, id: null},
 		patch: {
 			aType: T._PATCH,
 			func: myData.patch,
@@ -75,6 +74,8 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 			params: params,
 			id: id 
 		},
+		post: { aType: T._POST, func: myData.post, loc, params: params, id: null},
+		put: { aType: T._PUT, func: myData.put, loc: `${loc}${id}`, params: params, id: id},
 		delete: {
 			aType: T._DELETE,
 			func: myData.delete,
@@ -84,13 +85,14 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 		}
 	};
 	let config = crudConfig[type];
-	console.log(config);
+	console.log('build query config' , config);
 	dispatch(journalQuery(config));
 };
 
 export const journalQuery = ( config ) => async dispatch => {
 
 	const {aType, func, loc, params, id} = config; 
+	console.log(aType,  loc, params, id);
 	let response;
 
 	dispatch({ type: `${T.NOTE}${T._BEGAN}${aType}` });

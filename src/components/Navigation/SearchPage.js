@@ -9,7 +9,7 @@ import { getSearch } from "../../reducers/index";
 import SearchBar from "../SearchBar";
 import SwipeRow from "../smallComponents/SwipeRow";
 
-class Home extends React.Component {
+class SearchPage extends React.Component {
 	state = { searchType: T.MOVIE };
 
 	handleItemClick = (e, data) => {
@@ -141,4 +141,4 @@ const mapStateToProps = state => {
 export default connect(
 	mapStateToProps,
 	{}
-)(Home);
+)(SearchPage);

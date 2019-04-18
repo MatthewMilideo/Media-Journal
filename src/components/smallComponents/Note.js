@@ -9,6 +9,7 @@ import {
 	Icon
 } from "semantic-ui-react";
 
+import * as T from "../../actions/types";
 import Dropdown2 from "../smallComponents/Dropdown";
 
 class Note extends React.Component {
@@ -16,21 +17,23 @@ class Note extends React.Component {
 		noteTitle: "",
 		noteValue: "",
 		noteTags: [],
-		options: this.options,
 		currentValues: [],
-		searchInput: "",
 		active: 1,
 		mouse: false
 	};
 
 	componentDidMount() {
-		if (this.props.noteData) {
-			this.setState({
-				noteTitle: this.props.noteData.title,
-				noteValue: this.props.noteData.text,
-				active: 0
-			});
-		}
+		this.props.data.title === ""
+			? this.setState({
+					noteTitle: this.props.data.title,
+					noteValue: this.props.data.text,
+					active: 1
+			  })
+			: this.setState({
+					noteTitle: this.props.data.title,
+					noteValue: this.props.data.text,
+					active: 0
+			  });
 	}
 
 	onTitleChange = e => {
@@ -54,34 +57,35 @@ class Note extends React.Component {
 	};
 
 	onSaveClick = () => {
-	
 		this.setState({
 			active: 0,
 			title: this.state.noteTitle,
 			text: this.state.noteValue
 		});
-
-		this.props.new 
-			? this.props.add('post', {
+		this.props.data.new === true
+			? this.props.query("post", T.NOTE, {
 					title: this.state.noteTitle,
 					text: this.state.noteValue,
-					type: this.props.type,
-					cID: this.props.cID,
-					status: false, 
-					id: ''
+					type: this.props.data.type,
+					cID: this.props.data.cID
 			  })
-			: this.props.patch('patch', {
-					
-					title: this.state.noteTitle,
-					text: this.state.noteValue,
-					status: false, 
-			  }, this.props.noteData.id );
+			: this.props.query(
+					"patch",
+					T.NOTE,
+					{
+						title: this.state.noteTitle,
+						text: this.state.noteValue,
+						type: this.props.data.type,
+						cID: this.props.data.cID,
+						id: this.props.data.id
+					},
+					this.props.data.id
+			  );
 	};
 
 	onDeleteClick = () => {
-		this.props.delete('delete', null, this.props.noteData.id); 
+		this.props.delete("delete", null, this.props.noteData.id);
 	};
-
 
 	renderActive() {
 		let color;

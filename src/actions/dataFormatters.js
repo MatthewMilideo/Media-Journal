@@ -52,6 +52,7 @@ export const movieItemFormatter = (data) => {
 		smallImage = null;
 		largeImage = null;
 	}
+	console.log(data);
 
 	const movieData = {
 		title: data.original_title,
