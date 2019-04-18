@@ -137,7 +137,7 @@ class MediaPage extends React.Component {
 			text1: "name",
 			text2: "character"
 		};
-
+		console.log('about to pass cast' , cast);
 		return (
 			<SwipeRow
 				type={1}
@@ -151,7 +151,7 @@ class MediaPage extends React.Component {
 	};
 
 	render() {
-		console.log(this.state);
+		//console.log(this.state);
 		if (
 			Object.keys(this.props.itemData).length === 0 &&
 			this.props.itemData.constructor === Object
