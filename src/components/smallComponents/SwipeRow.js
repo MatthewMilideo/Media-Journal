@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { Grid, Segment, Icon, Item, Button } from "semantic-ui-react";
+import { Grid, Segment, Icon, Item, Button, Divider} from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { sizeArr } from "../../setupGlobals";
 import SwipeRowElem from "./SwipeRowElem";
@@ -13,6 +13,7 @@ import SwipeRowElem from "./SwipeRowElem";
 // Rows: Will this contain many rows or 1 rows.
 // Type: Not sure of all the types I could pass here, but this is currently to differnetiate between swipe and
 // not swipe row.
+// Header Text: 
 
 class SwipeRow extends React.Component {
 	state = {
@@ -179,7 +180,7 @@ class SwipeRow extends React.Component {
 		return elems;
 	};
 
-	buildLists = (list, newSize) => {
+	buildLists = (list, newSize, rows) => {
 		if (newSize <= 0 || list.length <= 0) return [];
 		let lists2 = [];
 		for (let i = 0; i < list.length; i += newSize) {
@@ -193,7 +194,7 @@ class SwipeRow extends React.Component {
 		return lists2;
 	};
 
-	buildforRows = (list, firstElem, lastElem, numElems) => {
+	buildforRows = (list, numElems) => {
 		let lists = this.buildLists(list, numElems);
 		lists = lists.map(list => {
 			return (
@@ -236,10 +237,13 @@ class SwipeRow extends React.Component {
 		);
 	}
 
+	// Render when there is a single row. 
 	renderRow() {
 		//console.log(" in render swipe row");
 		return (
 			<Segment>
+				<h1> {this.props.headerText} </h1>
+				<Divider/>
 				<Grid stackable columns="equal">
 					<Grid.Row stretched>
 						{this.props.type ? this.buildLeftButton() : null}
@@ -251,11 +255,12 @@ class SwipeRow extends React.Component {
 		);
 	}
 
+	// Render when there are multipule rows. 
 	renderRows() {
 		return (
 			<Segment>
 				<Grid stackable columns="equal">
-					{this.buildforRows(this.state.list, null, null, this.state.numElems)}
+					{this.buildforRows(this.state.list, this.state.numElems)}
 				</Grid>
 			</Segment>
 		);

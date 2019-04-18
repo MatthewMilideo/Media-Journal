@@ -140,11 +140,12 @@ class MediaPage extends React.Component {
 
 		return (
 			<SwipeRow
-				type={0}
-				rows={1}
+				type={1}
+				rows={0}
 				eSize={215}
-				list={cast.cast}
+				list={cast}
 				listConfig={configObj}
+				headerText ='Cast'
 			/>
 		);
 	};
@@ -163,6 +164,7 @@ class MediaPage extends React.Component {
 			<div>
 				<Segment inverted color="blue">
 					{this.renderMovie(this.props.itemData)}
+					{this.renderCast(this.props.itemData.cast)}
 					<NoteManager cID={id} type={type} />
 				</Segment>
 			</div>
