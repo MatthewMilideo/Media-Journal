@@ -124,10 +124,34 @@ class MediaPage extends React.Component {
 		this.setState({ castNum: this.state.castNum + 5 });
 	};
 
+	configureInputList = (list, configObj) => {
+		if (!list) return;
+
+		let localList = list.map(elem => {
+			let image;
+			elem[configObj.imageP2] === null
+				? (image = configObj.imageD)
+				: (image = `${configObj.imageP1}${elem[configObj.imageP2]}`);
+			return {
+				image: image,
+				title1: configObj.text1,
+				text1: elem[configObj.text1],
+				title2: configObj.text2,
+				text2: elem[configObj.text2],
+				cast_id: elem.cast_id,
+				id: elem.ID
+			};
+		});
+		return localList
+	};
+
 	renderCast = cast => {
 		if (Object.entries(cast).length === 0 && cast.constructor === Object) {
 			return null;
 		}
+
+			// Formats input list so elems can be easily passed to SwipeRowElem
+
 
 		const configObj = {
 			imageP1: "https://image.tmdb.org/t/p/w185/",
@@ -137,7 +161,8 @@ class MediaPage extends React.Component {
 			text1: "name",
 			text2: "character"
 		};
-		console.log('about to pass cast' , cast);
+		cast = this.configureInputList(cast, configObj);
+
 		return (
 			<SwipeRow
 				type={1}

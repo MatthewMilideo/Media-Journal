@@ -17,19 +17,14 @@ import SwipeRowElem from "./SwipeRowElem";
 
 class SwipeRow extends React.Component {
 	state = {
-		size: -1,
-		firstElem: 0,
-		lastElem: 0,
-		numElems: 0,
-		listsPos: 0, 
-		list: [],
-		lists: []
+		windowSize: -1,
+		rowSize: 0,
+		rows: [],
+		rowsPos: 0
 	};
 
 	componentDidMount() {
 		window.addEventListener("resize", this.debounceOnResize, false);
-		
-		this.configureInputList(this.props.list, this.props.listConfig);
 		this.onResize();
 	}
 
@@ -41,24 +36,19 @@ class SwipeRow extends React.Component {
 	// Sets container size and uses it to determine the number of elemnts that can fit in the
 	// Swipe Row component. Size is currently predetermined.
 	onResize = e => {
-		console.log('in reseize');
-		let curSize = window.innerWidth;
+		let winSize = window.innerWidth;
 		for (let i = 0; i < sizeArr.length; i++) {
-			if (curSize <= sizeArr[i].max) {
-				if (this.state.size !== i) {
-					curSize = sizeArr[i].min;
-					let numElems = Math.floor(curSize / this.props.eSize);
-					if (numElems === 0) numElems = 5;
-
-					
-
-					this.setState({
-						size: i,
-						lastElem: this.state.firstElem + numElems,
-						numElems: numElems,
-						lists:  stateLists
-					});
-				}
+			if (winSize <= sizeArr[i].max && this.state.windowSize !== i) {
+				console.log("in if");
+				winSize = sizeArr[i].min;
+				let rowSize = Math.floor(winSize / this.props.eSize);
+				if (rowSize === 0) rowSize = 5;
+				let rows = this.buildRowLists(rowSize);
+				this.setState({
+					windowSize: i,
+					rowSize: rowSize,
+					rows: rows
+				});
 				break;
 			}
 		}
@@ -66,27 +56,20 @@ class SwipeRow extends React.Component {
 
 	debounceOnResize = _.debounce(() => this.onResize(), 200);
 
-	// Formats input list so elems can be easily passed to SwipeRowElem
-	configureInputList = (list, configObj) => {
-		if (!list) return;
-
-		let localList = list.map(elem => {
-			let image;
-			elem[configObj.imageP2] === null
-				? (image = configObj.imageD)
-				: (image = `${configObj.imageP1}${elem[configObj.imageP2]}`);
-			return {
-				image: image,
-				title1: configObj.text1,
-				text1: elem[configObj.text1],
-				title2: configObj.text2,
-				text2: elem[configObj.text2],
-				cast_id: elem.cast_id,
-				id: elem.ID
-			};
-		});
-
-		this.setState({ list: localList });
+	buildRowLists = rowSize => {
+		let list = this.props.list;
+		if (rowSize <= 0 || list.length <= 0) return [];
+		let stateLists = [];
+		for (let i = 0; i < list.length; i += rowSize) {
+			let tempList = [];
+			for (let j = 0; j < rowSize; j++) {
+				if (i + j < list.length) tempList.push(list[i + j]);
+				if (i + j >= list.length) tempList.push([]);
+			}
+			stateLists.push(tempList);
+		}
+		console.log(stateLists);
+		return stateLists;
 	};
 
 	// These two functions build the left and right buttons respectively.
@@ -94,7 +77,7 @@ class SwipeRow extends React.Component {
 	buildLeftButton = () => {
 		return (
 			<Grid.Column verticalAlign="middle" width={1}>
-				{this.state.firstElem === 0 ? (
+				{this.state.rowsPos === 0 ? (
 					<Icon
 						fitted
 						name="angle left"
@@ -117,7 +100,7 @@ class SwipeRow extends React.Component {
 	buildRightButton = () => {
 		return (
 			<Grid.Column verticalAlign="middle" width={1}>
-				{this.state.lastElem === this.props.list.length ? (
+				{this.state.rowsPos === this.state.rows.length - 1 ? (
 					<Icon
 						fitted
 						name="angle right"
@@ -140,42 +123,41 @@ class SwipeRow extends React.Component {
 	// These two function handles pressing left or right buttons on the SwipeRow
 
 	handleLeftClick = () => {
-		let { lists, listsPos } = this.state;
-		if (listsPos === 0) {
+		let { rows, rowsPos } = this.state;
+		if (rowsPos === 0) {
 			return;
 		}
 		this.setState({
-			listsPos: listsPos - 1
+			rowsPos: rowsPos - 1
 		});
 	};
 
 	handleRightClick = () => {
-		let { lists, listsPos } = this.state;
-		console.log(listsPos, lists.length)
-		console.log(lists);
-		if (listsPos < lists.length-1) {
+		let { rows, rowsPos } = this.state;
+		console.log(rowsPos, rows.length);
+		console.log(rows);
+		if (rowsPos < rows.length - 1) {
 			this.setState({
-				listsPos: listsPos + 1
+				rowsPos: rowsPos + 1
 			});
 		}
-		
 	};
 
-	buildforRow = list => {
-		const { lists, listsPos } = this.state;
-		let elems  = lists[listsPos].map(elem => {
-			return (
-				<Grid.Column key={elem.cast_id}>
-					<SwipeRowElem key={elem.cast_id} elem={elem} />
-				</Grid.Column>
-			);
-		});
-		return elems;
-	};
-
-	buildforRows = (list, numElems) => {
-		let lists = this.state.lists;
-		lists = lists.map(list => {
+	// Easily extensible to include any number of rows.
+	buildRows = num => {
+		const { rows, rowsPos } = this.state;
+		let returnData = null;
+		if (num === 1) {
+			returnData = rows[rowsPos].map(elem => {
+				return (
+					<Grid.Column key={elem.cast_id}>
+						<SwipeRowElem key={elem.cast_id} elem={elem} />
+					</Grid.Column>
+				);
+			});
+			return returnData;
+		}
+		returnData = rows.map(list => {
 			return (
 				<Grid.Row stretched>
 					{list.map(elem => {
@@ -191,42 +173,32 @@ class SwipeRow extends React.Component {
 				</Grid.Row>
 			);
 		});
-		return lists;
+		return returnData;
 	};
-
-	// Needs Fixing 
+	// needs fixing
 	renderRowMobile() {
-		let { lastElem, numElems, lists } = this.state;
+		let { rows, rowsPos } = this.state;
 		return (
 			<Segment>
 				<Item.Group divided>
-					{lists.map(elem => (
+					{rows[rowsPos].map(elem => (
 						<SwipeRowElem key={elem.cast_id} elem={elem} size={0} />
 					))}
 				</Item.Group>
-				<Button
-					onClick={() => this.setState({ lastElem: lastElem + numElems })}
-				>
-					{" "}
-					More Actors
-				</Button>
 			</Segment>
 		);
 	}
 
 	// Render when there is a single row.
 	renderRow() {
-		console.log(" in render swipe row");
 		return (
 			<Segment>
 				<h1> {this.props.headerText} </h1>
 				<Divider />
 				<Grid stackable columns="equal">
-					<Grid.Row stretched>
-						{this.props.type ? this.buildLeftButton() : null}
-						{this.buildforRow(this.state.list)}
-						{this.props.type ? this.buildRightButton() : null}
-					</Grid.Row>
+					{this.props.type ? this.buildLeftButton() : null}
+					{this.buildRows(this.state.rows, 1)}
+					{this.props.type ? this.buildRightButton() : null}
 				</Grid>
 			</Segment>
 		);
@@ -237,23 +209,35 @@ class SwipeRow extends React.Component {
 		return (
 			<Segment>
 				<Grid stackable columns="equal">
-					{this.buildforRows(this.state.list, this.state.numElems)}
+					{this.buildRows(this.state.rows, -1)}
 				</Grid>
 			</Segment>
 		);
 	}
 
 	render() {
-		console.log(state);
-		if (this.state.lists.length === 0) {
+		if (this.state.rows.length === 0) {
 			return null;
 		}
 
-		return this.state.size > 0
-			? this.props.rows
-				? this.renderRows()
-				: this.renderRow()
-			: this.renderRowMobile();
+		let returnData =
+			this.state.windowSize > 0
+				? this.props.rows
+					? this.buildRows(-1)
+					: this.buildRows(1)
+				: this.renderRowMobile();
+
+		return (
+			<Segment>
+				<h1> {this.props.headerText} </h1>
+				<Divider />
+				<Grid stackable columns="equal">
+					{this.props.type ? this.buildLeftButton() : null}
+					{returnData}
+					{this.props.type ? this.buildRightButton() : null}
+				</Grid>
+			</Segment>
+		);
 	}
 }
 export default SwipeRow;
