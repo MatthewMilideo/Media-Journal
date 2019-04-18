@@ -61,6 +61,28 @@ class SearchPage extends React.Component {
 		return <SearchBar searchType={searchType} config={searchBarConfig} />;
 	};
 
+
+	configureInputList = (list, configObj) => {
+		if (!list) return;
+
+		let localList = list.map(elem => {
+			let image;
+			elem[configObj.imageP2] === null
+				? (image = configObj.imageD)
+				: (image = `${configObj.imageP1}${elem[configObj.imageP2]}`);
+			return {
+				image: image,
+				title1: configObj.text1,
+				text1: elem[configObj.text1],
+				title2: configObj.text2,
+				text2: elem[configObj.text2],
+				cast_id: elem.cast_id,
+				id: elem.ID
+			};
+		});
+		return localList
+	};
+
 	//
 	renderContent = (type, searchData) => {
 		console.log(type, searchData);
@@ -73,13 +95,15 @@ class SearchPage extends React.Component {
 			text2: "character"
 		};
 
+		let data = this.configureInputList (searchData.data, configObj); 
+
 		let swipeRow = (
 			<SwipeRow
 				cType = {type}
 				type={0}
 				rows={1}
 				eSize={215}
-				list={searchData.data}
+				list={data}
 				listConfig={configObj}
 			/>
 		);

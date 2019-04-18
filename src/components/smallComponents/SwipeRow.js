@@ -189,32 +189,6 @@ class SwipeRow extends React.Component {
 		);
 	}
 
-	// Render when there is a single row.
-	renderRow() {
-		return (
-			<Segment>
-				<h1> {this.props.headerText} </h1>
-				<Divider />
-				<Grid stackable columns="equal">
-					{this.props.type ? this.buildLeftButton() : null}
-					{this.buildRows(this.state.rows, 1)}
-					{this.props.type ? this.buildRightButton() : null}
-				</Grid>
-			</Segment>
-		);
-	}
-
-	// Render when there are multipule rows.
-	renderRows() {
-		return (
-			<Segment>
-				<Grid stackable columns="equal">
-					{this.buildRows(this.state.rows, -1)}
-				</Grid>
-			</Segment>
-		);
-	}
-
 	render() {
 		if (this.state.rows.length === 0) {
 			return null;
