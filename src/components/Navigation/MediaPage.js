@@ -7,6 +7,7 @@ import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
 import * as T from '../../actions/types'
 import { sizeArr } from "../../setupGlobals";
+import {formatMoney} from '../../helpers'
 import _ from "lodash";
 import "../../styles/style.css";
 
@@ -80,6 +81,8 @@ class MediaPage extends React.Component {
 								<p className="overview"> {movie.overview} </p>
 								<span className="media-title-descriptor">
 									Budget: $ {movie.budget}| Revenue: $ {movie.revenue}
+
+									
 								</span>
 								<h4 className="mainH1"> Genres </h4>
 								{movie.genres.map(genre => {
@@ -177,6 +180,7 @@ class MediaPage extends React.Component {
 	};
 
 	render() {
+		console.log(formatMoney(6356432));
 		//console.log(this.state);
 		if (
 			Object.keys(this.props.itemData).length === 0 &&

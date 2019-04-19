@@ -36,21 +36,22 @@ export const formatDate = (date) => {
 } 
 
 export const formatMoney = (num) => {
-/*
+
+    let returnStr = '$'
     num = num.toString();
+    let numLen = num.length -1; 
+    let counter = 0; 
 
-    let numLength = (num.length-1);
-    console.log('num', num, 'numLength', numLength);
-
-    let j = -1; 
-    for( let i = numLength; i >= 0; i--){
-        if( j === 2){
-            console.log('j', j);
-            let num1 = 
+    for(let i = numLen; i >= 0; i-- ){
+        counter++; 
+        if (counter === 3 && i != 0){
+            counter = 0; 
+            let str1 = num.slice(0, i);
+            let str2 = num.slice(i, num.length); 
+            num = str1.concat(',', str2);  
         }
-        console.log('i', i, 'num', num[i]);
-        j++; 
-    } d
-*/
+    }
+    returnStr = returnStr.concat(num);
+    console.log('str', returnStr); 
     return num;
 } 
