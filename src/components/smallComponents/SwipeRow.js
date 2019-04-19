@@ -44,10 +44,15 @@ class SwipeRow extends React.Component {
 				let rowSize = Math.floor(winSize / this.props.eSize);
 				if (rowSize === 0) rowSize = 5;
 				let rows = this.buildRowLists(rowSize);
+
+				let rowsPos = this.state.rowsPos
+				if (this.state.rowsPos > rows.length -1) rowsPos = rows.length -1
+
 				this.setState({
 					windowSize: i,
 					rowSize: rowSize,
-					rows: rows
+					rows: rows,
+					rowsPos
 				});
 				break;
 			}
@@ -68,7 +73,6 @@ class SwipeRow extends React.Component {
 			}
 			stateLists.push(tempList);
 		}
-		console.log(stateLists);
 		return stateLists;
 	};
 
@@ -150,8 +154,8 @@ class SwipeRow extends React.Component {
 		if (num === 1) {
 			returnData = rows[rowsPos].map(elem => {
 				return (
-					<Grid.Column key={elem.cast_id}>
-						<SwipeRowElem key={elem.cast_id} elem={elem} />
+					<Grid.Column key={elem.id}>
+						<SwipeRowElem key={elem.id} elem={elem} />
 					</Grid.Column>
 				);
 			});
@@ -163,13 +167,14 @@ class SwipeRow extends React.Component {
 					{list.map(elem => {
 						console.log(elem);
 						return (
-							<Grid.Column key={elem.cast_id}>
+							<Grid.Column key={elem.id}>
 								<Link to={`/media/${this.props.cType}/${elem.id}`}>
-									<SwipeRowElem elem={elem} />
+									<SwipeRowElem key = {elem.id} elem={elem} />
 								</Link>
 							</Grid.Column>
 						);
 					})}
+
 				</Grid.Row>
 			);
 		});
@@ -182,7 +187,7 @@ class SwipeRow extends React.Component {
 			<Segment>
 				<Item.Group divided>
 					{rows[rowsPos].map(elem => (
-						<SwipeRowElem key={elem.cast_id} elem={elem} size={0} />
+						<SwipeRowElem key={elem.id} elem={elem} size={0} />
 					))}
 				</Item.Group>
 			</Segment>

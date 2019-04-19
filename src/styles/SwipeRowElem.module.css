@@ -1,12 +1,46 @@
-.segmentHeight{
+.SwipeRowElemSeg{
+    position: relative;
+    display: flex; 
+    flex-direction: column;
     height: 400px; 
 }
 
-.segmentImage{
-    top: 0;
+.wrapImage{
+    position: relative;
+    flex-grow: 0; 
+    height: 216px; 
+ 
 }
 
-.title{
-    font-size: 13px;
-    font-weight: bolder;
+.innerSegment{
+    padding: 2px; 
 }
+.redDiv{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;  
+    height: 113px;
+}
+
+.redDiv p {
+    text-align: center;
+    margin-bottom: 8px; 
+}
+
+.tagButton{
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    align-items: flex-end;
+    justify-content: center;
+}
+.buttonTest{
+    
+    bottom: 0; 
+    align-self: flex-end;
+}
+
+
+
+

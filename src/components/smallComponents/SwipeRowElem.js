@@ -1,43 +1,51 @@
 import React from "react";
-import { Segment, Image, Item } from "semantic-ui-react";
+import { Segment, Image, Item, Grid } from "semantic-ui-react";
 
-import AddTagButton from './AddTagButton'
+import AddTagButton from "./AddTagButton";
 
 import "../../styles/style.css";
 import styles from "../../styles/SwipeRowElem.module.css";
 
-const render = (elem) => {
-    return(
-    
-       <Segment raised>
-        <div className={styles.segmentHeight}>
-            <Image className={styles.segmentImage} src={elem.image} />
-            <h2 className = {styles.title}> {elem.title1}: </h2> 
-            <p className = {styles.title}> {elem.text1} </p>
-            <h2 className = {styles.title}> {elem.title2}: </h2>
-            <p className = {styles.title}> {elem.text2} </p>
-            <AddTagButton type= 'Actor' tag = {elem.text1} />
-        </div>
-    </Segment>)
-    
+/* Props
+Type: The type of swipe row elem being displayed. 
+
+*/
+
+class SwipeRowElem extends React.Component {
+	state = { hovered: false };
+
+	renderMobile = elem => {
+		return (
+			<Item>
+				<Item.Image className={styles.test} src={elem.image} />
+				<Item.Header> Actor: {elem.text1} </Item.Header>
+				<Item.Header> Charachter: {elem.text2} </Item.Header>
+			</Item>
+		);
+	};
+
+	render() {
+		const { elem } = this.props;
+		return (
+			<Segment className = {styles.SwipeRowElemSeg} raised>
+					<div className={styles.wrapImage}>
+						<Image className={styles.segmentImage} src={elem.image} />
+					</div>
+
+					<Segment className={styles.innerSegment} inverted color="red">
+						<div className={styles.redDiv}>
+                            <p >{elem.text2} </p>
+							<p > played by: </p>
+                            <p > {elem.text1} </p>
+							<div className = {styles.tagButton}> 
+							    <button className = {styles.buttonTest}> </button>
+                            </div>
+						</div>
+					</Segment>
+				
+			</Segment>
+		);
+	}
 }
-
-const renderMobile =  (elem) => {
-  
-   return(
-        <Item>
-			<Item.Image className={styles.test} src={elem.image} />
-			<Item.Header > Actor: {elem.text1} </Item.Header>
-            <Item.Header > Charachter: {elem.text2} </Item.Header>
-		</Item>)
-    
-}
-
-const SwipeRowElem = props => {
-	const { elem, size } = props;
-
-    return size !== 0 ?  render(elem) : renderMobile(elem)
-
-};
 
 export default SwipeRowElem;

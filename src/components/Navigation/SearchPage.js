@@ -66,6 +66,7 @@ class SearchPage extends React.Component {
 		if (!list) return;
 
 		let localList = list.map(elem => {
+			console.log('elem', elem);
 			let image;
 			elem[configObj.imageP2] === null
 				? (image = configObj.imageD)
@@ -80,6 +81,7 @@ class SearchPage extends React.Component {
 				id: elem.ID
 			};
 		});
+		console.log(localList);
 		return localList
 	};
 
@@ -92,7 +94,8 @@ class SearchPage extends React.Component {
 			imageD:
 				"https://www.naturehills.com/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/s/o/southern-live-oak-600x600.jpg",
 			text1: "title",
-			text2: "character"
+			text2: "character",
+			id: 'id'
 		};
 
 		let data = this.configureInputList (searchData.data, configObj); 

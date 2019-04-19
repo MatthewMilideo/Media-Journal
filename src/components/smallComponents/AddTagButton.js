@@ -19,23 +19,16 @@ class AddTagButton extends React.Component {
 
 	renderDropdown() {
 		return (
-			<Dropdown button size="tiny" multipule icon="book">
-				<Dropdown.Menu>
-					{/*xthis.props.curNotes.map( note => <Dropdown.item text = {note.title}/>) */}
-					<Dropdown.Item text="Add to note 1" />
-				</Dropdown.Menu>
-			</Dropdown>
+			<Button> Add Tag </Button> 
 		);
 	}
 
-	renderButton() {
-		return <Button size="tiny" icon="book" onClick={this.handleClick} />;
-	}
+	
 
 	render() {
 		let clicked = this.state.clicked;
-
-		return <div>{this.renderDropdown()}</div>;
+		return(
+		<Button> Hello </Button>);
 	}
 }
 

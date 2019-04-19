@@ -11,7 +11,7 @@ import _ from "lodash";
 import "../../styles/style.css";
 
 class MediaPage extends React.Component {
-	state = { size: -1, type: T.MOVIE, tag: null, castlist: [], castNum: 5 };
+	state = { size: -1, type: T.MOVIE, tag: null };
 
 	componentDidMount() {
 		window.addEventListener("resize", this.debounceOnResize, false);
@@ -138,10 +138,10 @@ class MediaPage extends React.Component {
 				text1: elem[configObj.text1],
 				title2: configObj.text2,
 				text2: elem[configObj.text2],
-				cast_id: elem.cast_id,
 				id: elem.ID
 			};
 		});
+		console.log(localList)
 		return localList
 	};
 
@@ -159,7 +159,8 @@ class MediaPage extends React.Component {
 			imageD:
 				"https://www.naturehills.com/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/s/o/southern-live-oak-600x600.jpg",
 			text1: "name",
-			text2: "character"
+			text2: "character",
+			id: 'cast_id'
 		};
 		cast = this.configureInputList(cast, configObj);
 
