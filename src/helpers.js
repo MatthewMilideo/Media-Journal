@@ -36,6 +36,8 @@ export const formatDate = (date) => {
 } 
 
 export const formatMoney = (num) => {
+    console.log('num', num);
+    if (num === 0) return null; 
 
     let returnStr = '$'
     num = num.toString();
@@ -52,6 +54,5 @@ export const formatMoney = (num) => {
         }
     }
     returnStr = returnStr.concat(num);
-    console.log('str', returnStr); 
-    return num;
+    return returnStr;
 } 

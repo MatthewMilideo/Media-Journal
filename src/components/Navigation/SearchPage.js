@@ -104,6 +104,7 @@ class SearchPage extends React.Component {
 			<SwipeRow
 				cType = {type}
 				type={0}
+				elemType = {'search'}
 				rows={1}
 				eSize={215}
 				list={data}

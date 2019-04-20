@@ -24,27 +24,50 @@ class SwipeRowElem extends React.Component {
 		);
 	};
 
-	render() {
-		const { elem } = this.props;
+	renderCast = elem => {
 		return (
-			<Segment className = {styles.SwipeRowElemSeg} raised>
-					<div className={styles.wrapImage}>
-						<Image className={styles.segmentImage} src={elem.image} />
-					</div>
+			<Segment className={styles.SwipeRowElemSeg} raised>
+				<div className={styles.wrapImage}>
+					<Image className={styles.segmentImage} src={elem.image} />
+				</div>
 
-					<Segment className={styles.innerSegment} inverted color="red">
-						<div className={styles.redDiv}>
-                            <p >{elem.text2} </p>
-							<p > played by: </p>
-                            <p > {elem.text1} </p>
-							<div className = {styles.tagButton}> 
-							    <button className = {styles.buttonTest}> </button>
-                            </div>
-						</div>
-					</Segment>
-				
+				<Segment className={styles.innerSegment} inverted color="red">
+			
+						<p className = {styles.maxLines} >{elem.text2} </p>
+						<p className = {styles.maxLines}> played by: </p>
+						<p className = {styles.maxLines}> {elem.text1} </p>
+
+				</Segment>
 			</Segment>
 		);
+	};
+
+	/*
+		
+	*/
+	renderSearch = elem => {
+		console.log("renderSearch");
+		return (
+			<Segment className={styles.SwipeRowElemSeg2} raised>
+				<img className={styles.searchImage} src={elem.image} />
+				<Segment className={styles.innerSegment} inverted color="red">
+					<div className={styles.redDiv}>
+						<p>{elem.text2} </p>
+						<p> {elem.text1} </p>
+					</div>
+				</Segment>
+			</Segment>
+		);
+	};
+
+	render() {
+		const { elem, type } = this.props;
+		console.log(type);
+		if (type === "cast") {
+			return this.renderCast(elem);
+		} else {
+			return this.renderSearch(elem);
+		}
 	}
 }
 

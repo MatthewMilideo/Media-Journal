@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import * as T from "../../actions/types";
 import { buildCrudQuery, addTag } from "../../actions";
 import { getItemNotes } from "../../reducers";
+import '../../styles/style.css'
 
 class NoteManager extends React.Component {
 	state = { notes: [] };

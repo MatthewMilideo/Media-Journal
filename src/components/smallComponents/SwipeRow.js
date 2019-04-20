@@ -13,6 +13,7 @@ import SwipeRowElem from "./SwipeRowElem";
 // Rows: Will this contain many rows or 1 rows.
 // Type: Not sure of all the types I could pass here, but this is currently to differnetiate between swipe and
 // not swipe row.
+// Elem Type: cast
 // Header Text:
 
 class SwipeRow extends React.Component {
@@ -69,7 +70,7 @@ class SwipeRow extends React.Component {
 			let tempList = [];
 			for (let j = 0; j < rowSize; j++) {
 				if (i + j < list.length) tempList.push(list[i + j]);
-				if (i + j >= list.length) tempList.push([]);
+				if (i + j >= list.length) tempList.push(null);
 			}
 			stateLists.push(tempList);
 		}
@@ -153,9 +154,12 @@ class SwipeRow extends React.Component {
 		let returnData = null;
 		if (num === 1) {
 			returnData = rows[rowsPos].map(elem => {
+				if (elem === null){
+					return( <Grid.Column> </Grid.Column>)
+				}
 				return (
 					<Grid.Column key={elem.id}>
-						<SwipeRowElem key={elem.id} elem={elem} />
+						 <SwipeRowElem type = {this.props.elemType} key={elem.id} elem={elem}  /> 
 					</Grid.Column>
 				);
 			});
@@ -165,11 +169,14 @@ class SwipeRow extends React.Component {
 			return (
 				<Grid.Row stretched>
 					{list.map(elem => {
-						console.log(elem);
+						if (elem === null){
+							return( <Grid.Column> </Grid.Column>)
+						}
+						
 						return (
 							<Grid.Column key={elem.id}>
 								<Link to={`/media/${this.props.cType}/${elem.id}`}>
-									<SwipeRowElem key = {elem.id} elem={elem} />
+									<SwipeRowElem type = {this.props.elemType} key = {elem.id} elem={elem} />
 								</Link>
 							</Grid.Column>
 						);
@@ -187,7 +194,7 @@ class SwipeRow extends React.Component {
 			<Segment>
 				<Item.Group divided>
 					{rows[rowsPos].map(elem => (
-						<SwipeRowElem key={elem.id} elem={elem} size={0} />
+						<SwipeRowElem type = {this.props.elemType} key={elem.id} elem={elem} size={0} />
 					))}
 				</Item.Group>
 			</Segment>

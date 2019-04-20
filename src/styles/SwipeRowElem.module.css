@@ -5,23 +5,40 @@
     height: 400px; 
 }
 
-.wrapImage{
+.SwipeRowElemSeg2{
     position: relative;
-    flex-grow: 0; 
+    display: flex; 
+    flex-direction: column;
+    height: 400px; 
+}
+
+.maxLines {
+    font-size: 13px;
+    margin-bottom: 1px; 
+    text-align: center;
+  }
+
+
+.segmentImage{
     height: 216px; 
- 
+}
+
+.wrapImage2{
+    justify-content: center;
+    align-items: center;
+}
+.searchImage{
+    height: 275px; 
+    justify-content: center;
+    align-items: center;
 }
 
 .innerSegment{
-    padding: 2px; 
+
+    flex-grow: 1; 
 }
-.redDiv{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 0;  
-    height: 113px;
-}
+
+
 
 .redDiv p {
     text-align: center;

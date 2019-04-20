@@ -19,7 +19,7 @@ class App extends React.Component {
 				<Router history={history}>
 					<div>
 						<NavBar />
-						<Container>
+						<Container className = 'main-container'>
 						
 							<Switch>
 								<Route path="/" exact component={SearchPage} />

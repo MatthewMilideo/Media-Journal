@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
 import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
+import MovieData from './MovieData';
 import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
-import * as T from '../../actions/types'
+import * as T from "../../actions/types";
 import { sizeArr } from "../../setupGlobals";
-import {formatMoney} from '../../helpers'
 import _ from "lodash";
 import "../../styles/style.css";
 
@@ -19,7 +19,7 @@ class MediaPage extends React.Component {
 
 		const { id, type } = this.props.match.params;
 		this.props.fetchItem(type, id);
-		this.setState({type});
+		this.setState({ type });
 	}
 
 	componentDidUpdate(prevProps) {
@@ -60,43 +60,7 @@ class MediaPage extends React.Component {
 
 	renderMovie = movie => {
 		return (
-			<Grid equal stackable>
-
-				<Grid.Row verticalAlign="top">
-					<Grid.Column width={6}>
-						<Image src={movie.largeImage} />
-					</Grid.Column>
-					<Grid.Column divided="vertically" width={10}>
-						<Grid.Row>
-							<Segment compact>
-								<div className="title-div">
-									<h1 className="media-title"> {movie.title} </h1>
-									<span className="media-title-descriptor">
-										<h5>  Released: {movie.release_date} </h5> | <h5> Runtime: {movie.runtime} minutes</h5>
-										
-									</span>
-								</div>
-								<Divider className="divide" />
-								<h4 className="mainH1"> Overview </h4>
-								<p className="overview"> {movie.overview} </p>
-								<span className="media-title-descriptor">
-									Budget: $ {movie.budget}| Revenue: $ {movie.revenue}
-
-									
-								</span>
-								<h4 className="mainH1"> Genres </h4>
-								{movie.genres.map(genre => {
-									return (
-										<div className="thisDiv">
-											<span>{genre.name},</span>
-										</div>
-									);
-								})}
-							</Segment>
-						</Grid.Row>
-					</Grid.Column>
-				</Grid.Row>
-			</Grid>
+			<MovieData movie = {movie} />
 		);
 	};
 
@@ -144,8 +108,8 @@ class MediaPage extends React.Component {
 				id: elem.ID
 			};
 		});
-		console.log(localList)
-		return localList
+		console.log(localList);
+		return localList;
 	};
 
 	renderCast = cast => {
@@ -153,8 +117,7 @@ class MediaPage extends React.Component {
 			return null;
 		}
 
-			// Formats input list so elems can be easily passed to SwipeRowElem
-
+		// Formats input list so elems can be easily passed to SwipeRowElem
 
 		const configObj = {
 			imageP1: "https://image.tmdb.org/t/p/w185/",
@@ -163,24 +126,24 @@ class MediaPage extends React.Component {
 				"https://www.naturehills.com/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/s/o/southern-live-oak-600x600.jpg",
 			text1: "name",
 			text2: "character",
-			id: 'cast_id'
+			id: "cast_id"
 		};
 		cast = this.configureInputList(cast, configObj);
 
 		return (
 			<SwipeRow
 				type={1}
+				elemType ='cast'
 				rows={0}
 				eSize={215}
 				list={cast}
 				listConfig={configObj}
-				headerText ='Cast'
+				headerText="Cast"
 			/>
 		);
 	};
 
 	render() {
-		console.log(formatMoney(6356432));
 		//console.log(this.state);
 		if (
 			Object.keys(this.props.itemData).length === 0 &&

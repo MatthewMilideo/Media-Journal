@@ -11,6 +11,7 @@ import {
 
 import * as T from "../../actions/types";
 import Dropdown2 from "../smallComponents/Dropdown";
+import '../../styles/style.css'
 
 class Note extends React.Component {
 	state = {
