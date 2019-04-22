@@ -5,6 +5,7 @@ import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
 import MovieData from "./MediaPageHelpers/MovieData";
 import TVData from "./MediaPageHelpers/TVData";
+import BookData from './MediaPageHelpers/BookData';
 import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
 import * as T from "../../actions/types";
@@ -66,6 +67,10 @@ class MediaPage extends React.Component {
 
 	renderTV = show => {
 		return <TVData show = {show} />
+	}
+
+	renderBook = book => {
+		return <BookData book = {book} />
 	}
 
 	handleClick = () => {
@@ -136,20 +141,28 @@ class MediaPage extends React.Component {
 
 		//console.log(('item data', this.props.itemData, type)
 		let returnData; 
+		let cast = null; 
 		if (type === T.MOVIE){
 			//console.log(('type movie');
-			returnData = this.renderMovie(this.props.itemData); 
+			returnData = this.renderMovie(this.props.itemData);
+			cast =  this.renderCast(this.props.itemData.cast);
 		} 
 		if (type === T.TV_SEASON){
 			//console.log(('type show');
-			returnData = this.renderTV(this.props.itemData); 
+			returnData = this.renderTV(this.props.itemData);
+			cast =  this.renderCast(this.props.itemData.cast);
+		}
+
+		if (type === T.BOOK){
+			//console.log(('type show');
+			returnData = this.renderBook(this.props.itemData); 
 		}
 
 		return (
 			<div>
 				<Segment inverted color="blue">
 					{returnData}
-					{this.renderCast(this.props.itemData.cast)}
+					{cast}
 					<NoteManager cID={id} type={type} />
 				</Segment>
 			</div>

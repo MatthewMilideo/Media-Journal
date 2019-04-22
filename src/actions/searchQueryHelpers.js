@@ -14,7 +14,7 @@ export const searchQueryBuilder = (type, ...args) => {
 		MOVIE: { query: args[0], page: 1 },
 		TV_SEASON: { query: args[0], page: 1 },
 		BOOK: {
-			q: `${args[0]}+inauthor:${args[1]}`,
+			q: `${args[0]}`,//+inauthor:${args[1]}`,
 			startIndex: 0,
 			maxResults: 20
 		},

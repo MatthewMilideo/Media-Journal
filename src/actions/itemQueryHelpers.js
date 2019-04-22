@@ -1,7 +1,8 @@
 import * as T from "./types";
 import movieDB from '../api/movieDB';
+import bookDB from '../api/bookDB';
 
-import { movieItemFormatter, showItemFormatter } from "./dataFormatters";
+import { movieItemFormatter, showItemFormatter, bookItemFormatter } from "./dataFormatters";
 
 export const TMDBItemQuery = (type, id) => async dispatch => {
     let response;
@@ -33,8 +34,28 @@ export const TMDBItemQuery = (type, id) => async dispatch => {
 };
 
 export const bookItemQuery = (type, id) => async dispatch => {
-    return null; 
+	let response; 
+	let loc = `${id}`
+    dispatch({
+		type: T.BEGAN_ITEM,
+		payload: { type}
+    });
+    
+	try {
+		response = await bookDB.get(loc);
+	} catch (err) {
+		dispatch({ type: T.ERRORED_ITEM });
+		return;
+	}
+	
+	response = bookItemFormatter(response.data);
+
+	dispatch({
+		type: T.FINISHED_ITEM,
+		payload: response
+	});
 };
+
 
 export const gameItemQuery = (type, id) => async dispatch => {
     return null; 

@@ -48,8 +48,7 @@ class SearchPage extends React.Component {
 			MOVIE: [{ name: T.MOVIE, label: "Movie", placeholder: "Blue Velvet" }],
 			TV_SEASON: [{ label: "Televison Show", placeholder: "The Sopranos" }],
 			BOOK: [
-				{ label: "Book", placeholder: "The Castle" },
-				{ label: "Author", placeholder: "Franz Kafka" }
+				{ label: "Book", placeholder: "The Castle Franz Kafka"  },
 			],
 			GAME: [
 				{ label: "Game", placeholder: "Half Life 2" },

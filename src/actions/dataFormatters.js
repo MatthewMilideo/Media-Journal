@@ -47,10 +47,9 @@ const crewFormatter = (input, creator = null, output = standardRoles) => {
 		});
 	}
 
-		input.forEach(crew => {
-			if (returnObj[crew.job]) returnObj[crew.job].push(crew);
-		});
-	
+	input.forEach(crew => {
+		if (returnObj[crew.job]) returnObj[crew.job].push(crew);
+	});
 
 	//console.log(('returnObj',returnObj);
 	return returnObj;
@@ -171,4 +170,41 @@ export const bookFormatter = (books, curElem = 0) => {
 	});
 	books.page = curElem;
 	return books;
+};
+
+const removeBR = text => {
+
+	if (text === undefined) return text; 
+
+	let value = text.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g,"")
+	console.log(value);
+	return value; 
+}
+
+
+
+export const bookItemFormatter = data => {
+	data = data.volumeInfo;
+
+	let pubDate = data.publishedDate;
+
+	pubDate === undefined ? pubDate = undefined : pubDate = formatDate(new Date(pubDate))
+
+	let returnObj = {
+		type: T.BOOK,
+		title: data.title,
+		subtitle: data.subtitle,
+		overview: removeBR(data.description),
+		authors: data.authors,
+		publisher: data.publisher,
+		pubDate,
+		ids: data.industryIdentifiers,
+		pageCount: data.printedPageCount,
+		language: data.language,
+		genres: data.categories,
+		//price: data.saleInfo.listPrice,
+		images: data.imageLinks
+	};
+
+	return returnObj;
 };

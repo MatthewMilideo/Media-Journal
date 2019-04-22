@@ -62,7 +62,7 @@
 
 .genre-div {
 	margin-top: 14px;
-	margin-bottom: 14px ;
+	margin-bottom: 14px;
 }
 
 .crew-div p {
@@ -189,5 +189,45 @@
 
 
 .divider {
+	margin: 0;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~ Book Data Page ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.book-title-div h1{
+	font-size: 20px; 
+	display:inline
+}
+
+.book-title-div h2{
+	display: inline;
+	font-size: 17px;
+	margin-left: -4px; 
+}
+
+.author-div {
+	margin-top: 5px; 
+	
+}
+
+
+.book-overview-inner p{
+	text-indent: 25px; 
+	margin-top: 8px; 
+	margin-bottom: 8px; 
+}
+
+.book-genre-div ul {
+
+	margin-top: 8px; 
+	padding-left: 25px;
+
+}
+
+.book-info-div-inner {
+	margin-top: 8px;
+}
+
+.book-info-div p{
 	margin: 0;
 }

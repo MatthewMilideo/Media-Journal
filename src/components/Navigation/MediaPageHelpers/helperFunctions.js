@@ -49,7 +49,7 @@ export const runTimes = list => {
 	return renderList(list, func, "Episode Lengths: ", " minutes");
 };
 
-export const renderList = (list, config, text, text2) => {
+export const renderList = (list, config, sectionText, elemText) => {
 	let returnData = null;
 	list.length === 0
 		? (returnData = null)
@@ -59,7 +59,7 @@ export const renderList = (list, config, text, text2) => {
 				return (
 					<h5 className="comma-list">
 						{config(elem)}
-						{text2}
+						{elemText}
 						{comma}
 					</h5>
 				);
@@ -67,7 +67,7 @@ export const renderList = (list, config, text, text2) => {
 
 	return returnData === null ? null : (
 		<div className="genre-div">
-			<h5 className="media-body-h1"> {text} </h5>
+			<h5 className="media-body-h1"> {sectionText} </h5>
 			{returnData}
 		</div>
 	);
