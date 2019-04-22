@@ -47,7 +47,7 @@ class PosterContainer extends React.Component {
 	};
 
 	render() {
-		console.log(this.props.content)
+		//console.log((this.props.content)
 
 		return (
 			<Container>

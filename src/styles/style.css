@@ -1,7 +1,20 @@
+.image{
+	position: relative;
+	height: auto; 
+	width: auto; 
+	max-width: inherit;
+	max-height: inherit;
+}
+
 .test5{
+	position: relative;
     display:flex;
     display: row; 
     justify-content: center;
+}
+
+.runtime-div h5{
+	display: inline;
 }
 
 .title-div h1 {
@@ -16,6 +29,14 @@
 
 .media-body-divider {
 	margin-top: 5px !important;
+}
+
+.media-title div{
+	display: inline
+}
+
+.runtime-div{
+	display: inline
 }
 
 .media-title-descriptor {
@@ -44,6 +65,20 @@
 	margin-bottom: 14px;
 }
 
+.crew-div p {
+	display: inline;
+	
+}
+
+.show-div  {
+	margin-top: 14px; 
+
+}
+.show-div p {
+    display: inline;
+	padding: 0; 
+}
+
 .budget-div  {
     margin-bottom: 14px; 
 
@@ -63,6 +98,10 @@
 	align-items: flex-end;
 	justify-content: flex-start;
 	margin-top: 14px;
+}
+
+.whole-crew-div{
+	margin-bottom: 14px; 
 }
 
 .comp-div h1 {
@@ -146,6 +185,8 @@
 	display: inline;
 	font-size: 12px;
 }
+
+
 
 .divider {
 	margin: 0;

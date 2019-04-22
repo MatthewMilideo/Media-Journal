@@ -25,6 +25,22 @@ class SwipeRowElem extends React.Component {
 	};
 
 	renderCast = elem => {
+		let data = null;
+		if (elem.text2 === "" && elem.text1 !== "")
+			data = <p className={styles.maxLines}> {elem.text1} </p>;
+		if (elem.text1 === "" && elem.text2 !== "")
+			data = <p className={styles.maxLines}>{elem.text2} </p>;
+		if (elem.text1 !== "" && elem.text2 !== "") {
+			data = (
+				<React.Fragment>
+		
+					<p className={styles.maxLines}>{elem.text2} </p>
+					<p className={styles.maxLines}> played by: </p>
+					<p className={styles.maxLines}> {elem.text1} </p>
+				</React.Fragment>
+			);
+		}
+
 		return (
 			<Segment className={styles.SwipeRowElemSeg} raised>
 				<div className={styles.wrapImage}>
@@ -32,11 +48,7 @@ class SwipeRowElem extends React.Component {
 				</div>
 
 				<Segment className={styles.innerSegment} inverted color="red">
-			
-						<p className = {styles.maxLines} >{elem.text2} </p>
-						<p className = {styles.maxLines}> played by: </p>
-						<p className = {styles.maxLines}> {elem.text1} </p>
-
+					{data}
 				</Segment>
 			</Segment>
 		);
@@ -46,7 +58,7 @@ class SwipeRowElem extends React.Component {
 		
 	*/
 	renderSearch = elem => {
-		console.log("renderSearch");
+		//console.log(("renderSearch");
 		return (
 			<Segment className={styles.SwipeRowElemSeg2} raised>
 				<img className={styles.searchImage} src={elem.image} />
@@ -62,7 +74,7 @@ class SwipeRowElem extends React.Component {
 
 	render() {
 		const { elem, type } = this.props;
-		console.log(type);
+		//console.log((type);
 		if (type === "cast") {
 			return this.renderCast(elem);
 		} else {

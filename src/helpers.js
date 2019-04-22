@@ -36,7 +36,7 @@ export const formatDate = (date) => {
 } 
 
 export const formatMoney = (num) => {
-    console.log('num', num);
+    //console.log(('num', num);
     if (num === 0) return null; 
 
     let returnStr = '$'

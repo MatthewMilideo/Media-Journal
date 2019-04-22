@@ -39,8 +39,10 @@ class SwipeRow extends React.Component {
 	onResize = e => {
 		let winSize = window.innerWidth;
 		for (let i = 0; i < sizeArr.length; i++) {
+			
 			if (winSize <= sizeArr[i].max && this.state.windowSize !== i) {
-				console.log("in if");
+				if ( i > 0  &&  winSize >=  sizeArr[i-1].max) {
+				//console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
 				winSize = sizeArr[i].min;
 				let rowSize = Math.floor(winSize / this.props.eSize);
 				if (rowSize === 0) rowSize = 5;
@@ -56,6 +58,7 @@ class SwipeRow extends React.Component {
 					rowsPos
 				});
 				break;
+			}
 			}
 		}
 	};
@@ -139,8 +142,8 @@ class SwipeRow extends React.Component {
 
 	handleRightClick = () => {
 		let { rows, rowsPos } = this.state;
-		console.log(rowsPos, rows.length);
-		console.log(rows);
+		//console.log((rowsPos, rows.length);
+		//console.log((rows);
 		if (rowsPos < rows.length - 1) {
 			this.setState({
 				rowsPos: rowsPos + 1

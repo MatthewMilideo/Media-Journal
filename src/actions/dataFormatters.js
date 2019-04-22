@@ -1,10 +1,10 @@
-import {formatDate, formatMoney} from '../helpers'
+import { formatDate, formatMoney } from "../helpers";
+import * as T from "../actions/types";
 
 export const TMDBFormatter = (data, unused) => {
 	data.results = data.results.map(media => {
 		let smallImage;
 		let largeImage;
-		
 
 		if (media.poster_path != null) {
 			smallImage = `https://image.tmdb.org/t/p/w185${media.poster_path}`;
@@ -14,34 +14,49 @@ export const TMDBFormatter = (data, unused) => {
 			largeImage = null;
 		}
 
-		return { 
+		return {
 			ID: media.id,
 			title: media.title || media.name,
-			date: media.release_date, 
+			date: media.release_date,
 			overview: media.overview,
 			smallImage: smallImage,
-			largeImage: largeImage,
+			largeImage: largeImage
 		};
 	});
-	return data; 
+	return data;
 };
 
-const standardRoles = ['Director','Executive Producer','Producer','Director of Photography','Writer']
+const standardRoles = [
+	"Director",
+	"Executive Producer",
+	"Producer",
+	"Director of Photography",
+	"Writer"
+];
 
-const crewFormatter = (input, output = standardRoles) => {
-	let returnObj = {}
-	output.forEach( role => returnObj[role] = [])
+const crewFormatter = (input, creator = null, output = standardRoles) => {
+	console.log("crew", input);
+	console.log("creator", creator);
+	let returnObj = {};
+	output.forEach(role => (returnObj[role] = []));
 
-	input.forEach( crew => {
-		if(returnObj[crew.job]) returnObj[crew.job].push(crew);
-	})
+	returnObj["Creator"] = [];
+	if (creator != null) {
+		creator.forEach(crew => {
+			returnObj["Creator"].push(crew);
+		});
+	}
 
+		input.forEach(crew => {
+			if (returnObj[crew.job]) returnObj[crew.job].push(crew);
+		});
+	
+
+	//console.log(('returnObj',returnObj);
 	return returnObj;
-}
+};
 
-
-export const movieItemFormatter = (data) => {
-
+export const movieItemFormatter = data => {
 	let smallImage;
 	let largeImage;
 
@@ -52,76 +67,81 @@ export const movieItemFormatter = (data) => {
 		smallImage = null;
 		largeImage = null;
 	}
-	//console.log(data);
+
+	////console.log((data);
 
 	const movieData = {
 		title: data.original_title,
-		type: 'MOVIE', 
-		overview: data.overview, 
-		crew: crewFormatter(data.credits.crew),
+		type: "MOVIE",
+		overview: data.overview,
+		crew: crewFormatter(data.credits.crew, null),
 		cast: data.credits.cast,
 		production_companies: data.production_companies,
-		genres: data.genres, 
+		genres: data.genres,
 		budget: formatMoney(data.budget),
 		revenue: formatMoney(data.revenue),
 		images: data.images,
-		language: data.original_language,  
-		poster_path: data.poster_path, 
-		release_date: formatDate(data.release_dates.results[0].release_dates[0].release_date),
+		language: data.original_language,
+		poster_path: data.poster_path,
+		release_date: formatDate(
+			data.release_dates.results[0].release_dates[0].release_date
+		),
 		runtime: data.runtime,
-		largeImage: largeImage, 
+		largeImage: largeImage,
 		smallImage: smallImage
-	}
+	};
 
-	return movieData; 
+	return movieData;
 };
 
 export const showItemFormatter = data => {
-
 	let smallImage;
 	let largeImage;
 
 	if (data.poster_path != null) {
 		smallImage = `https://image.tmdb.org/t/p/w185${data.poster_path}`;
-		largeImage = `https://image.tmdb.org/t/p/w800${data.poster_path}`;
+		largeImage = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
 	} else {
 		smallImage = null;
 		largeImage = null;
 	}
 
-	//console.log(data);
+	let firstDate = formatDate(new Date(data.first_air_date));
+	let lastDate = formatDate(new Date(data.last_air_date));
+	//console.log(('date',firstDate)
 
 	const showData = {
-		type: 'TV_SHOW', 
+		type: T.TV_SEASON,
 		title: data.original_name,
-		overview: data.overview, 
+		overview: data.overview,
+		runtime: data.episode_run_time,
 		creator: data.created_by,
-		firstDate: data.first_air_date, 
-		lastDate: data.last_air_date, 
-		crew: crewFormatter(data.credits.crew),
+		firstDate: firstDate,
+		lastDate: lastDate,
+		creator: data.created_by,
+		crew: crewFormatter(data.credits.crew, data.created_by),
 		cast: data.credits.cast,
-		genres: data.genres, 
+		genres: data.genres,
 		images: data.images,
-		poster_path: data.poster_path, 
-		largeImage: largeImage, 
+		poster_path: data.poster_path,
+		largeImage: largeImage,
 		smallImage: smallImage,
-		
+
 		numEps: data.number_of_episodes,
 		numSeasons: data.number_of_seasons,
 		language: data.original_language,
 		prodComps: data.production_companies,
-	}
+		networks: data.networks
+	};
 
 	return showData;
-
-}
+};
 
 export const bookFormatter = (books, curElem = 0) => {
-
-    if (!books.items){
-		books.items = []; 
-		return books; 
-    }
+	if (!books.items) {
+		books.items = [];
+		return books;
+	}
 
 	books.items = books.items.map(book => {
 		let smallImage;
@@ -131,7 +151,7 @@ export const bookFormatter = (books, curElem = 0) => {
 		if (book.volumeInfo.hasOwnProperty("imageLinks")) {
 			smallImage = book.volumeInfo.imageLinks.smallThumbnail;
 			largeImage = book.volumeInfo.imageLinks.thumbnail;
-			largeImage = largeImage.concat("&zoom=.5")
+			largeImage = largeImage.concat("&zoom=.5");
 			bigImage = book.volumeInfo.imageLinks.small;
 		} else {
 			smallImage = null;
@@ -146,9 +166,9 @@ export const bookFormatter = (books, curElem = 0) => {
 			language: book.volumeInfo.language,
 			smallImage: smallImage,
 			largeImage: largeImage,
-			bigImage: bigImage, 
+			bigImage: bigImage
 		};
 	});
-	books.page = curElem; 
-	return books; 
+	books.page = curElem;
+	return books;
 };

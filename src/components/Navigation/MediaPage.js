@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
+import { Grid, Image, Button, Segment, Dropdown } from "semantic-ui-react";
 import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
-import MovieData from './MovieData';
+import MovieData from "./MediaPageHelpers/MovieData";
+import TVData from "./MediaPageHelpers/TVData";
 import NoteManager from "../smallComponents/NoteManager";
 import SwipeRow from "../smallComponents/SwipeRow";
 import * as T from "../../actions/types";
@@ -30,6 +31,7 @@ class MediaPage extends React.Component {
 		}
 
 		if (this.props.curItem !== prevProps.curItem) {
+			
 			this.genCast(this.props.curItem.cast);
 		}
 	}
@@ -59,33 +61,12 @@ class MediaPage extends React.Component {
 	debounceOnResize = _.debounce(() => this.onResize(), 200);
 
 	renderMovie = movie => {
-		return (
-			<MovieData movie = {movie} />
-		);
+		return <MovieData movie= {movie} />;
 	};
 
-	genCast = cast => {
-		let castlist = cast.map((member, index) => {
-			member.profile_path === null
-				? (member.profile_path =
-						"https://www.naturehills.com/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/s/o/southern-live-oak-600x600.jpg")
-				: (member.profile_path = `https://image.tmdb.org/t/p/w185/${
-						member.profile_path
-				  }`);
-
-			return (
-				<Segment key={member.cast_id}>
-					<Image src={member.profile_path} />
-					Charachter: {member.character}
-					<br />
-					Name: {member.name}
-					<br />
-					<Button> Add Tag </Button>
-				</Segment>
-			);
-		});
-		this.setState({ castlist: castlist });
-	};
+	renderTV = show => {
+		return <TVData show = {show} />
+	}
 
 	handleClick = () => {
 		this.setState({ castNum: this.state.castNum + 5 });
@@ -108,7 +89,7 @@ class MediaPage extends React.Component {
 				id: elem.ID
 			};
 		});
-		console.log(localList);
+		////console.log((localList);
 		return localList;
 	};
 
@@ -133,7 +114,7 @@ class MediaPage extends React.Component {
 		return (
 			<SwipeRow
 				type={1}
-				elemType ='cast'
+				elemType="cast"
 				rows={0}
 				eSize={215}
 				list={cast}
@@ -143,8 +124,8 @@ class MediaPage extends React.Component {
 		);
 	};
 
+
 	render() {
-		//console.log(this.state);
 		if (
 			Object.keys(this.props.itemData).length === 0 &&
 			this.props.itemData.constructor === Object
@@ -153,10 +134,21 @@ class MediaPage extends React.Component {
 
 		const { id, type } = this.props.itemData;
 
+		//console.log(('item data', this.props.itemData, type)
+		let returnData; 
+		if (type === T.MOVIE){
+			//console.log(('type movie');
+			returnData = this.renderMovie(this.props.itemData); 
+		} 
+		if (type === T.TV_SEASON){
+			//console.log(('type show');
+			returnData = this.renderTV(this.props.itemData); 
+		}
+
 		return (
 			<div>
 				<Segment inverted color="blue">
-					{this.renderMovie(this.props.itemData)}
+					{returnData}
 					{this.renderCast(this.props.itemData.cast)}
 					<NoteManager cID={id} type={type} />
 				</Segment>

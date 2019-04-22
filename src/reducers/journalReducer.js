@@ -19,7 +19,7 @@ export default (state = defaultState, action) => {
 				notes: []
 			};
 		case `${T.NOTE}${T._FINISHED_GET}`:
-			console.log (action.payload.data);
+			//console.log( (action.payload.data);
 			return {
 				...state,
 				noteStatus: action.type,
@@ -73,7 +73,7 @@ export default (state = defaultState, action) => {
 			};
 		case `${T.NOTE}${T._FINISHED_DELETE}`:
 			localNotes = localNotes.filter(elem => { return elem.id !== action.payload.id});
-			console.log(localNotes);
+			//console.log((localNotes);
 			return {
 				...state,
 				noteStatus: action.type,

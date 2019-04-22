@@ -35,7 +35,7 @@ class SearchBar extends React.Component {
 
 
 	configureSearch = (type, config) => {
-		//console.log(type);
+		////console.log((type);
 		return config[type].map((elem, index) => {
 			return (
 				<Form.Input
