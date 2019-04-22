@@ -41,7 +41,7 @@ const TVData = props => {
 
 	const renderEps = (numEps, numSeasons) => {
 		if (numSeasons !== null) numSeasons = <p> Number of Seasons: {numSeasons} </p>;
-		if (numEps !== null) numEps = <p> Number of Episodes: {numEps} </p>;
+		if (numEps !==  null) numEps = <p> Number of Episodes: {numEps} </p>;
 		
 
 		let returnStr;
