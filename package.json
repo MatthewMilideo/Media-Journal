@@ -21,7 +21,6 @@
   "bugs": {
     "url": "https://github.com/MatthewMilideo/Media-Journal/issues"
   },
-  
   "dependencies": {
     "concurrently": "^4.1.0",
     "express": "^4.16.4",
