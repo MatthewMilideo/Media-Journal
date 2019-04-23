@@ -5,10 +5,12 @@ import Root from "./root";
 import App from "./components/App";
 
 ReactDOM.render(
-	<BrowserRouter>
+	
 		<Root>
+            <BrowserRouter>
 			<App />
+            </BrowserRouter>
 		</Root>
-	</BrowserRouter>,
+	,
 	document.querySelector("#root")
 );
