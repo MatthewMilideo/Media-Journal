@@ -1,5 +1,5 @@
 import React from "react";
-import { Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container} from "semantic-ui-react";
 
 import SearchPage from './Navigation/SearchPage';
@@ -16,21 +16,19 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="main">
-				<Router history={history}>
+				<BrowserRouter>
 					<div>
 						<NavBar />
 						<Container className = 'main-container'>
-						
 							<Switch>
 								<Route path="/" exact component={SearchPage} />
 								<Route path="/media/:type?/:id?" exact component={MediaPage} />
 								<Route path="/journal/" exact component={JournalHome} />
+								<Route component={SearchPage} />
 							</Switch>
-							
 						</Container>
-						
 					</div>
-				</Router>
+				</BrowserRouter>
 			</div>
 		);
 	}

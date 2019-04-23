@@ -27,7 +27,6 @@ if(process.env.NODE_ENV === 'production') {
 
 
 
-console.log(path);
 
 //build mode
 app.get('*', (req, res) => {
