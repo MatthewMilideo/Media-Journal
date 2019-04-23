@@ -1,0 +1,233 @@
+.image{
+	position: relative;
+	height: auto; 
+	width: auto; 
+	max-width: inherit;
+	max-height: inherit;
+}
+
+.test5{
+	position: relative;
+    display:flex;
+    display: row; 
+    justify-content: center;
+}
+
+.runtime-div h5{
+	display: inline;
+}
+
+.title-div h1 {
+	font-size: 40px;
+}
+
+.media-body-h1 {
+	font-size: 15px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.media-body-divider {
+	margin-top: 5px !important;
+}
+
+.media-title div{
+	display: inline
+}
+
+.runtime-div{
+	display: inline
+}
+
+.media-title-descriptor {
+	font-size: 13px;
+}
+.movie-body {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+.comma-list {
+	margin-top: 5px;
+	margin-bottom: 14px;
+	display: inline;
+}
+
+.overview {
+	margin-bottom: 0px;
+}
+
+.genre-div {
+	margin-top: 14px;
+	margin-bottom: 14px;
+}
+
+.crew-div p {
+	display: inline;
+	
+}
+
+.show-div  {
+	margin-top: 14px; 
+
+}
+.show-div p {
+    display: inline;
+	padding: 0; 
+}
+
+.budget-div  {
+    margin-bottom: 14px; 
+
+}
+
+.budget-div p {
+    display: inline;
+    
+    padding: 0; 
+}
+
+.comp-div {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1;
+	align-items: flex-end;
+	justify-content: flex-start;
+	margin-top: 14px;
+}
+
+.whole-crew-div{
+	margin-bottom: 14px; 
+}
+
+.comp-div h1 {
+	font-size: 15px;
+}
+
+.comp-div p {
+    flex-grow: 1; 
+	margin: 0;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 0px;
+	flex-direction: column;
+	align-items: flex-end;
+    justify-content: flex-end;
+    text-align: center;
+}
+
+.comp-div div {
+    flex-grow: 1; 
+    display: flex; 
+    justify-content: center;
+    align-items: center
+
+}
+
+.comp-div div img {
+    flex-grow: 1; 
+	padding-left: 5px;
+	padding-right: 5px;
+	max-width: 75px;
+	max-height: 50px;
+}
+
+.note-segment {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.header {
+	display: inline-block;
+}
+
+.icon {
+	display: inline-block;
+	float: right;
+}
+
+.hell2o {
+	background-color: blue;
+}
+
+.mainH1 {
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+
+.thisDiv {
+	display: inline-block;
+	font-size: 25px;
+}
+
+.icon {
+	padding: 0;
+	margin: 0;
+}
+.butt {
+	height: 10px;
+}
+
+.title-div {
+	position: relative;
+	display: inline-block;
+}
+
+.title-div h1 {
+	margin-bottom: 2px;
+}
+
+.title-div h5 {
+	display: inline;
+	font-size: 12px;
+}
+
+
+
+.divider {
+	margin: 0;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~ Book Data Page ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.book-title-div h1{
+	font-size: 20px; 
+	display:inline
+}
+
+.book-title-div h2{
+	display: inline;
+	font-size: 17px;
+	margin-left: -4px; 
+}
+
+.author-div {
+	margin-top: 5px; 
+	
+}
+
+
+.book-overview-inner p{
+	text-indent: 25px; 
+	margin-top: 8px; 
+	margin-bottom: 8px; 
+}
+
+.book-genre-div ul {
+
+	margin-top: 8px; 
+	padding-left: 25px;
+
+}
+
+.book-info-div-inner {
+	margin-top: 8px;
+}
+
+.book-info-div p{
+	margin: 0;
+}

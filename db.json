@@ -2,14 +2,14 @@
   "notes": [
     {
       "title": "I just edited the first note. ",
-      "text": "This note has edited text. ",
+      "text": "Test",
       "type": "MOVIE",
       "cID": "11",
       "id": 10
     },
     {
       "title": "Poo Poo Pee Pee",
-      "text": "Hello",
+      "text": "Another test",
       "type": "MOVIE",
       "cID": "11",
       "id": 11
