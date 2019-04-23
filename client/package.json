@@ -44,5 +44,5 @@
       "enzyme-to-json/serializer"
     ]
   },
-  "homepage": "https://milideo-media-journal.herokuapp.com/client/build/index.html"
+  "homepage": "./"
 }
