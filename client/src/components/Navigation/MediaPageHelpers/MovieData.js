@@ -16,8 +16,10 @@ const MovieData = props => {
 	movie.poster_path === null
 		? (gridWidth = 13)
 		: (poster = (
-				<Grid.Column centered width={6}>
-					<img className="image" src={movie.largeImage} />
+				<Grid.Column width={6}>
+					<div className = 'media-image-div'>
+						<img className="media-main-image" src={movie.largeImage} />
+					</div>
 				</Grid.Column>
 		  ));
 
@@ -36,13 +38,11 @@ const MovieData = props => {
 	movie.overview === ""
 		? (overview = null)
 		: (overview = (
-				<div className="overview-div">
-					{" "}
-					<h1 className="media-body-h1"> Overview: </h1>
+				<div className="media-body-div">
+					<h1> Overview: </h1>
 					<p className="overview"> {movie.overview} </p>
 				</div>
 		  ));
-
 
 	return (
 		<Grid centered equal stackable>
@@ -51,11 +51,9 @@ const MovieData = props => {
 				<Grid.Column divided="vertically" width={gridWidth}>
 					<Grid.Row>
 						<Segment compact>
-							<div className="title-div">
-								<h1 className="media-title"> {movie.title} </h1>
-								<span className="media-title-span">
-									{releaseDate} | {runtime}
-								</span>
+							<div className="media-title-div">
+								<h1> {movie.title} </h1>
+								{releaseDate} | {runtime}
 							</div>
 							<div className="movie-body">
 								<Divider />
@@ -81,8 +79,8 @@ const renderBudget = (budget, revenue) => {
 	budget && revenue ? (returnStr = "|") : (returnStr = "");
 
 	return (budget && revenue) || budget || revenue ? (
-		<div className="media-section-div">
-			<h1 className="media-body-h1"> Budget: </h1>
+		<div className="media-body-div">
+			<h1> Budget: </h1>
 			{budget} {returnStr} {revenue}
 		</div>
 	) : null;

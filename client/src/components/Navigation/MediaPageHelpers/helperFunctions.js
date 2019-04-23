@@ -2,16 +2,16 @@ import React from "react";
 
 export const renderCrew = crew => {
 	let keys = Object.keys(crew);
-    let s = "";
-    keys.sort();
+	let s = "";
+	keys.sort();
 
 	let list = keys.map(key => {
-        s = '';
-        if (crew[key].length > 1) s = "s";
-        //console.log((key, crew[key], crew[key].length)
+		s = "";
+		if (crew[key].length > 1) s = "s";
+		//console.log((key, crew[key], crew[key].length)
 
 		return crew[key].length !== 0 ? (
-			<div className="crew-div">
+			<div className="media-body-inner-div">
 				<i>
 					{key}
 					{s}:
@@ -19,7 +19,7 @@ export const renderCrew = crew => {
 				{crew[key].map((member, index) => {
 					if (index >= 2) return;
 					let comma = ",";
-					if (index === 1 || index === crew[key].length -1) comma = "";
+					if (index === 1 || index === crew[key].length - 1) comma = "";
 					return (
 						<p>
 							{" "}
@@ -38,7 +38,7 @@ export const renderCrew = crew => {
 	});
 
 	return test === 1 ? (
-		<div className="whole-crew-div">
+		<div className="media-body-div">
 			<h1 className="media-body-h1"> Crew: </h1> {list}
 		</div>
 	) : null;
@@ -81,7 +81,7 @@ export const renderGenres = genres => {
 				let comma = null;
 				index === genres.length - 1 ? (comma = "") : (comma = ", ");
 				return (
-					<p className="comma-list">
+					<p>
 						{genre.name}
 						{comma}
 					</p>
@@ -89,30 +89,29 @@ export const renderGenres = genres => {
 		  }));
 
 	return returnData === null ? null : (
-		<div className="genre-div">
-			<h1 className="media-body-h1"> Genres: </h1>
+		<div className="media-body-div">
+			<h1> Genres: </h1>
 			{returnData}
 		</div>
 	);
 };
 
 export const renderProdComps = (companies, networks) => {
-    let returnData;
-    let string = '';
+	let returnData;
+	let string = "";
 	let names = [];
 	let images = [];
 
 	if (networks != null) {
-        string = 'Networks and '
+		string = "Networks and ";
 		networks.forEach((company, index) => {
 			//console.log((index);
 			if (index >= 4) return;
 			company.logo_path === null
-				? names.push(<p className="company-name"> {company.name} </p>)
+				? names.push(<p> {company.name} </p>)
 				: images.push(
 						<div>
 							<img
-								className="company-logo"
 								src={`https://image.tmdb.org/t/p/w185/${company.logo_path}`}
 								alt={company.name}
 							/>
@@ -125,11 +124,10 @@ export const renderProdComps = (companies, networks) => {
 		//console.log((index);
 		if (index >= 4) return;
 		company.logo_path === null
-			? names.push(<p className="company-name"> {company.name} </p>)
+			? names.push(<p> {company.name} </p>)
 			: images.push(
 					<div>
 						<img
-							className="company-logo"
 							src={`https://image.tmdb.org/t/p/w185/${company.logo_path}`}
 							alt={company.name}
 						/>
@@ -137,13 +135,13 @@ export const renderProdComps = (companies, networks) => {
 			  );
 	});
 
-	(names.length === 0 && images.length === 0)
+	names.length === 0 && images.length === 0
 		? (returnData = null)
 		: (returnData = (
-				<div>
-					<h1 className="media-body-h1"> {`${string}Production Companies:`} </h1>
+				<div className="media-body-div">
+					<h1> {`${string}Production Companies:`} </h1>
 
-					<div className="comp-div">
+					<div className="media-comp-div">
 						{images}
 						{names}
 					</div>

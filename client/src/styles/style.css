@@ -1,23 +1,93 @@
-.media-title div{
-	display: inline
+/*  ~~~~~~ Media Page ~~~~~~~~ */
+
+.media-image-div{
+	position: relative;
+	display: flex; 
+	justify-content: center;
 }
 
-.media-title-descriptor {
-	font-size: 13px;
-}
-
-
-/* Movie Page */
-
-
-
-.image{
+.media-image-div img{
 	position: relative;
 	height: auto; 
 	width: auto; 
 	max-width: inherit;
 	max-height: inherit;
 }
+
+.media-title-div h1 {
+	font-size: 40px;
+	margin-bottom: 0px;
+}
+
+.media-title-div h5{
+	display: inline;
+	font-size: 12px; 
+}
+
+.media-body-div  {
+    margin-bottom: 14px; 
+
+}
+
+.media-body-div h1 {
+	font-size: 15px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.media-body-div p {
+    display: inline;
+    padding: 0; 
+}
+
+.media-comp-div {
+	margin-top: 8px;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1;
+	align-items: flex-end;
+	justify-content: flex-start;
+}
+
+.media-comp-div h1 {
+	font-size: 15px;
+}
+
+.media-comp-div p {
+    flex-grow: 1; 
+	margin: 0;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 0px;
+	flex-direction: column;
+	align-items: flex-end;
+    justify-content: flex-end;
+    text-align: center;
+}
+
+.media-comp-div div {
+    flex-grow: 1; 
+    display: flex; 
+    justify-content: center;
+    align-items: center
+
+}
+
+.media-comp-div div img {
+    flex-grow: 1; 
+	padding-left: 5px;
+	padding-right: 5px;
+	max-width: 75px;
+	max-height: 50px;
+}
+
+/* Movie Page */
+
+
+
+
+
 
 .test5{
 	position: relative;
@@ -30,19 +100,6 @@
 	display: inline;
 }
 
-.title-div h1 {
-	font-size: 40px;
-}
-
-.media-body-h1 {
-	font-size: 15px;
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
-.media-body-divider {
-	margin-top: 5px !important;
-}
 
 
 
@@ -59,7 +116,7 @@
 	height: 100%;
 }
 
-.comma-list {
+.comma-list-removed {
 	margin-top: 5px;
 	margin-bottom: 14px;
 	display: inline;
@@ -88,62 +145,15 @@
 	padding: 0; 
 }
 
-.budget-div  {
-    margin-bottom: 14px; 
 
-}
 
-.budget-div p {
-    display: inline;
-    
-    padding: 0; 
-}
 
-.comp-div {
-	position: relative;
-	display: flex;
-	flex-direction: row;
-	flex-grow: 1;
-	align-items: flex-end;
-	justify-content: flex-start;
-	margin-top: 14px;
-}
 
 .whole-crew-div{
 	margin-bottom: 14px; 
 }
 
-.comp-div h1 {
-	font-size: 15px;
-}
 
-.comp-div p {
-    flex-grow: 1; 
-	margin: 0;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-bottom: 0px;
-	flex-direction: column;
-	align-items: flex-end;
-    justify-content: flex-end;
-    text-align: center;
-}
-
-.comp-div div {
-    flex-grow: 1; 
-    display: flex; 
-    justify-content: center;
-    align-items: center
-
-}
-
-.comp-div div img {
-    flex-grow: 1; 
-	padding-left: 5px;
-	padding-right: 5px;
-	max-width: 75px;
-	max-height: 50px;
-}
 
 .note-segment {
 	margin-top: 10px;
