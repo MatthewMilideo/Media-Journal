@@ -12,7 +12,7 @@ console.log(middlewares);
 app.use(middlewares);
 
 
-const router = jsonServer.router(path.join(__dirname+'/api', 'db.json'))
+const router = jsonServer.router(path.join(__dirname, '/api', 'db.json'))
 app.use(router);
 
 //production mode
