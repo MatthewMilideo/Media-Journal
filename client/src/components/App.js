@@ -16,19 +16,18 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="main">
-				<BrowserRouter>
+				<Router basename = {'client/build/'} history={history}>
 					<div>
 						<NavBar />
 						<Container className = 'main-container'>
 							<Switch>
-								<Route path="/" exact component={SearchPage} />
-								<Route path="/media/:type?/:id?" exact component={MediaPage} />
-								<Route path="/journal/" exact component={JournalHome} />
-								<Route component={SearchPage} />
+								<Route path= {`${process.env.PUBLIC_URL}/`} exact component={SearchPage} />
+								<Route path= {`${process.env.PUBLIC_URL}/media/:type?/:id?`} exact component={MediaPage} />
+								<Route component={JournalHome} />
 							</Switch>
 						</Container>
 					</div>
-				</BrowserRouter>
+				</Router>
 			</div>
 		);
 	}
