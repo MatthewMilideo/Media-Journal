@@ -53,7 +53,7 @@ const MovieData = props => {
 						<Segment compact>
 							<div className="title-div">
 								<h1 className="media-title"> {movie.title} </h1>
-								<span className="media-title-descriptor">
+								<span className="media-title-span">
 									{releaseDate} | {runtime}
 								</span>
 							</div>
@@ -81,7 +81,7 @@ const renderBudget = (budget, revenue) => {
 	budget && revenue ? (returnStr = "|") : (returnStr = "");
 
 	return (budget && revenue) || budget || revenue ? (
-		<div className="budget-div">
+		<div className="media-section-div">
 			<h1 className="media-body-h1"> Budget: </h1>
 			{budget} {returnStr} {revenue}
 		</div>
