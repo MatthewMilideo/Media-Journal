@@ -20,13 +20,11 @@ class App extends React.Component {
 					<div>
 						<NavBar />
 						<Container className = 'main-container'>
-						
 							<Switch>
 								<Route path= {`${process.env.PUBLIC_URL}/`} exact component={SearchPage} />
 								<Route path= {`${process.env.PUBLIC_URL}/media/:type?/:id?`} exact component={MediaPage} />
-								<Route component={JournalHome} />
+								<Route component= {JournalHome} />
 							</Switch>
-							
 						</Container>
 						
 					</div>
