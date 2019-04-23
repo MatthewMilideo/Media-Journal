@@ -102,7 +102,7 @@ export const journalQuery = ( config ) => async dispatch => {
 	} catch (err) {
 		dispatch({ type: `${T.NOTE}${T._ERRORED}${aType}` });
 	}
-	////console.log((response);
+	 console.log(response);
 	dispatch({
 		type: `${T.NOTE}${T._FINISHED}${aType}`,
 		payload: {data: response.data, id}
