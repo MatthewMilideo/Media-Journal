@@ -9,12 +9,14 @@ const port = process.env.PORT || 5000;
 console.log(middlewares);
 
 app.use(middlewares);
-app.use(express.static(path.join(__dirname,'/api', jsonServer.router('db.json'))));
+
 
 //production mode
 if(process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')));
-  //
+
+  app.use('/api', jsonServer.router('db.json'));
+
   app.get('*', (req, res) => {
     res.sendfile(path.join(__dirname = 'client/build/index.html'));
   })
