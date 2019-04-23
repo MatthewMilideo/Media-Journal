@@ -61,7 +61,7 @@ export const movieItemFormatter = data => {
 
 	if (data.poster_path != null) {
 		smallImage = `https://image.tmdb.org/t/p/w185${data.poster_path}`;
-		largeImage = `https://image.tmdb.org/t/p/w300${data.poster_path}`;
+		largeImage = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
 	} else {
 		smallImage = null;
 		largeImage = null;
