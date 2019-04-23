@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter, Route, Switch } from "react-router-dom";
+import {Router, Route, Switch } from "react-router-dom";
 import { Container} from "semantic-ui-react";
 
 import SearchPage from './Navigation/SearchPage';
