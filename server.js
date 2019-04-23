@@ -3,12 +3,13 @@ const express = require('express');
 const jsonServer = require('json-server');
 const middlewares = jsonServer.defaults()
 
-
 const app = express();
 const port = process.env.PORT || 5000;
 
+console.log(middlewares);
+
 app.use(middlewares);
-app.use('/api', jsonServer.router('db.json'));
+app.use(express.static(path.join(__dirname,'/api', jsonServer.router('db.json'))));
 
 //production mode
 if(process.env.NODE_ENV === 'production') {
@@ -18,6 +19,8 @@ if(process.env.NODE_ENV === 'production') {
     res.sendfile(path.join(__dirname = 'client/build/index.html'));
   })
 }
+
+
 //build mode
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/public/index.html'));
