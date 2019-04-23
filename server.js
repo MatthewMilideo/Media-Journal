@@ -2,6 +2,7 @@
 const express = require('express');
 const jsonServer = require('json-server');
 const middlewares = jsonServer.defaults()
+const path = require('path')
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -11,11 +12,14 @@ console.log(middlewares);
 app.use(middlewares);
 
 
+const router = jsonServer.router(path.join(__dirname+'/api', 'db.json'))
+app.use(router);
+
 //production mode
 if(process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')));
 
-  app.use('/api', jsonServer.router('db.json'));
+  
 
   app.get('*', (req, res) => {
     res.sendfile(path.join(__dirname = 'client/build/index.html'));
