@@ -1,4 +1,14 @@
+.media-title div{
+	display: inline
+}
+
+.media-title-descriptor {
+	font-size: 13px;
+}
+
+
 /* Movie Page */
+
 
 
 .image{
@@ -34,17 +44,13 @@
 	margin-top: 5px !important;
 }
 
-.media-title div{
-	display: inline
-}
+
 
 .runtime-div{
 	display: inline
 }
 
-.media-title-descriptor {
-	font-size: 13px;
-}
+
 .movie-body {
 	position: relative;
 	display: flex;
