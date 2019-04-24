@@ -85,7 +85,7 @@ class Note extends React.Component {
 	};
 
 	onDeleteClick = () => {
-		this.props.delete("delete", null, this.props.noteData.id);
+		this.props.query("delete", T.NOTE, null, this.props.data.id);
 	};
 
 	renderActive() {

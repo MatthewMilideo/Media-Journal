@@ -6,14 +6,17 @@ const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 5000;
+const url = process.env.PUBLIC_URL || 'http://localhost:3000'
 
 var cors = require("cors");
 
-app.use(
-	cors({
-		origin: process.env.PUBLIC_URL
-	})
-);
+
+	app.use(
+		cors({
+			origin: url
+		})
+	)
+console.log(url);
 
 //app.use(middlewares);
 const router = jsonServer.router("db.json");

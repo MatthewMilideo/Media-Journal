@@ -70,7 +70,7 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 		patch: {
 			aType: T._PATCH,
 			func: myData.patch,
-			loc: `${loc}/${id}`,
+			loc: `${loc}${id}`,
 			params: params,
 			id: id 
 		},
@@ -79,7 +79,7 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 		delete: {
 			aType: T._DELETE,
 			func: myData.delete,
-			loc: `${loc}/${id}`,
+			loc: `${loc}${id}`,
 			params: params,
 			id: id 
 		}
