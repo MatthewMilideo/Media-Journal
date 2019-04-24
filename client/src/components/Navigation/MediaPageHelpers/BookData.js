@@ -130,7 +130,7 @@ const BookData = props => {
 				{poster}
 				<Grid.Column divided="vertically" width={gridWidth}>
 					<Grid.Row>
-						<Segment compact>
+						<Segment >
 							<div className="book-title-div">
 								<h1 className="book-title"> {book.title} </h1>
 								{book.subtitle !== undefined ? (

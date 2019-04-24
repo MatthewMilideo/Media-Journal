@@ -1,4 +1,33 @@
 import React from "react";
+import {Grid} from 'semantic-ui-react';
+
+
+
+export const renderPoster = poster => {
+	console.log(poster)
+	return poster === null
+		? { width: 13, poster: null }
+		: {
+				width: 10,
+				poster: (
+					<Grid.Column width={6}>
+						<img src={poster} />
+					</Grid.Column>
+				)
+		  };
+};
+
+export const renderOverview = overview => {
+	overview === ""
+		? (overview = null)
+		: (overview = (
+				<div className="media-body-div">
+					<h1> Overview: </h1>
+					<p> {overview} </p>
+				</div>
+		  ));
+	return overview
+}
 
 export const renderCrew = crew => {
 	let keys = Object.keys(crew);
@@ -8,25 +37,14 @@ export const renderCrew = crew => {
 	let list = keys.map(key => {
 		s = "";
 		if (crew[key].length > 1) s = "s";
-		//console.log((key, crew[key], crew[key].length)
-
 		return crew[key].length !== 0 ? (
 			<div className="media-body-inner-div">
-				<i>
-					{key}
-					{s}:
-				</i>
+				<i>{`${key}${s}: `}</i>
 				{crew[key].map((member, index) => {
 					if (index >= 2) return;
 					let comma = ",";
 					if (index === 1 || index === crew[key].length - 1) comma = "";
-					return (
-						<p>
-							{" "}
-							{member.name}
-							{comma}
-						</p>
-					);
+					return <p> {`${member.name}${comma} `}</p>;
 				})}
 			</div>
 		) : null;
@@ -42,35 +60,6 @@ export const renderCrew = crew => {
 			<h1 className="media-body-h1"> Crew: </h1> {list}
 		</div>
 	) : null;
-};
-
-export const runTimes = list => {
-	let func = elem => elem;
-	return renderList(list, func, "Episode Lengths: ", " minutes");
-};
-
-export const renderList = (list, config, sectionText, elemText) => {
-	let returnData = null;
-	list.length === 0
-		? (returnData = null)
-		: (returnData = list.map((elem, index) => {
-				let comma = null;
-				index === list.length - 1 ? (comma = "") : (comma = ", ");
-				return (
-					<h5 className="comma-list">
-						{config(elem)}
-						{elemText}
-						{comma}
-					</h5>
-				);
-		  }));
-
-	return returnData === null ? null : (
-		<div className="genre-div">
-			<h5 className="media-body-h1"> {sectionText} </h5>
-			{returnData}
-		</div>
-	);
 };
 
 export const renderGenres = genres => {
@@ -97,50 +86,23 @@ export const renderGenres = genres => {
 };
 
 export const renderProdComps = (companies, networks) => {
-	let returnData;
-	let string = "";
 	let names = [];
 	let images = [];
 
-	if (networks != null) {
-		string = "Networks and ";
-		networks.forEach((company, index) => {
-			//console.log((index);
-			if (index >= 4) return;
-			company.logo_path === null
-				? names.push(<p> {company.name} </p>)
-				: images.push(
-						<div>
-							<img
-								src={`https://image.tmdb.org/t/p/w185/${company.logo_path}`}
-								alt={company.name}
-							/>
-						</div>
-				  );
-		});
-	}
+	let string;
+	let returnData;
 
-	companies.forEach((company, index) => {
-		//console.log((index);
-		if (index >= 4) return;
-		company.logo_path === null
-			? names.push(<p> {company.name} </p>)
-			: images.push(
-					<div>
-						<img
-							src={`https://image.tmdb.org/t/p/w185/${company.logo_path}`}
-							alt={company.name}
-						/>
-					</div>
-			  );
-	});
+	networks === null ? (string = null) : (string = "Networks and ");
+	let net = prodCompsHelper(networks);
+	let comp = prodCompsHelper(companies);
+	names = [...names, ...net[0], ...comp[0]];
+	images = [...images, ...net[1], ...comp[1]];
 
 	names.length === 0 && images.length === 0
 		? (returnData = null)
 		: (returnData = (
-				<div className="media-body-div">
+				<div className="media-body-div media-body-div-bottom">
 					<h1> {`${string}Production Companies:`} </h1>
-
 					<div className="media-comp-div">
 						{images}
 						{names}
@@ -149,4 +111,29 @@ export const renderProdComps = (companies, networks) => {
 		  ));
 
 	return returnData;
+};
+
+export const prodCompsHelper = list => {
+	if (list === undefined) return [[], []];
+	let names = [];
+	let images = [];
+
+	list.forEach((elem, index) => {
+		if (index >= 4) return;
+		elem.logo_path === null
+			? names.push(
+					<div>
+						<p> {elem.name} </p>
+					</div>
+			  )
+			: images.push(
+					<div>
+						<img
+							src={`https://image.tmdb.org/t/p/w185/${elem.logo_path}`}
+							alt={elem.name}
+						/>
+					</div>
+			  );
+	});
+	return [names, images];
 };

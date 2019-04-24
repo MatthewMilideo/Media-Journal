@@ -6,16 +6,31 @@ import { connect } from "react-redux";
 import * as T from "../../actions/types";
 import { buildCrudQuery, addTag } from "../../actions";
 import { getItemNotes } from "../../reducers";
-import '../../styles/style.css'
+import "../../styles/style.css";
 
+/*
+Props:
+Title - The Title of the content where the NoteManager is initilized or Unaffiliated. 
+Type - The type the content 
+cID - The ContentID ...
+
+
+*/
 class NoteManager extends React.Component {
 	state = { notes: [] };
 
 	componentDidMount() {
-		this.props.buildCrudQuery("get", T.NOTE, {
-			type: this.props.type,
-			cID: this.props.cID
-		});
+		if (this.props.type === 'ALL') {
+			console.log(this.props);
+			this.props.buildCrudQuery("get", T.NOTE);
+		}
+		else{
+			this.props.buildCrudQuery("get", T.NOTE, {
+				type: this.props.type,
+				cID: this.props.cID
+			});
+		}
+		
 	}
 
 	componentWillUpdate(newProps) {
@@ -30,6 +45,7 @@ class NoteManager extends React.Component {
 		let notes = [];
 		if (this.state.notes.length > 0) {
 			notes = this.state.notes.map(note => {
+				console.log('note',note);
 				return (
 					<Note
 						key={note.id}
@@ -41,26 +57,28 @@ class NoteManager extends React.Component {
 				);
 			});
 		}
-		return notes; 
-	}
+		return notes;
+	};
 
 	handleClick = e => {
 		let { notes } = this.state;
 		const newNote = {
 			title: "",
 			text: "",
+			cTitle: this.props.title,
 			type: this.props.type,
 			cID: this.props.cID,
 			id: 9000000 + notes.length,
 			new: true
 		};
 
-		notes.push(newNote)
+		notes.push(newNote);
 		this.setState({ notes: notes });
 	};
 
 	render() {
 		if (this.state.notes === []) return null;
+		console.log('this.props',this.props);
 		return (
 			<div>
 				{this.renderNotes()}

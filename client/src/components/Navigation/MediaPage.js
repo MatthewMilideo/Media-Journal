@@ -137,7 +137,8 @@ class MediaPage extends React.Component {
 		)
 			return null;
 
-		const { id, type } = this.props.itemData;
+		const { id, type, title} = this.props.itemData;
+		console.log('title', title);
 
 		//console.log(('item data', this.props.itemData, type)
 		let returnData; 
@@ -160,10 +161,10 @@ class MediaPage extends React.Component {
 
 		return (
 			<div>
-				<Segment inverted color="blue">
+				<Segment >
 					{returnData}
 					{cast}
-					<NoteManager cID={id} type={type} />
+					<NoteManager title = {title} cID={id} type={type} />
 				</Segment>
 			</div>
 		);

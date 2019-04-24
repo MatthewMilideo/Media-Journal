@@ -1,21 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Menu} from "semantic-ui-react";
-
-//import history from "../history";
+import { Menu } from "semantic-ui-react";
+import history from "../history";
 
 class NavBar extends React.Component {
 	state = { activeItem: "Home" };
 
-	handleItemClick = (e, {name}) => {
+	handleItemClick = (e, { name }) => {
 		this.setState({ activeItem: name });
 	};
 
 	render() {
+		let temp = history.location.pathname;
+		console.log('temp', temp);
+
+		
 		const { activeItem } = this.state;
-	
+
 		return (
-			<Menu color={"blue"}  inverted stackable widths={4}>
+			<Menu className = 'test2' color="blue" pointing secondary>
 				<Menu.Item
 					as={Link}
 					to="/Home"
@@ -41,13 +44,12 @@ class NavBar extends React.Component {
 				/>
 
 				<Menu.Item
-					name = "Log In"
+					position="right"
+					name="Log In"
 					active={activeItem === "Log In"}
 					onClick={this.handleItemClick}
-				>
-					
-				</Menu.Item>
-
+					disabled
+				/>
 			</Menu>
 		);
 	}

@@ -33,8 +33,8 @@ export const fetchSearchResult = (type, q1, q2) => (dispatch, getState) => {
 };
 
 // Nearly the same as above but for a next page query.
-export const fetchNextPage = () => (dispatch, getState) => {
-	const { type, curElem, totalElems, query } = getState().searchData;
+export const fetchNextPage = (type) => (dispatch, getState) => {
+	const { curElem, totalElems, query } = getState()[type]
 	const params = nextQueryBuilder(type, curElem, totalElems, query);
 	const searchFunc = searchObj[type];
 

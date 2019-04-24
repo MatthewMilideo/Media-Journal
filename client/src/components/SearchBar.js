@@ -60,7 +60,8 @@ class SearchBar extends React.Component {
 				<Form.Group widths= 'equal'>
 					{this.configureSearch(searchType, config)}
 				</Form.Group>
-				<Button> Submit </Button>
+				
+				
 			</Form>
 		);
 	}

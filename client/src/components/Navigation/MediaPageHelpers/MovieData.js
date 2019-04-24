@@ -1,27 +1,45 @@
 import React from "react";
 import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
-import { renderCrew, renderGenres, renderProdComps } from "./helperFunctions";
+import { renderOverview, renderPoster, renderCrew, renderGenres, renderProdComps } from "./helperFunctions";
 
 /* Props 
 Movie: All of the relevant data about the movie.
 Size: The Size of the Window. 
 */
 
+
+
+
+/*
+const renderTwo = (releaseDate, numSeasons) => {
+	if (releaseDate !== null) numSeasons = <p> Release Date: {releaseDate} </p>;
+	if (numEps !== null) numEps = <p> Number of Episodes: {numEps} </p>;
+
+	let returnStr;
+	numEps && numSeasons ? (returnStr = "|") : (returnStr = "");
+
+	return (numEps && numSeasons) || numEps || numSeasons ? (
+		<div className="media-body-div">
+			<h1> Show Stats : </h1>
+			{numSeasons} {returnStr} {numEps}
+		</div>
+	) : null;
+};
+*/
+
+
+
+
+
 const MovieData = props => {
 	//console.log(("in movie data", props);
 	const { movie } = props;
-	let gridWidth = 10;
-	let poster = null;
 
-	movie.poster_path === null
-		? (gridWidth = 13)
-		: (poster = (
-				<Grid.Column width={6}>
-					<div className = 'media-image-div'>
-						<img className="media-main-image" src={movie.largeImage} />
-					</div>
-				</Grid.Column>
-		  ));
+	let temp = renderPoster(movie.largeImage); 
+	let gridWidth = temp.width;
+	console.log(gridWidth);
+	let poster = temp.poster; 
+
 
 	let releaseDate;
 	movie.release_date === null
@@ -33,31 +51,20 @@ const MovieData = props => {
 		? (runtime = null)
 		: (runtime = <h5> Runtime: {movie.runtime} minutes</h5>);
 
-	let overview;
-	//console.log((movie.overview);
-	movie.overview === ""
-		? (overview = null)
-		: (overview = (
-				<div className="media-body-div">
-					<h1> Overview: </h1>
-					<p className="overview"> {movie.overview} </p>
-				</div>
-		  ));
-
 	return (
 		<Grid centered equal stackable>
 			<Grid.Row centered verticalAlign="top">
 				{poster}
 				<Grid.Column divided="vertically" width={gridWidth}>
 					<Grid.Row>
-						<Segment compact>
+						<Segment >
 							<div className="media-title-div">
 								<h1> {movie.title} </h1>
 								{releaseDate} | {runtime}
 							</div>
-							<div className="movie-body">
+							<div className="media-body">
 								<Divider />
-								{overview}
+								{renderOverview(movie.overview)}
 								{renderGenres(movie.genres)}
 								{renderBudget(movie.budget, movie.revenue)}
 								{renderCrew(movie.crew)}

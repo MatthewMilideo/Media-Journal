@@ -54,20 +54,18 @@ class SwipeRowElem extends React.Component {
 		);
 	};
 
-	/*
-		
-	*/
 	renderSearch = elem => {
 		//console.log(("renderSearch");
 		return (
-			<Segment className={styles.SwipeRowElemSeg2} raised>
+			<Segment className={styles.SwipeRowElemSeg2}  raised>
 				<img className={styles.searchImage} src={elem.image} />
-				<Segment className={styles.innerSegment} inverted color="red">
+				<Segment inverted color ='red' >
 					<div className={styles.redDiv}>
 						<p>{elem.text2} </p>
 						<p> {elem.text1} </p>
 					</div>
 				</Segment>
+				
 			</Segment>
 		);
 	};

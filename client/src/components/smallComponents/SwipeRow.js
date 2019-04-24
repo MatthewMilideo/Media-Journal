@@ -218,14 +218,15 @@ class SwipeRow extends React.Component {
 				: this.renderRowMobile();
 
 		return (
-			<Segment>
-				<h1> {this.props.headerText} </h1>
+			<div> 
+				{this.props.headerText? <h1> {this.props.headerText} </h1> : null }
+				
 				<Grid stackable columns="equal">
 					{this.props.type ? this.buildLeftButton() : null}
 					{returnData}
 					{this.props.type ? this.buildRightButton() : null}
 				</Grid>
-			</Segment>
+			</div>
 		);
 	}
 }

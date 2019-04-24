@@ -1,16 +1,17 @@
+
+
 /*  ~~~~~~ Media Page ~~~~~~~~ */
 
 .media-image-div{
 	position: relative;
 	display: flex; 
 	justify-content: center;
-	width: auto;
-	height: auto; 
+	max-width: inherit;
 }
 
 .media-image-div img{
 	position: relative;
-	height: auto; 
+	height: auto;
 	width: auto; 
 	max-width: inherit;
 	max-height: inherit;
@@ -26,9 +27,17 @@
 	font-size: 12px; 
 }
 
+.media-body {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: inherit;
+
+	height: 100%;
+}
+
 .media-body-div  {
     margin-bottom: 14px; 
-
 }
 
 .media-body-div h1 {
@@ -42,49 +51,43 @@
     padding: 0; 
 }
 
+.media-body-div-bottom  {
+    margin-bottom: 0px; 
+}
+
 .media-comp-div {
 	margin-top: 8px;
 	position: relative;
 	display: flex;
 	flex-direction: row;
-	flex-grow: 1;
 	align-items: flex-end;
 	justify-content: flex-start;
 }
 
-.media-comp-div h1 {
-	font-size: 15px;
-}
-
-.media-comp-div p {
-    flex-grow: 1; 
-	margin: 0;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-bottom: 0px;
-	flex-direction: column;
-	align-items: flex-end;
-    justify-content: flex-end;
-    text-align: center;
-}
-
 .media-comp-div div {
+	display: flex; 
     flex-grow: 1; 
-    display: flex; 
     justify-content: center;
     align-items: center
 
 }
 
+.media-comp-div p {
+	
+	
+
+	text-align: center;
+	max-width: 100px;
+}
+
 .media-comp-div div img {
-    flex-grow: 1; 
-	padding-left: 5px;
-	padding-right: 5px;
 	max-width: 75px;
 	max-height: 50px;
 }
 
 /* Movie Page */
+
+
 
 
 
@@ -110,13 +113,7 @@
 }
 
 
-.movie-body {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100%;
-}
+
 
 .comma-list-removed {
 	margin-top: 5px;
@@ -124,9 +121,7 @@
 	display: inline;
 }
 
-.overview {
-	margin-bottom: 0px;
-}
+
 
 .genre-div {
 	margin-top: 14px;

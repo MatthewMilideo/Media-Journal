@@ -67,6 +67,7 @@ class Note extends React.Component {
 			? this.props.query("post", T.NOTE, {
 					title: this.state.noteTitle,
 					text: this.state.noteValue,
+					cTitle: this.props.data.cTitle,
 					type: this.props.data.type,
 					cID: this.props.data.cID
 			  })
@@ -77,6 +78,7 @@ class Note extends React.Component {
 						title: this.state.noteTitle,
 						text: this.state.noteValue,
 						type: this.props.data.type,
+						cTitle: this.props.data.cTitle,
 						cID: this.props.data.cID,
 						id: this.props.data.id
 					},
@@ -108,6 +110,7 @@ class Note extends React.Component {
 							value={this.state.noteTitle}
 							onChange={this.onTitleChange}
 						/>
+						<h4> {this.props.data.cTitle} </h4>
 
 						<TextArea
 							rows={4}
@@ -154,6 +157,7 @@ class Note extends React.Component {
 	}
 
 	render() {
+		console.log('note props ~~~~~~~~~ ', this.props)
 		return (
 			<Container>
 				{this.state.active ? this.renderActive() : this.renderInactive()}

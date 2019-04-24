@@ -8,8 +8,6 @@ import {
 } from "./helperFunctions";
 
 const TVData = props => {
-	//console.log(("in tv data", props);
-	//console.log(("props", props);
 	const { show } = props;
 	let gridWidth = 10;
 	let poster = null;
@@ -18,7 +16,7 @@ const TVData = props => {
 		? (gridWidth = 13)
 		: (poster = (
 				<Grid.Column centered width={6}>
-					<img className="image" src={show.largeImage} />
+					<img src={show.largeImage} />
 				</Grid.Column>
 		  ));
 
@@ -32,24 +30,23 @@ const TVData = props => {
 	show.overview === ""
 		? (overview = null)
 		: (overview = (
-				<div className="overview-div">
-					{" "}
-					<h1 className="media-body-h1"> Overview: </h1>
+				<div className="media-body-div">
+					<h1> Overview: </h1>
 					<p className="overview"> {show.overview} </p>
 				</div>
 		  ));
 
 	const renderEps = (numEps, numSeasons) => {
-		if (numSeasons !== null) numSeasons = <p> Number of Seasons: {numSeasons} </p>;
-		if (numEps !==  null) numEps = <p> Number of Episodes: {numEps} </p>;
-		
+		if (numSeasons !== null)
+			numSeasons = <p> Number of Seasons: {numSeasons} </p>;
+		if (numEps !== null) numEps = <p> Number of Episodes: {numEps} </p>;
 
 		let returnStr;
 		numEps && numSeasons ? (returnStr = "|") : (returnStr = "");
 
 		return (numEps && numSeasons) || numEps || numSeasons ? (
-			<div className="show-div">
-				<h1 className="media-body-h1"> Show Stats : </h1>
+			<div className="media-body-div">
+				<h1> Show Stats : </h1>
 				{numSeasons} {returnStr} {numEps}
 			</div>
 		) : null;
@@ -57,35 +54,17 @@ const TVData = props => {
 
 	const runtimes = list => {
 		let returnData = null;
-		let s = "";
-		if (list.length > 1) s = "s";
+
 		if (list.length !== 0) {
-			returnData = list.map((elem, index) => {
-				let comma = null;
-				index === list.length - 1 ? (comma = "") : (comma = ", ");
-				return (
-					<h5 className="comma-list">
-						{elem} minutes
-						{comma}
-					</h5>
-				);
-			});
+			returnData = <h5 className="comma-list">{list[0]} minutes</h5>;
 		}
 
 		return returnData === null ? null : (
 			<div className="runtime-div">
-				<h5 className="media-body-h1"> {`Episode Runtime${s}:`} </h5>
-				{returnData}
+				<h5 className="media-body-h1"> Episode Runtime: {returnData} </h5>
 			</div>
 		);
 	};
-
-	/*
-	let runtimes;
-	show.runtime === null
-		? (runtime = null)
-		: (runtime = runtime.map( runtime ) <h5> Runtime: {runtime} minutes</h5>);
-		*/
 
 	return (
 		<Grid centered equal stackable>
@@ -93,16 +72,13 @@ const TVData = props => {
 				{poster}
 				<Grid.Column divided="vertically" width={gridWidth}>
 					<Grid.Row>
-						<Segment compact>
-							<div className="title-div">
-								<h1 className="media-title"> {show.title} </h1>
-								<span className="media-title-descriptor">
-									{releaseDate} | {runtimes(show.runtime)}
-								</span>
+						<Segment >
+							<div className="media-title-div">
+								<h1> {show.title} </h1>
+								{releaseDate} | {runtimes(show.runtime)}
 							</div>
-							<div className="movie-body">
+							<div className="media-body">
 								<Divider />
-
 								{overview}
 								{renderEps(show.numEps, show.numSeasons)}
 								{renderGenres(show.genres)}

@@ -2,7 +2,7 @@
   "notes": [
     {
       "title": "I just edited the first note. ",
-      "text": "Test",
+      "text": "Test poop",
       "type": "MOVIE",
       "cID": "11",
       "id": 10
@@ -30,7 +30,7 @@
     },
     {
       "title": "David Lynch ",
-      "text": "Hello hello ",
+      "text": "Hello hello poop",
       "type": "MOVIE",
       "cID": "793",
       "id": 15
@@ -43,18 +43,65 @@
       "id": 16
     },
     {
-      "title": "Hello",
-      "text": "Bad i am sexist",
-      "type": "MOVIE",
-      "cID": "181808",
-      "id": 18
-    },
-    {
       "title": "Poo Poo Pee Pee Town",
       "text": "Hello ",
       "type": "MOVIE",
       "cID": "1892",
       "id": 19
+    },
+    {
+      "title": "Test ",
+      "text": "Note",
+      "type": "ALL",
+      "id": 20
+    },
+    {
+      "title": "Hello ",
+      "text": "Test",
+      "cTitle": "",
+      "type": "MOVIE",
+      "cID": "11",
+      "id": 21
+    },
+    {
+      "title": "Hello ",
+      "text": "Test ",
+      "cTitle": "",
+      "type": "MOVIE",
+      "cID": "181808",
+      "id": 22
+    },
+    {
+      "title": "Test",
+      "text": "222",
+      "cTitle": "",
+      "type": "MOVIE",
+      "cID": "181808",
+      "id": 23
+    },
+    {
+      "title": "Test ",
+      "text": "Hello",
+      "cTitle": "",
+      "type": "MOVIE",
+      "cID": "1893",
+      "id": 24
+    },
+    {
+      "title": "Star Wars",
+      "text": "Title please\n",
+      "cTitle": "Star Wars: Episode I - The Phantom Menace",
+      "type": "MOVIE",
+      "cID": "1893",
+      "id": 25
+    },
+    {
+      "title": "Poop Town",
+      "text": "Hello",
+      "cTitle": "Star Wars: Episode I - The Phantom Menace",
+      "type": "MOVIE",
+      "cID": "1893",
+      "id": 26
     }
   ],
   "tags": [
