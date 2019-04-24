@@ -17,21 +17,30 @@ app.use(cors())
 // server.use('/api', jsonServer.defaults()); 
 
 
-const router = jsonServer.router('db.json');
-app.use('/api', router);
-
 //production mode
 if(process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/client/build')));
+
+  const router = jsonServer.router('db.json');
+  app.use('/api', router);
   
   app.get('*', (req, res) => {
     res.sendfile(path.join(__dirname, 'client/build/index.html'));
   })
 }
-//build mode
+
+else{
+
+  const router = jsonServer.router('db.json');
+  app.use('/api', router);
+
+  //build mode
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/public/index.html'));
 })
+
+}
+
 
 
 

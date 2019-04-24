@@ -100,9 +100,12 @@ export const journalQuery = ( config ) => async dispatch => {
 	try {
 		response = await func(loc, params);
 	} catch (err) {
+		console.log(err);
+		console.log(response);
 		dispatch({ type: `${T.NOTE}${T._ERRORED}${aType}` });
+		return; 
 	}
-	 console.log(response);
+	// console.log(response);
 	dispatch({
 		type: `${T.NOTE}${T._FINISHED}${aType}`,
 		payload: {data: response.data, id}
