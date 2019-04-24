@@ -168,12 +168,12 @@ class SwipeRow extends React.Component {
 			});
 			return returnData;
 		}
-		returnData = rows.map(list => {
+		returnData = rows.map((list, index) => {
 			return (
-				<Grid.Row stretched>
-					{list.map(elem => {
+				<Grid.Row key = {index} stretched>
+					{list.map( (elem, index) => {
 						if (elem === null){
-							return( <Grid.Column> </Grid.Column>)
+							return( <Grid.Column key = {index}> </Grid.Column>)
 						}
 						
 						return (
@@ -208,6 +208,7 @@ class SwipeRow extends React.Component {
 		if (this.state.rows.length === 0) {
 			return null;
 		}
+		console.log('prop list:' , this.props.list)
 
 		let returnData =
 			this.state.windowSize > 0
@@ -219,7 +220,6 @@ class SwipeRow extends React.Component {
 		return (
 			<Segment>
 				<h1> {this.props.headerText} </h1>
-				<Divider />
 				<Grid stackable columns="equal">
 					{this.props.type ? this.buildLeftButton() : null}
 					{returnData}

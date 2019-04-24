@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Menu } from "semantic-ui-react";
+import { Container, Menu, Segment } from "semantic-ui-react";
 import { connect } from "react-redux";
 import * as T from "../../actions/types";
 import { fetchEntries } from "../../actions";
@@ -19,9 +19,9 @@ class SearchPage extends React.Component {
 	renderMenu = list => {
 		let menuConfig = [
 			{ const: T.MOVIE, name: "Movies" },
-			{ const: T.TV_SEASON, name: "TV Show" },
-			{ const: T.BOOK, name: "Book" },
-			{ const: T.GAME, name: "Video Game" }
+			{ const: T.TV_SEASON, name: "TV Shows" },
+			{ const: T.BOOK, name: "Books" },
+			{ const: T.GAME, name: "Video Games", disabled: true }
 		];
 
 		let returnList = menuConfig.map(item => {
@@ -31,6 +31,7 @@ class SearchPage extends React.Component {
 					key={item.const}
 					active={this.state.searchType === item.const}
 					onClick={this.handleItemClick}
+					disabled = {item.disabled}
 				>
 					{item.name}
 				</Menu.Item>
@@ -56,7 +57,6 @@ class SearchPage extends React.Component {
 			],
 			textValues: ["", ""]
 		};
-
 		return <SearchBar searchType={searchType} config={searchBarConfig} />;
 	};
 
@@ -98,9 +98,11 @@ class SearchPage extends React.Component {
 		};
 
 		let data = this.configureInputList (searchData.data, configObj); 
+		console.log('calculated data in renderContent', data);
 
 		let swipeRow = (
 			<SwipeRow
+				key = {type}
 				cType = {type}
 				type={0}
 				elemType = {'search'}
@@ -113,28 +115,27 @@ class SearchPage extends React.Component {
 
 		switch (searchData.status) {
 			case T.UNLOADED:
-				return <div> please choose some content above. </div>;
+				return <Segment textAlign = 'center'> Please search for some content. </Segment>;
 			case `${type}${T._BEGAN_SEARCH}`:
-				return <div> loading </div>;
+				return <div> Content Loading </div>;
 			case `${type}${T._BEGAN_SEARCH_NEXT}`:
-				return <div> loading next </div>;
+				return <div> Loading More Content </div>;
 			case `${type}${T._FINISHED_SEARCH}`:
 				return (
 					<div>
 						{swipeRow}
-						<div> loading next </div>{" "}
 					</div>
 				);
 			case `${type}${T._FINISHED_SEARCH_NEXT}`:
 				return swipeRow;
 			case `${type}${T._ERRORED_SEARCH}`:
-				return <div> there was an error with your search please try again</div>;
+				return <Segment inverted color='red' textAlign = 'center'>  There was an error with your search, please try again. </Segment>;
 			case `${type}${T._ERRORED_SEARCH_NEXT}`:
 				return (
-					<div>
+					<Segment inverted color='red' textAlign = 'center'>>
 						{swipeRow}
-						there was an error with your next search
-					</div>
+						There was an error retrieving more content. 
+					</Segment>
 				);
 		}
 	};
@@ -142,10 +143,11 @@ class SearchPage extends React.Component {
 	render() {
 		const searchType =  this.state.searchType;
 		const searchData = this.props[searchType];
+
+		console.log('type', searchType, 'data', searchData);
 		
 		return (
 			<Container>
-			
 				{this.renderMenu()}
 				{this.renderSearchBar(searchType)}
 				{this.renderContent(searchType, searchData)}
