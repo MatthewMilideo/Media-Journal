@@ -33,8 +33,7 @@ app.get('*', (req, res) => {
 })
 
 const router = jsonServer.router('db.json');
-app.use('/api', router)
-app.use('/api', middlewares);
+app.use('/api', router);
 
 console.log('test');
 //start server
