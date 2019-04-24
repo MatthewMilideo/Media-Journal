@@ -97,6 +97,8 @@ export const journalQuery = ( config ) => async dispatch => {
 
 	dispatch({ type: `${T.NOTE}${T._BEGAN}${aType}` });
 
+	console.log('loc', loc, 'params', params);
+
 	try {
 		response = await func(loc, params);
 	} catch (err) {
