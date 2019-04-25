@@ -41,11 +41,12 @@ class SwipeRow extends React.Component {
 		for (let i = 0; i < sizeArr.length; i++) {
 			
 			if (winSize <= sizeArr[i].max && this.state.windowSize !== i) {
-				if ( i > 0  &&  winSize >=  sizeArr[i-1].max) {
+				if ( i > 0  &&  winSize >=  sizeArr[i-1].max || i === 0) {
 				////console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
 				winSize = sizeArr[i].min;
 				let rowSize = Math.floor(winSize / this.props.eSize);
-				if (rowSize === 0) rowSize = 5;
+				if (rowSize === 0 && this.props.type === false) rowSize = 5;
+				if (rowSize === 0 && this.props.type === true) rowSize = 1;
 				let rows = this.buildRowLists(rowSize);
 
 				let rowsPos = this.state.rowsPos
@@ -195,11 +196,15 @@ class SwipeRow extends React.Component {
 		let { rows, rowsPos } = this.state;
 		return (
 			<Segment>
+					
 				<Item.Group divided>
 					{rows[rowsPos].map(elem => (
+						<Link to={`/media/${this.props.cType}/${elem.id}`}>	
 						<SwipeRowElem type = {this.props.elemType} key={elem.id} elem={elem} size={0} />
+						</Link>
 					))}
 				</Item.Group>
+				
 			</Segment>
 		);
 	}
