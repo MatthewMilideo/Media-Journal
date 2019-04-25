@@ -13,6 +13,8 @@ import { sizeArr } from "../../setupGlobals";
 import _ from "lodash";
 import "../../styles/style.css";
 
+/* Renders a specific piece of media */
+
 class MediaPage extends React.Component {
 	state = { size: -1, type: T.MOVIE, tag: null };
 

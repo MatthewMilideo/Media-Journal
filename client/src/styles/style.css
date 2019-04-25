@@ -252,10 +252,7 @@
 	justify-content: center;
 }
 
-.search-results-div .swipe-row-div{
-	display: flex; 
-	justify-content: center; 
-}
+
 
 .search-results-div .button{
 	margin-top: 15px; 

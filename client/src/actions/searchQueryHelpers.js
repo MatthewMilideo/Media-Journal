@@ -5,8 +5,8 @@ import bookDB from "../api/bookDB";
 import {buildCrudQuery} from './index'
 
 import { TMDBFormatter, bookFormatter } from "./dataFormatters";
-import { PopupContent } from "semantic-ui-react";
 
+/* This file handles all the search queries */
 
 
 export const searchQueryBuilder = (type, ...args) => {
@@ -51,18 +51,6 @@ export const nextQueryBuilder = (type, curElem, totalElems, query) => {
 	return params;
 };
 
-/* Experimental */
-const checkNotes = (response) => {
-
-
-	response = response.map( elem => { 
-		return {id: elem.ID} 
-	});
-	////console.log(('id list', response);
-
-	buildCrudQuery('get', response );
-
-} 
 
 export const TMDBSearchQuery = (
 	type,

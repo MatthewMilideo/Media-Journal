@@ -4,6 +4,8 @@ import bookDB from '../api/bookDB';
 
 import { movieItemFormatter, showItemFormatter, bookItemFormatter } from "./dataFormatters";
 
+/* This file handles all the queries for specific pieces of content */
+
 export const TMDBItemQuery = (type, id) => async dispatch => {
     let response;
     
