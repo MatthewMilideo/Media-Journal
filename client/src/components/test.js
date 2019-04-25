@@ -10,7 +10,7 @@ const configureInputList = (list, configObj) => {
     if (!list) return;
 
     let localList = list.map(elem => {
-        //console.log(('elem', elem);
+        ////console.log(('elem', elem);
         let image;
         elem[configObj.imageP2] === null
             ? (image = configObj.imageD)
@@ -25,12 +25,12 @@ const configureInputList = (list, configObj) => {
             id: elem.ID
         };
     });
-    //console.log((localList);
+    ////console.log((localList);
     return localList
 };
 
 const renderContent = (type, searchData) => {
-    //console.log((type, searchData);
+    ////console.log((type, searchData);
     const configObj = {
         imageP1: "",
         imageP2: "largeImage",
@@ -42,7 +42,7 @@ const renderContent = (type, searchData) => {
     };
 
     let data = configureInputList (searchData.data, configObj); 
-    console.log('calculated data in renderContent', data);
+    //console.log('calculated data in renderContent', data);
 
     let swipeRow = (
         <SwipeRow
@@ -88,7 +88,7 @@ const renderContent = (type, searchData) => {
 const test = (props) => {
    
     const {type} = props;
-    console.log(type)
+    //console.log(type)
     const data = props[type];
 
     const loadMore = () => {

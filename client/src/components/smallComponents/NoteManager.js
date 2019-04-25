@@ -20,17 +20,15 @@ class NoteManager extends React.Component {
 	state = { notes: [] };
 
 	componentDidMount() {
-		if (this.props.type === 'ALL') {
-			console.log(this.props);
+		if (this.props.type === "ALL") {
+			//console.log(this.props);
 			this.props.buildCrudQuery("get", T.NOTE);
-		}
-		else{
+		} else {
 			this.props.buildCrudQuery("get", T.NOTE, {
 				type: this.props.type,
 				cID: this.props.cID
 			});
 		}
-		
 	}
 
 	componentWillUpdate(newProps) {
@@ -45,7 +43,7 @@ class NoteManager extends React.Component {
 		let notes = [];
 		if (this.state.notes.length > 0) {
 			notes = this.state.notes.map(note => {
-				console.log('note',note);
+				//console.log("note", note);
 				return (
 					<Note
 						key={note.id}
@@ -78,9 +76,10 @@ class NoteManager extends React.Component {
 
 	render() {
 		if (this.state.notes === []) return null;
-		console.log('this.props',this.props);
+
 		return (
 			<div>
+
 				{this.renderNotes()}
 				<Button attached="bottom" onClick={e => this.handleClick(e)}>
 					Add Note

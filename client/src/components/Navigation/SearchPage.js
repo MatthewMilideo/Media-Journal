@@ -58,7 +58,7 @@ class SearchPage extends React.Component {
 			],
 			textValues: ["", ""]
 		};
-		return <SearchBar searchType={searchType} config={searchBarConfig} />;
+		return <SearchBar color ='blue' searchType={searchType} config={searchBarConfig} />;
 	};
 
 	
@@ -67,7 +67,7 @@ class SearchPage extends React.Component {
 		const searchType =  this.state.searchType;
 		const searchData = this.props[searchType];
 
-		console.log('type', searchType, 'data', searchData);
+		//console.log('type', searchType, 'data', searchData);
 		
 		return (
 			<Container>
@@ -78,11 +78,5 @@ class SearchPage extends React.Component {
 		);
 	}
 }
-
-
-
-/* <PosterContainer content = {this.props.searchData} /> */
-
-
 
 export default SearchPage;

@@ -56,7 +56,7 @@ const defaultJournalState = {
 };
 
 export const journalHOR = (type, reducer) => (state, action) => {
-	////console.log((state, action);
+	//////console.log((state, action);
 	let index;
 	let localCurNotes;
 	let localAllNotes;
@@ -79,7 +79,7 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				status: action.type
 			};
 		case `${type}${T._FINISHED_PUT}`:
-		//	//console.log((action.payload.data);
+		//	////console.log((action.payload.data);
 			return {
 				...state,
 				status: action.type,
@@ -98,7 +98,7 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				data: []
 			};
 		case `${type}${T._FINISHED_GET}${T._ALL}`:
-		//	//console.log((action.payload.data);
+		//	////console.log((action.payload.data);
 			return {
 				...state,
 				status: action.type,
@@ -118,7 +118,7 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				data: []
 			};
 		case `${type}${T._FINISHED_GET}`:
-		//	//console.log((action.payload.data);
+		//	////console.log((action.payload.data);
 			return {
 				...state,
 				status: action.type,
@@ -174,7 +174,7 @@ export const journalHOR = (type, reducer) => (state, action) => {
 			localCurNotes = localCurNotes.filter(elem => {
 				return elem.id !== action.payload.id;
 			});
-	//		//console.log((localCurNotes);
+	//		////console.log((localCurNotes);
 			return {
 				...state,
 				status: action.type,

@@ -10,8 +10,9 @@ import {
 } from "semantic-ui-react";
 
 import * as T from "../../actions/types";
+import { typeToStr } from "../../helpers";
 import Dropdown2 from "../smallComponents/Dropdown";
-import '../../styles/style.css'
+import "../../styles/style.css";
 
 class Note extends React.Component {
 	state = {
@@ -103,6 +104,7 @@ class Note extends React.Component {
 					onMouseLeave={this.mouseLeave}
 				>
 					<Form>
+						<h4> {this.props.data.cTitle} </h4>
 						<Form.Field
 							label="Note Title"
 							placeholder="Title"
@@ -110,7 +112,6 @@ class Note extends React.Component {
 							value={this.state.noteTitle}
 							onChange={this.onTitleChange}
 						/>
-						<h4> {this.props.data.cTitle} </h4>
 
 						<TextArea
 							rows={4}
@@ -139,7 +140,7 @@ class Note extends React.Component {
 		this.state.mouse ? (color = "teal") : (color = null);
 
 		return (
-			<div className="note-segment">
+			<div className="note-outer-div">
 				<Segment
 					color={color}
 					raised
@@ -147,17 +148,23 @@ class Note extends React.Component {
 					onMouseLeave={this.mouseLeave}
 					onClick={this.onHandleSegClick}
 				>
-					<h2 className="header"> {this.state.noteTitle} </h2>
-					<Icon className="icon" name="edit" size="large" color={color} />
-					<Divider />
-					<p> {this.state.noteValue} </p>
+					<div className="note-inner-div">
+						<div>
+							<h1> {this.state.noteTitle} </h1>
+							<h2>
+								{` ${this.props.data.cTitle} // ${typeToStr(this.props.data.type)}`}
+							</h2>
+						</div>
+						<Icon className="icon" name="edit" size="large" color={color} />
+						<Divider />
+						<p> {this.state.noteValue} </p>
+					</div>
 				</Segment>
 			</div>
 		);
 	}
 
 	render() {
-		console.log('note props ~~~~~~~~~ ', this.props)
 		return (
 			<Container>
 				{this.state.active ? this.renderActive() : this.renderInactive()}

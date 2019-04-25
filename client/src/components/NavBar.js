@@ -12,7 +12,7 @@ class NavBar extends React.Component {
 
 	render() {
 		let temp = history.location.pathname;
-		console.log('temp', temp);
+		//console.log('temp', temp);
 
 		
 		const { activeItem } = this.state;

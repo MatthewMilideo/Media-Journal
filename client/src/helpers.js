@@ -1,3 +1,5 @@
+import * as T from './actions/types';
+
 const monthObj = {
     0: 'January',
     1: 'Febuary',
@@ -36,7 +38,7 @@ export const formatDate = (date) => {
 } 
 
 export const formatMoney = (num) => {
-    //console.log(('num', num);
+    ////console.log(('num', num);
     if (num === 0) return null; 
 
     let returnStr = '$'
@@ -56,3 +58,13 @@ export const formatMoney = (num) => {
     returnStr = returnStr.concat(num);
     return returnStr;
 } 
+
+export const typeToStr = elem => {
+    let obj = {}; 
+    obj[T.MOVIE] = 'Movie';
+    obj[T.TV_SEASON] = 'TV Show'
+    obj[T.BOOK] = 'Book'
+    obj[T.GAME] = 'Video Game'
+
+    return obj[elem];
+}

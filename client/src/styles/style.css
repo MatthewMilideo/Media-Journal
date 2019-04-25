@@ -1,4 +1,8 @@
+/* Secondary Segment */
 
+.secondary{
+	color: black !important;
+}
 
 /*  ~~~~~~ Media Page ~~~~~~~~ */
 
@@ -20,6 +24,15 @@
 .media-title-div h1 {
 	font-size: 40px;
 	margin-bottom: 0px;
+}
+
+.media-title-div div {
+	margin:0;
+}
+
+.media-title-div p {
+	font-size: 12px;
+	padding: 0; 
 }
 
 .media-title-div h5{
@@ -45,6 +58,16 @@
 	margin-top: 0px;
 	margin-bottom: 0px;
 }
+
+.media-body-div-sub h1 {
+	display: inline;
+	font-size: 14px;
+	font-style: italic; 
+	font-weight: 500;
+	margin: 0;
+}
+
+
 
 .media-body-div p {
     display: inline;
@@ -85,9 +108,95 @@
 	max-height: 50px;
 }
 
-/* Movie Page */
+/* Book Page */
+
+.book-title-div h1 {
+	display: inline; 
+	font-size: 25px;
+	margin-top:0; 
+	margin-bottom: 0px;
+}
+
+.book-title-div h2 {
+	display: inline; 
+	font-size: 21px;
+	margin-left: -4px;
+	margin-top:0; 
+	margin-bottom: 0px;
+}
+
+.bookH1 {
+	font-size: 15px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.author-div {
+	margin-top: 5px; 
+}
+
+.author-div p {
+	display: inline;
+}
+
+.book-overview-inner p{
+	text-indent: 25px; 
+	margin-top: 8px; 
+	margin-bottom: 8px; 
+}
 
 
+
+.book-info-div p{
+	margin: 0;
+}
+
+
+.book-genre-div ul {
+
+	margin-top: 8px; 
+	padding-left: 25px;
+
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~ Book Data Page ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+
+
+
+
+/* ~~~~~~~~~~~~ Note ~~~~~~~~~~~ */
+
+
+.note-outer-div {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.note-inner-div div:first-of-type {
+	display: inline-block; 
+}
+
+.note-inner-div h1 {
+	font-size: 20px;  
+	margin: 0; 
+}
+.note-inner-div h2 {
+	font-size: 12px;  
+	margin-top: 3px; 
+	margin-bottom: 0px; 
+	font-style: oblique
+}
+
+.icon {
+	display: inline;
+	float: right;
+}
+
+.note-inner-div .divider{
+	margin: 0px; 
+	margin-bottom: 9px; 
+}
 
 
 
@@ -152,19 +261,10 @@
 
 
 
-.note-segment {
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
 
-.header {
-	display: inline-block;
-}
 
-.icon {
-	display: inline-block;
-	float: right;
-}
+
+
 
 .hell2o {
 	background-color: blue;
@@ -208,42 +308,3 @@
 	margin: 0;
 }
 
-/* ~~~~~~~~~~~~~~~~~~~~~~ Book Data Page ~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.book-title-div h1{
-	font-size: 20px; 
-	display:inline
-}
-
-.book-title-div h2{
-	display: inline;
-	font-size: 17px;
-	margin-left: -4px; 
-}
-
-.author-div {
-	margin-top: 5px; 
-	
-}
-
-
-.book-overview-inner p{
-	text-indent: 25px; 
-	margin-top: 8px; 
-	margin-bottom: 8px; 
-}
-
-.book-genre-div ul {
-
-	margin-top: 8px; 
-	padding-left: 25px;
-
-}
-
-.book-info-div-inner {
-	margin-top: 8px;
-}
-
-.book-info-div p{
-	margin: 0;
-}

@@ -39,7 +39,7 @@ export const nextQueryBuilder = (type, curElem, totalElems, query) => {
 				maxResults: maxResults,
 				startIndex: curElem
 			};
-			//console.log(("params", params);
+			////console.log(("params", params);
 		}
 	} else if (type === T.GAME) {
 	} else {
@@ -53,12 +53,12 @@ export const nextQueryBuilder = (type, curElem, totalElems, query) => {
 
 /* Experimental */
 const checkNotes = (response) => {
-	//console.log(('poop');
+	////console.log(('poop');
 
 	response = response.map( elem => { 
 		return {id: elem.ID} 
 	});
-	//console.log(('id list', response);
+	////console.log(('id list', response);
 
 	buildCrudQuery('get', response );
 
@@ -86,7 +86,7 @@ export const TMDBSearchQuery = (
 
 	response = TMDBFormatter(response.data);
 	let poop = checkNotes(response.results);
-	//console.log(('poop');
+	////console.log(('poop');
 
 	dispatch({
 		type: `${type}${T._FINISHED_SEARCH}${typeMod}`,
@@ -108,7 +108,7 @@ export const bookSearchQuery = (
 		type: `${type}${T._BEGAN_SEARCH}${typeMod}`,
 		payload: { type: T.BOOK, query: params.q }
 	});
-	//console.log((params);
+	////console.log((params);
 	try {
 		response = await bookDB.get("", { params });
 	} catch (err) {
@@ -141,8 +141,8 @@ export const gameSearchQuery = (params, typeMod = "") => async dispatch => {
 		})
 		
 			.then(response => {
-				//console.log(('igdb', response);
-				//console.log((response.data);
+				////console.log(('igdb', response);
+				////console.log((response.data);
 			})
 			.catch(err => {
 				console.error(err);

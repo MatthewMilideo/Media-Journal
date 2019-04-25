@@ -16,7 +16,7 @@ var cors = require("cors");
 			origin: url
 		})
 	)
-console.log(url);
+//console.log(url);
 
 //app.use(middlewares);
 const router = jsonServer.router("db.json");
@@ -41,6 +41,6 @@ app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/client/public/index.html"));
 });
 
-console.log("test");
+//console.log("test");
 //start server
 app.listen(port, (req, res) => {});

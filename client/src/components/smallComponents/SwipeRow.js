@@ -42,7 +42,7 @@ class SwipeRow extends React.Component {
 			
 			if (winSize <= sizeArr[i].max && this.state.windowSize !== i) {
 				if ( i > 0  &&  winSize >=  sizeArr[i-1].max) {
-				//console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
+				////console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
 				winSize = sizeArr[i].min;
 				let rowSize = Math.floor(winSize / this.props.eSize);
 				if (rowSize === 0) rowSize = 5;
@@ -142,8 +142,8 @@ class SwipeRow extends React.Component {
 
 	handleRightClick = () => {
 		let { rows, rowsPos } = this.state;
-		//console.log((rowsPos, rows.length);
-		//console.log((rows);
+		////console.log((rowsPos, rows.length);
+		////console.log((rows);
 		if (rowsPos < rows.length - 1) {
 			this.setState({
 				rowsPos: rowsPos + 1
@@ -156,9 +156,9 @@ class SwipeRow extends React.Component {
 		const { rows, rowsPos } = this.state;
 		let returnData = null;
 		if (num === 1) {
-			returnData = rows[rowsPos].map(elem => {
+			returnData = rows[rowsPos].map((elem, index) => {
 				if (elem === null){
-					return( <Grid.Column> </Grid.Column>)
+					return( <Grid.Column key = {index} > </Grid.Column>)
 				}
 				return (
 					<Grid.Column key={elem.id}>
@@ -208,7 +208,7 @@ class SwipeRow extends React.Component {
 		if (this.state.rows.length === 0) {
 			return null;
 		}
-		console.log('prop list:' , this.props.list)
+		//console.log('prop list:' , this.props.list)
 
 		let returnData =
 			this.state.windowSize > 0

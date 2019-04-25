@@ -1,107 +1,35 @@
 {
   "notes": [
     {
-      "title": "I just edited the first note. ",
-      "text": "Test poop",
-      "type": "MOVIE",
-      "cID": "11",
-      "id": 10
-    },
-    {
-      "title": "Poo Poo Pee Pee",
-      "text": "Another test",
-      "type": "MOVIE",
-      "cID": "11",
-      "id": 11
-    },
-    {
-      "title": "Test ",
-      "text": "Hello This is a note",
-      "type": "MOVIE",
-      "cID": "334074",
-      "id": 13
-    },
-    {
-      "title": "What A cool movie ",
-      "text": "Poop ",
-      "type": "MOVIE",
-      "cID": "330459",
-      "id": 14
-    },
-    {
-      "title": "David Lynch ",
-      "text": "Hello hello poop",
-      "type": "MOVIE",
-      "cID": "793",
-      "id": 15
-    },
-    {
-      "title": "Fart Poop",
-      "text": "fataa",
-      "type": "MOVIE",
-      "cID": "11",
-      "id": 16
-    },
-    {
-      "title": "Poo Poo Pee Pee Town",
-      "text": "Hello ",
-      "type": "MOVIE",
-      "cID": "1892",
-      "id": 19
-    },
-    {
-      "title": "Test ",
-      "text": "Note",
-      "type": "ALL",
-      "id": 20
-    },
-    {
-      "title": "Hello ",
+      "title": "Star Wars is a classic movie. ",
       "text": "Test",
-      "cTitle": "",
+      "cTitle": "Star Wars",
       "type": "MOVIE",
       "cID": "11",
-      "id": 21
-    },
-    {
-      "title": "Hello ",
-      "text": "Test ",
-      "cTitle": "",
-      "type": "MOVIE",
-      "cID": "181808",
-      "id": 22
-    },
-    {
-      "title": "Test",
-      "text": "222",
-      "cTitle": "",
-      "type": "MOVIE",
-      "cID": "181808",
-      "id": 23
+      "id": 1
     },
     {
       "title": "Test ",
-      "text": "Hello",
-      "cTitle": "",
-      "type": "MOVIE",
-      "cID": "1893",
-      "id": 24
+      "text": "Hello ",
+      "cTitle": "The Culture Industry",
+      "type": "BOOK",
+      "id": 2
     },
     {
-      "title": "Star Wars",
-      "text": "Title please\n",
-      "cTitle": "Star Wars: Episode I - The Phantom Menace",
-      "type": "MOVIE",
-      "cID": "1893",
-      "id": 25
+      "title": "Test ",
+      "text": "Hello ",
+      "cTitle": "The Sopranos",
+      "type": "TV_SEASON",
+      "cID": "1398",
+      "id": 3
     },
     {
-      "title": "Poop Town",
-      "text": "Hello",
-      "cTitle": "Star Wars: Episode I - The Phantom Menace",
-      "type": "MOVIE",
-      "cID": "1893",
-      "id": 26
+      "title": "Test Note ",
+      "text": "Hello ",
+      "cTitle": "The Science of Star Wars",
+      "type": "BOOK",
+      "cID": "knGTdANXGfgC",
+      "id": 4
     }
   ],
   "tags": [

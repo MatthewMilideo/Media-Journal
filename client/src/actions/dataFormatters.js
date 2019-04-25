@@ -35,8 +35,8 @@ const standardRoles = [
 ];
 
 const crewFormatter = (input, creator = null, output = standardRoles) => {
-	console.log("crew", input);
-	console.log("creator", creator);
+	//console.log("crew", input);
+	//console.log("creator", creator);
 	let returnObj = {};
 	output.forEach(role => (returnObj[role] = []));
 
@@ -51,7 +51,7 @@ const crewFormatter = (input, creator = null, output = standardRoles) => {
 		if (returnObj[crew.job]) returnObj[crew.job].push(crew);
 	});
 
-	//console.log(('returnObj',returnObj);
+	////console.log(('returnObj',returnObj);
 	return returnObj;
 };
 
@@ -67,7 +67,7 @@ export const movieItemFormatter = data => {
 		largeImage = null;
 	}
 
-	////console.log((data);
+	//////console.log((data);
 
 	const movieData = {
 		title: data.original_title,
@@ -107,7 +107,7 @@ export const showItemFormatter = data => {
 
 	let firstDate = formatDate(new Date(data.first_air_date));
 	let lastDate = formatDate(new Date(data.last_air_date));
-	//console.log(('date',firstDate)
+	////console.log(('date',firstDate)
 
 	const showData = {
 		type: T.TV_SEASON,
@@ -177,7 +177,7 @@ const removeBR = text => {
 	if (text === undefined) return text; 
 
 	let value = text.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g,"")
-	console.log(value);
+	//console.log(value);
 	return value; 
 }
 
@@ -186,11 +186,14 @@ const removeBR = text => {
 export const bookItemFormatter = data => {
 	data = data.volumeInfo;
 
+
+
 	let pubDate = data.publishedDate;
 
 	pubDate === undefined ? pubDate = undefined : pubDate = formatDate(new Date(pubDate))
 
 	let returnObj = {
+		id: data.id,
 		type: T.BOOK,
 		title: data.title,
 		subtitle: data.subtitle,

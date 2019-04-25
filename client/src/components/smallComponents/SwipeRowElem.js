@@ -1,8 +1,6 @@
 import React from "react";
 import { Segment, Image, Item, Grid } from "semantic-ui-react";
 
-import AddTagButton from "./AddTagButton";
-
 import "../../styles/style.css";
 import styles from "../../styles/SwipeRowElem.module.css";
 
@@ -47,7 +45,7 @@ class SwipeRowElem extends React.Component {
 					<Image className={styles.segmentImage} src={elem.image} />
 				</div>
 
-				<Segment className={styles.innerSegment} inverted color="red">
+				<Segment className={styles.innerSegment} inverted color="blue">
 					{data}
 				</Segment>
 			</Segment>
@@ -55,11 +53,11 @@ class SwipeRowElem extends React.Component {
 	};
 
 	renderSearch = elem => {
-		//console.log(("renderSearch");
+		////console.log(("renderSearch");
 		return (
-			<Segment className={styles.SwipeRowElemSeg2}  raised>
+			<Segment className={styles.SwipeRowElemSeg2}  >
 				<img className={styles.searchImage} src={elem.image} />
-				<Segment inverted color ='red' >
+				<Segment inverted color ='blue' >
 					<div className={styles.redDiv}>
 						<p>{elem.text2} </p>
 						<p> {elem.text1} </p>
@@ -72,7 +70,7 @@ class SwipeRowElem extends React.Component {
 
 	render() {
 		const { elem, type } = this.props;
-		//console.log((type);
+		////console.log((type);
 		if (type === "cast") {
 			return this.renderCast(elem);
 		} else {

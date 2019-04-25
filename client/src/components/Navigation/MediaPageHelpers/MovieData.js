@@ -1,6 +1,7 @@
 import React from "react";
-import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
-import { renderOverview, renderPoster, renderCrew, renderGenres, renderProdComps } from "./helperFunctions";
+import { Grid, Segment, Divider } from "semantic-ui-react";
+import { renderPoster, renderProdComps } from "./helperFunctions";
+import { RenderTwo, RenderList, RenderObj } from "./helperFunctions";
 
 /* Props 
 Movie: All of the relevant data about the movie.
@@ -9,65 +10,67 @@ Size: The Size of the Window.
 
 
 
-
-/*
-const renderTwo = (releaseDate, numSeasons) => {
-	if (releaseDate !== null) numSeasons = <p> Release Date: {releaseDate} </p>;
-	if (numEps !== null) numEps = <p> Number of Episodes: {numEps} </p>;
-
-	let returnStr;
-	numEps && numSeasons ? (returnStr = "|") : (returnStr = "");
-
-	return (numEps && numSeasons) || numEps || numSeasons ? (
-		<div className="media-body-div">
-			<h1> Show Stats : </h1>
-			{numSeasons} {returnStr} {numEps}
-		</div>
-	) : null;
-};
-*/
-
-
-
-
-
 const MovieData = props => {
-	//console.log(("in movie data", props);
 	const { movie } = props;
 
-	let temp = renderPoster(movie.largeImage); 
+	let titleCon = {
+		elem1: movie.release_date,
+		elem2: movie.runtime,
+		t1: `Release Date: ${movie.release_date}`,
+		t2: `Runtime: ${movie.runtime} minutes`,
+		title: null
+	};
+
+	let overCon = {
+		elem1: movie.overview,
+		elem2: null,
+		t1: movie.overview,
+		t2: null,
+		title: "Synopsis:"
+	};
+
+	let genCon = {
+		title: "Genre",
+		list: movie.genres,
+		num: 999,
+		func: elem => elem.name
+	};
+
+	let budCon = {
+		elem1: movie.budget,
+		elem2: movie.revenue,
+		t1: `Budget: ${movie.budget}`,
+		t2: `Revenue: ${movie.revenue}`,
+		title: "Budget:"
+	};
+
+	let crewObj = {
+		title: "Crew:",
+		obj: movie.crew,
+		num: 2
+	};
+
+	let temp = renderPoster(movie.largeImage);
 	let gridWidth = temp.width;
-	console.log(gridWidth);
-	let poster = temp.poster; 
-
-
-	let releaseDate;
-	movie.release_date === null
-		? (releaseDate = null)
-		: (releaseDate = <h5> Released: {movie.release_date} </h5>);
-
-	let runtime;
-	movie.runtime === null
-		? (runtime = null)
-		: (runtime = <h5> Runtime: {movie.runtime} minutes</h5>);
+	let poster = temp.poster;
 
 	return (
-		<Grid centered equal stackable>
+		<Grid centered columns="equal" stackable>
 			<Grid.Row centered verticalAlign="top">
 				{poster}
 				<Grid.Column divided="vertically" width={gridWidth}>
 					<Grid.Row>
-						<Segment >
+						<Segment>
 							<div className="media-title-div">
 								<h1> {movie.title} </h1>
-								{releaseDate} | {runtime}
+								<RenderTwo config={titleCon} />
 							</div>
 							<div className="media-body">
 								<Divider />
-								{renderOverview(movie.overview)}
-								{renderGenres(movie.genres)}
-								{renderBudget(movie.budget, movie.revenue)}
-								{renderCrew(movie.crew)}
+								<RenderTwo config={overCon} />
+								<RenderList config={genCon} sub="" />
+								<RenderTwo config={budCon} />
+								<RenderObj config={crewObj} />
 								{renderProdComps(movie.production_companies)}
 							</div>
 						</Segment>

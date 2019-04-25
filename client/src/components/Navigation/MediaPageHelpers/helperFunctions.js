@@ -4,7 +4,6 @@ import {Grid} from 'semantic-ui-react';
 
 
 export const renderPoster = poster => {
-	console.log(poster)
 	return poster === null
 		? { width: 13, poster: null }
 		: {
@@ -17,39 +16,52 @@ export const renderPoster = poster => {
 		  };
 };
 
-export const renderOverview = overview => {
-	overview === ""
-		? (overview = null)
-		: (overview = (
-				<div className="media-body-div">
-					<h1> Overview: </h1>
-					<p> {overview} </p>
-				</div>
-		  ));
-	return overview
-}
+export const RenderTwo = props => {
+	let { title, elem1, elem2, t1, t2 } = props.config;
+	if (elem1 !== null) t1 = <p> {t1} </p>;
+	if (elem2 !== null) t2 = <p> {t2} </p>;
 
-export const renderCrew = crew => {
-	let keys = Object.keys(crew);
+	let returnStr;
+	elem1 && elem2 ? (returnStr = "|") : (returnStr = "");
+	return (elem1 && elem2) || elem1 || elem2 ? (
+		<div className="media-body-div">
+			{title === null ? null : <h1> {title} </h1>}
+			{t1} {returnStr} {t2}
+		</div>
+	) : null;
+};
+
+export const RenderList = props => {
+	let { title, list, num, func } = props.config;
+	let comma, returnData;
+	if (list === null || list.length === 0) return null;
+	num > list.length ? (num = list.length - 1) : (num = num);
+	returnData = list.map((elem, index) => {
+		index === num ? (comma = "") : (comma = ", ");
+		if (index > num) return;
+		return <p key={func(elem)}> {`${func(elem)}${comma} `}</p>;
+	});
+	let s;
+	returnData.length > 1 ? (s = "s") : (s = "");
+	return (
+		<div className={`media-body-div${props.sub}`}>
+			<h1>{`${title}${s}:`} </h1>
+			{returnData}
+		</div>
+	);
+};
+
+export const RenderObj = props => {
+	let { title, obj, num } = props.config;
+	let max;
+	let keys = Object.keys(obj);
 	let s = "";
 	keys.sort();
 
 	let list = keys.map(key => {
-		s = "";
-		if (crew[key].length > 1) s = "s";
-		return crew[key].length !== 0 ? (
-			<div className="media-body-inner-div">
-				<i>{`${key}${s}: `}</i>
-				{crew[key].map((member, index) => {
-					if (index >= 2) return;
-					let comma = ",";
-					if (index === 1 || index === crew[key].length - 1) comma = "";
-					return <p> {`${member.name}${comma} `}</p>;
-				})}
-			</div>
-		) : null;
+		let config = { title: key, list: obj[key], num, func: elem => elem.name };
+		return <RenderList config={config} sub="-sub" />;
 	});
-
 	let test = 0;
 	list.forEach(elem => {
 		if (elem !== null) test = 1;
@@ -57,32 +69,9 @@ export const renderCrew = crew => {
 
 	return test === 1 ? (
 		<div className="media-body-div">
-			<h1 className="media-body-h1"> Crew: </h1> {list}
+			<h1> {title} </h1> {list}
 		</div>
 	) : null;
-};
-
-export const renderGenres = genres => {
-	let returnData = null;
-	genres.length === 0
-		? (returnData = null)
-		: (returnData = genres.map((genre, index) => {
-				let comma = null;
-				index === genres.length - 1 ? (comma = "") : (comma = ", ");
-				return (
-					<p>
-						{genre.name}
-						{comma}
-					</p>
-				);
-		  }));
-
-	return returnData === null ? null : (
-		<div className="media-body-div">
-			<h1> Genres: </h1>
-			{returnData}
-		</div>
-	);
 };
 
 export const renderProdComps = (companies, networks) => {
@@ -113,7 +102,7 @@ export const renderProdComps = (companies, networks) => {
 	return returnData;
 };
 
-export const prodCompsHelper = list => {
+const prodCompsHelper = list => {
 	if (list === undefined) return [[], []];
 	let names = [];
 	let images = [];

@@ -21,7 +21,7 @@ class MediaPage extends React.Component {
 
 		const { id, type } = this.props.match.params;
 		this.props.fetchItem(type, id);
-		this.setState({ type });
+		this.setState({ type, id });
 	}
 
 	componentDidUpdate(prevProps) {
@@ -94,7 +94,7 @@ class MediaPage extends React.Component {
 				id: elem.ID
 			};
 		});
-		////console.log((localList);
+		//////console.log((localList);
 		return localList;
 	};
 
@@ -131,37 +131,39 @@ class MediaPage extends React.Component {
 
 
 	render() {
+	
 		if (
 			Object.keys(this.props.itemData).length === 0 &&
 			this.props.itemData.constructor === Object
 		)
 			return null;
 
-		const { id, type, title} = this.props.itemData;
-		console.log('title', title);
+		const {id,} = this.state;
+		const { type, title} = this.props.itemData;
+		//console.log('id', id);
 
-		//console.log(('item data', this.props.itemData, type)
+		////console.log(('item data', this.props.itemData, type)
 		let returnData; 
 		let cast = null; 
 		if (type === T.MOVIE){
-			//console.log(('type movie');
+			////console.log(('type movie');
 			returnData = this.renderMovie(this.props.itemData);
 			cast =  this.renderCast(this.props.itemData.cast);
 		} 
 		if (type === T.TV_SEASON){
-			//console.log(('type show');
+			////console.log(('type show');
 			returnData = this.renderTV(this.props.itemData);
 			cast =  this.renderCast(this.props.itemData.cast);
 		}
 
 		if (type === T.BOOK){
-			//console.log(('type show');
+			////console.log(('type show');
 			returnData = this.renderBook(this.props.itemData); 
 		}
 
 		return (
 			<div>
-				<Segment >
+				<Segment secondary>
 					{returnData}
 					{cast}
 					<NoteManager title = {title} cID={id} type={type} />

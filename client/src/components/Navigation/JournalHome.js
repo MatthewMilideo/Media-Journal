@@ -7,16 +7,13 @@ import { Segment, Search } from 'semantic-ui-react';
 class JournalHome extends React.Component{
     state = {}
 
-    componentDidMount() {
-
-    }
 
     render(){
         return(
-           <Segment> 
+            <div>
                <h1> Notes: </h1>
                <NoteManager type= 'ALL'/>
-            </Segment>
+            </div> 
         )
     }
 }

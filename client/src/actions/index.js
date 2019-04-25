@@ -53,9 +53,9 @@ itemObj[T.GAME] = gameItemQuery;
 
 // Fetches data for an individual item
 export const fetchItem = (type, id) => dispatch => {
-//	//console.log((' in fetch item' , type, id);
+//	////console.log((' in fetch item' , type, id);
 	const itemFunc = itemObj[type];
-//	//console.log((itemFunc);
+//	////console.log((itemFunc);
 
 	dispatch(itemFunc(type, id));
 };
@@ -63,7 +63,7 @@ export const fetchItem = (type, id) => dispatch => {
 export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 	let loc; 
 	qType === T.NOTE ? loc = 'notes/' : loc = 'tags/'
-//	//console.log((type, qType, params, id );
+//	////console.log((type, qType, params, id );
 	
 	const crudConfig = {
 		get: { aType: T._GET, func: myData.get, loc, params: {params}, id: null},
@@ -85,29 +85,29 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 		}
 	};
 	let config = crudConfig[type];
-	////console.log(('build query config' , config);
+	//////console.log(('build query config' , config);
 	dispatch(journalQuery(config));
 };
 
 export const journalQuery = ( config ) => async dispatch => {
 
 	const {aType, func, loc, params, id} = config; 
-	////console.log((aType,  loc, params, id);
+	//////console.log((aType,  loc, params, id);
 	let response;
 
 	dispatch({ type: `${T.NOTE}${T._BEGAN}${aType}` });
 
-	console.log('loc', loc, 'params', params);
+	//console.log('loc', loc, 'params', params);
 
 	try {
 		response = await func(loc, params);
 	} catch (err) {
-		console.log(err);
-		console.log(response);
+		//console.log(err);
+		//console.log(response);
 		dispatch({ type: `${T.NOTE}${T._ERRORED}${aType}` });
 		return; 
 	}
-	// console.log(response);
+	// //console.log(response);
 	dispatch({
 		type: `${T.NOTE}${T._FINISHED}${aType}`,
 		payload: {data: response.data, id}
@@ -124,14 +124,14 @@ export const fetchTags = () => async dispatch => {
 	try {
 		response = await myData.get("tags/");
 	} catch (err) {
-		//console.log((err);
+		////console.log((err);
 	}
 	dispatch({ type: "FETCH_TAGS", payload: response.data });
 };
 
 export const fetchTag = tag => async dispatch => {
-//	//console.log(("in fetch tag");
-//	//console.log((tag);
+//	////console.log(("in fetch tag");
+//	////console.log((tag);
 	let response;
 
 	//let query = { params: { id: tag } };
@@ -139,11 +139,11 @@ export const fetchTag = tag => async dispatch => {
 	try {
 		response = await myData.get(`tags/${tag}`);
 	} catch (err) {
-		//console.log(("Error");
+		////console.log(("Error");
 		return "poop";
 	}
-//	//console.log(("did not error");
-//	//console.log((response);
+//	////console.log(("did not error");
+//	////console.log((response);
 	return response;
 };
 
@@ -152,7 +152,7 @@ export const addTag = tag => async dispatch => {
 
 	response = await dispatch(fetchTag(tag.id));
 	if (response !== "poop") {
-///		//console.log(("tag already added");
+///		////console.log(("tag already added");
 		return;
 	}
 
@@ -167,8 +167,8 @@ export const addTag = tag => async dispatch => {
 			{ headers: { "Content-Type": "application/json" } }
 		);
 	} catch (err) {
-		//console.log((err);
+		////console.log((err);
 	}
-	//console.log((response);
+	////console.log((response);
 	dispatch({ type: "ADD_TAG", payload: response.data });
 };
