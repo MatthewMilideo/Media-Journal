@@ -30,8 +30,8 @@ class NavBar extends React.Component {
 				<Menu.Item
 					as={Link}
 					to="/journal"
-					name="Journal Entries"
-					active={this.state.activeItem === "Journal Entries"}
+					name="Notes"
+					active={this.state.activeItem === "Notes"}
 					onClick={this.handleItemClick}
 				/>
 

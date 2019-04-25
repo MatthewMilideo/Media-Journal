@@ -45,8 +45,8 @@ class SwipeRow extends React.Component {
 				////console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
 				winSize = sizeArr[i].min;
 				let rowSize = Math.floor(winSize / this.props.eSize);
-				if (rowSize === 0 && this.props.type === false) rowSize = 5;
-				if (rowSize === 0 && this.props.type === true) rowSize = 1;
+				if (rowSize === 0 && this.props.type !== 1) rowSize = 5;
+				if (rowSize === 0 && this.props.type === 1) rowSize = 0;
 				let rows = this.buildRowLists(rowSize);
 
 				let rowsPos = this.state.rowsPos
