@@ -112,6 +112,7 @@ class MediaPage extends React.Component {
 				"https://www.naturehills.com/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/s/o/southern-live-oak-600x600.jpg",
 			text1: "name",
 			text2: "character",
+			text3: 'subtitle',
 			id: "cast_id"
 		};
 		cast = this.configureInputList(cast, configObj);

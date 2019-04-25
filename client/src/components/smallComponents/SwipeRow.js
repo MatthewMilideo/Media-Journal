@@ -9,6 +9,7 @@ import SwipeRowElem from "./SwipeRowElem";
 
 // eSize: The size of the SwipeRowElem in pixels.
 // list: The list of Elems that will make up the SwipeRowElems
+// list unclean
 // listConfig: The object to configure the list.
 // Rows: Will this contain many rows or 1 rows.
 // Type: Not sure of all the types I could pass here, but this is currently to differnetiate between swipe and

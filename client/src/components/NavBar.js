@@ -4,7 +4,7 @@ import { Menu } from "semantic-ui-react";
 import history from "../history";
 
 class NavBar extends React.Component {
-	state = { activeItem: "Home" };
+	state = { activeItem: "Add Content" };
 
 	handleItemClick = (e, { name }) => {
 		this.setState({ activeItem: name });

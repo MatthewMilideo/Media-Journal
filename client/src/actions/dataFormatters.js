@@ -150,7 +150,7 @@ export const bookFormatter = (books, curElem = 0) => {
 		if (book.volumeInfo.hasOwnProperty("imageLinks")) {
 			smallImage = book.volumeInfo.imageLinks.smallThumbnail;
 			largeImage = book.volumeInfo.imageLinks.thumbnail;
-			largeImage = largeImage.concat("&zoom=.5");
+			largeImage = largeImage.concat("&zoom=.25");
 			bigImage = book.volumeInfo.imageLinks.small;
 		} else {
 			smallImage = null;
@@ -160,6 +160,7 @@ export const bookFormatter = (books, curElem = 0) => {
 		return {
 			ID: book.id,
 			title: book.volumeInfo.title,
+			subtitle: book.volumeInfo.subtitle,
 			authors: book.volumeInfo.authors,
 			overview: book.volumeInfo.description,
 			language: book.volumeInfo.language,

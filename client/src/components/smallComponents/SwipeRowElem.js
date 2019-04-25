@@ -31,6 +31,7 @@ class SwipeRowElem extends React.Component {
 		if (elem.text1 !== "" && elem.text2 !== "") {
 			data = (
 				<React.Fragment>
+					
 					<p className={styles.maxLines}>{elem.text2} </p>
 					<p className={styles.maxLines}> played by: </p>
 					<p className={styles.maxLines}> {elem.text1} </p>
@@ -52,14 +53,16 @@ class SwipeRowElem extends React.Component {
 	};
 
 	renderSearch = elem => {
-		////console.log(("renderSearch");
+		console.log(elem);
 		return (
-			<Segment className={styles.SwipeRowElemSeg2}  >
+			<Segment className={styles.SwipeRowElemSeg2}>
 				<img className={styles.searchImage} src={elem.image} />
 				<Segment inverted color ='blue' >
 					<div className={styles.redDiv}>
-						<p>{elem.text2} </p>
-						<p> {elem.text1} </p>
+					<p> {`${elem.text1}`} </p>
+					{elem.text3 === undefined ? null : <p className = 'subtitle'> : {elem.text3} </p>}
+						
+					
 					</div>
 				</Segment>
 			</Segment>
