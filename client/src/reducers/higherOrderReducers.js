@@ -56,13 +56,12 @@ const defaultJournalState = {
 };
 
 export const journalHOR = (type, reducer) => (state, action) => {
-	//////console.log((state, action);
+	
 	let index;
 	let localCurNotes;
-	let localAllNotes;
 	if (state) {
-		localCurNotes = state.data;
-		localAllNotes = state.allData;
+		//console.log('state', state);
+		localCurNotes = [...state.data]
 	}
 
 	switch (action.type) {
@@ -79,7 +78,6 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				status: action.type
 			};
 		case `${type}${T._FINISHED_PUT}`:
-		//	////console.log((action.payload.data);
 			return {
 				...state,
 				status: action.type,
@@ -98,7 +96,7 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				data: []
 			};
 		case `${type}${T._FINISHED_GET}${T._ALL}`:
-		//	////console.log((action.payload.data);
+
 			return {
 				...state,
 				status: action.type,
@@ -136,11 +134,10 @@ export const journalHOR = (type, reducer) => (state, action) => {
 				status: action.type
 			};
 		case `${type}${T._FINISHED_POST}`:
-			localCurNotes.push(action.payload);
 			return {
 				...state,
 				status: action.type,
-				data: localCurNotes
+				data: [...state.data, action.payload.data]
 			};
 		case `${type}${T._ERRORED_POST}`:
 			return {

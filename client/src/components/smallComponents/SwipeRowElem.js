@@ -31,7 +31,6 @@ class SwipeRowElem extends React.Component {
 		if (elem.text1 !== "" && elem.text2 !== "") {
 			data = (
 				<React.Fragment>
-		
 					<p className={styles.maxLines}>{elem.text2} </p>
 					<p className={styles.maxLines}> played by: </p>
 					<p className={styles.maxLines}> {elem.text1} </p>
@@ -63,7 +62,6 @@ class SwipeRowElem extends React.Component {
 						<p> {elem.text1} </p>
 					</div>
 				</Segment>
-				
 			</Segment>
 		);
 	};

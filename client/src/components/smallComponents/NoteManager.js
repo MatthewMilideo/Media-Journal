@@ -20,8 +20,8 @@ class NoteManager extends React.Component {
 	state = { notes: [] };
 
 	componentDidMount() {
+		//console.log(this.props);
 		if (this.props.type === "ALL") {
-			//console.log(this.props);
 			this.props.buildCrudQuery("get", T.NOTE);
 		} else {
 			this.props.buildCrudQuery("get", T.NOTE, {
@@ -31,10 +31,18 @@ class NoteManager extends React.Component {
 		}
 	}
 
-	componentWillUpdate(newProps) {
-		if (this.props.notes.length !== newProps.notes.length) {
+	componentDidUpdate(prevProps) {
+		console.log(
+			"state",
+			this.state.notes,
+			"props",
+			this.props.notes,
+			"prev props",
+			prevProps.notes
+		);
+		if (this.props.notes.length != prevProps.notes.length) {
 			this.setState({
-				notes: newProps.notes
+				notes: [...this.props.notes]
 			});
 		}
 	}
@@ -60,17 +68,24 @@ class NoteManager extends React.Component {
 
 	handleClick = e => {
 		let { notes } = this.state;
+		let { type, title, cID } = this.props;
+		if (type === "ALL") {
+			cID = -1;
+			title = "Personal Notes";
+		}
 		const newNote = {
 			title: "",
 			text: "",
-			cTitle: this.props.title,
-			type: this.props.type,
-			cID: this.props.cID,
+			cTitle: title,
+			type: type,
+			cID: cID,
 			id: 9000000 + notes.length,
 			new: true
 		};
 
 		notes.push(newNote);
+		//	console.log("state notes", notes);
+		//	console.log("props Notes", this.props.notes);
 		this.setState({ notes: notes });
 	};
 
@@ -78,10 +93,13 @@ class NoteManager extends React.Component {
 		if (this.state.notes === []) return null;
 
 		return (
-			<div>
-
+			<div className="note-manager-div">
 				{this.renderNotes()}
-				<Button attached="bottom" onClick={e => this.handleClick(e)}>
+				<Button
+					className="note-button"
+					color="blue"
+					onClick={e => this.handleClick(e)}
+				>
 					Add Note
 				</Button>
 			</div>

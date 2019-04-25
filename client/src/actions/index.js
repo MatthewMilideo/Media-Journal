@@ -85,7 +85,7 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 		}
 	};
 	let config = crudConfig[type];
-	//////console.log(('build query config' , config);
+	console.log('build query config' , config);
 	dispatch(journalQuery(config));
 };
 
@@ -107,7 +107,7 @@ export const journalQuery = ( config ) => async dispatch => {
 		dispatch({ type: `${T.NOTE}${T._ERRORED}${aType}` });
 		return; 
 	}
-	// //console.log(response);
+	console.log('response', response);
 	dispatch({
 		type: `${T.NOTE}${T._FINISHED}${aType}`,
 		payload: {data: response.data, id}

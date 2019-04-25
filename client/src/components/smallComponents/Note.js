@@ -96,7 +96,7 @@ class Note extends React.Component {
 		this.state.mouse ? (color = "orange") : (color = null);
 
 		return (
-			<div className="note-segment">
+			<div className="note-div-active note-div">
 				<Segment
 					raised
 					color={color}
@@ -104,7 +104,6 @@ class Note extends React.Component {
 					onMouseLeave={this.mouseLeave}
 				>
 					<Form>
-						<h4> {this.props.data.cTitle} </h4>
 						<Form.Field
 							label="Note Title"
 							placeholder="Title"
@@ -118,29 +117,33 @@ class Note extends React.Component {
 							value={this.state.noteValue}
 							onChange={this.onValueChange}
 						/>
-
-						<Dropdown2
-							tags={this.props.tags}
-							selectedTags={this.state.currentValues}
-							fetchTags={this.props.fetchTags}
-							addTag={this.props.addTag}
-							placeholder="poop"
-						/>
-
+						<div> 
 						<Button onClick={this.onSaveClick}> Save Note </Button>
 						<Button onClick={this.onDeleteClick}> Delete Note </Button>
+						</div>
 					</Form>
 				</Segment>
 			</div>
 		);
 	}
 
+	/*
+	<Dropdown2
+							disabled
+							tags={this.props.tags}
+							selectedTags={this.state.currentValues}
+							fetchTags={this.props.fetchTags}
+							addTag={this.props.addTag}
+							placeholder="A Tag"
+						/>
+					*/
+
 	renderInactive() {
 		let color;
 		this.state.mouse ? (color = "teal") : (color = null);
 
 		return (
-			<div className="note-outer-div">
+			<div className="note-outer-div-inactive note-div">
 				<Segment
 					color={color}
 					raised
@@ -148,11 +151,13 @@ class Note extends React.Component {
 					onMouseLeave={this.mouseLeave}
 					onClick={this.onHandleSegClick}
 				>
-					<div className="note-inner-div">
+					<div className="note-inner-div-inactive">
 						<div>
 							<h1> {this.state.noteTitle} </h1>
 							<h2>
-								{` ${this.props.data.cTitle} // ${typeToStr(this.props.data.type)}`}
+								{` ${this.props.data.cTitle} ${typeToStr(
+									this.props.data.type
+								)}`}
 							</h2>
 						</div>
 						<Icon className="icon" name="edit" size="large" color={color} />

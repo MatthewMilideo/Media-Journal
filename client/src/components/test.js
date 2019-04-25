@@ -61,7 +61,7 @@ const renderContent = (type, searchData) => {
         case T.UNLOADED:
             return <Segment textAlign = 'center'> Please search for some content. </Segment>;
         case `${type}${T._BEGAN_SEARCH}`:
-            return <div> Content Loading </div>;
+            return <Segment textAlign = 'center'> Loading...  </Segment>;
         case `${type}${T._BEGAN_SEARCH_NEXT}`:
             return <div> {swipeRow} </div>;
         case `${type}${T._FINISHED_SEARCH}`:
@@ -73,7 +73,7 @@ const renderContent = (type, searchData) => {
         case `${type}${T._FINISHED_SEARCH_NEXT}`:
             return swipeRow;
         case `${type}${T._ERRORED_SEARCH}`:
-            return <Segment inverted color='red' textAlign = 'center'>  There was an error with your search, please try again. </Segment>;
+            return <Segment color='red' textAlign = 'center'>  There was an error with your search, please try again. </Segment>;
         case `${type}${T._ERRORED_SEARCH_NEXT}`:
             return (
                 <Segment inverted color='red' textAlign = 'center'>>
@@ -95,14 +95,18 @@ const test = (props) => {
         props.fetchNextPage(type); 
     }
     
-
+    let disabled;
     return(
-        <div> 
+        <div className = 'search-results-div'> 
         {renderContent(type, data)}
-        <Button onClick = {loadMore}> Load More </Button>
+        {data.status === T.UNLOADED ? (disabled = true) : (disabled = false)}
+        <Button color= 'blue' disabled = {disabled} onClick = {loadMore}> Load More Content </Button>
         </div>
     ) 
 }
+
+
+
 
   
 

@@ -163,11 +163,11 @@ class MediaPage extends React.Component {
 
 		return (
 			<div>
-				<Segment secondary>
+				
 					{returnData}
 					{cast}
 					<NoteManager title = {title} cID={id} type={type} />
-				</Segment>
+			
 			</div>
 		);
 	}

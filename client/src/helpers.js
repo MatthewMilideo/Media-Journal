@@ -61,10 +61,11 @@ export const formatMoney = (num) => {
 
 export const typeToStr = elem => {
     let obj = {}; 
-    obj[T.MOVIE] = 'Movie';
-    obj[T.TV_SEASON] = 'TV Show'
-    obj[T.BOOK] = 'Book'
-    obj[T.GAME] = 'Video Game'
+    obj[T.MOVIE] = '// Movie';
+    obj[T.TV_SEASON] = '// TV Show'
+    obj[T.BOOK] = '// Book'
+    obj[T.GAME] = '// Video Game'
+    obj['ALL'] = ''
 
     return obj[elem];
 }

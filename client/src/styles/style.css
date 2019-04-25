@@ -4,6 +4,14 @@
 	color: black !important;
 }
 
+/* ~~~~~~~~ Search Pages ~~~~~~~ */
+
+.search-results-div .button{
+	margin-top: 15px; 
+	margin-bottom: 10px; 
+	width: 100%; 
+}
+
 /*  ~~~~~~ Media Page ~~~~~~~~ */
 
 .media-image-div{
@@ -108,7 +116,7 @@
 	max-height: 50px;
 }
 
-/* Book Page */
+/* Media Page - Book Page */
 
 .book-title-div h1 {
 	display: inline; 
@@ -158,30 +166,38 @@
 	padding-left: 25px;
 
 }
+/* ~~~~~~~~~~~~ Note Manager ~~~~~~~~~~~ */
 
-/* ~~~~~~~~~~~~~~~~~~~~~~ Book Data Page ~~~~~~~~~~~~~~~~~~~~~~~~ */
+.note-manager-div{
+	margin-top: 10px; 
+}
 
-
-
-
+.note-button{
+	width: 100%; 
+}
 
 /* ~~~~~~~~~~~~ Note ~~~~~~~~~~~ */
 
+.note-div{
+	margin-top: 10px;
+	margin-bottom: 10px; 
+}
 
-.note-outer-div {
+
+.note-outer-div-inactive {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-.note-inner-div div:first-of-type {
+.note-inner-div-inactive div:first-of-type {
 	display: inline-block; 
 }
 
-.note-inner-div h1 {
+.note-inner-div-inactive h1 {
 	font-size: 20px;  
 	margin: 0; 
 }
-.note-inner-div h2 {
+.note-inner-div-inactive h2 {
 	font-size: 12px;  
 	margin-top: 3px; 
 	margin-bottom: 0px; 
@@ -193,118 +209,19 @@
 	float: right;
 }
 
-.note-inner-div .divider{
+.note-inner-div-inactive .divider{
 	margin: 0px; 
 	margin-bottom: 9px; 
 }
 
-
-
-
-
-
-.test5{
-	position: relative;
-    display:flex;
-    display: row; 
-    justify-content: center;
+.note-div-active .button{
+	margin-bottom: 10px; 
 }
 
-.runtime-div h5{
-	display: inline;
+.note-div-active .button{
+	margin-top: 15px; 
 }
 
 
 
-
-.runtime-div{
-	display: inline
-}
-
-
-
-
-.comma-list-removed {
-	margin-top: 5px;
-	margin-bottom: 14px;
-	display: inline;
-}
-
-
-
-.genre-div {
-	margin-top: 14px;
-	margin-bottom: 14px;
-}
-
-.crew-div p {
-	display: inline;
-	
-}
-
-.show-div  {
-	margin-top: 14px; 
-
-}
-.show-div p {
-    display: inline;
-	padding: 0; 
-}
-
-
-
-
-
-.whole-crew-div{
-	margin-bottom: 14px; 
-}
-
-
-
-
-
-
-
-
-.hell2o {
-	background-color: blue;
-}
-
-.mainH1 {
-	margin-top: 0px;
-	margin-bottom: 5px;
-}
-
-.thisDiv {
-	display: inline-block;
-	font-size: 25px;
-}
-
-.icon {
-	padding: 0;
-	margin: 0;
-}
-.butt {
-	height: 10px;
-}
-
-.title-div {
-	position: relative;
-	display: inline-block;
-}
-
-.title-div h1 {
-	margin-bottom: 2px;
-}
-
-.title-div h5 {
-	display: inline;
-	font-size: 12px;
-}
-
-
-
-.divider {
-	margin: 0;
-}
 

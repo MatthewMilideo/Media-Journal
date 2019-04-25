@@ -1,35 +1,12 @@
 {
   "notes": [
     {
-      "title": "Star Wars is a classic movie. ",
-      "text": "Test",
-      "cTitle": "Star Wars",
-      "type": "MOVIE",
-      "cID": "11",
+      "title": "Hello Blue State Digital Team!",
+      "text": "Welcome to my *work in progress* web app! ",
+      "cTitle": "Personal Notes",
+      "type": "ALL",
+      "cID": -1,
       "id": 1
-    },
-    {
-      "title": "Test ",
-      "text": "Hello ",
-      "cTitle": "The Culture Industry",
-      "type": "BOOK",
-      "id": 2
-    },
-    {
-      "title": "Test ",
-      "text": "Hello ",
-      "cTitle": "The Sopranos",
-      "type": "TV_SEASON",
-      "cID": "1398",
-      "id": 3
-    },
-    {
-      "title": "Test Note ",
-      "text": "Hello ",
-      "cTitle": "The Science of Star Wars",
-      "type": "BOOK",
-      "cID": "knGTdANXGfgC",
-      "id": 4
     }
   ],
   "tags": [
