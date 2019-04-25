@@ -4,13 +4,7 @@
 	color: black !important;
 }
 
-/* ~~~~~~~~ Search Pages ~~~~~~~ */
 
-.search-results-div .button{
-	margin-top: 15px; 
-	margin-bottom: 10px; 
-	width: 100%; 
-}
 
 /*  ~~~~~~ Media Page ~~~~~~~~ */
 
@@ -224,4 +218,54 @@
 
 
 
+/* Search Bar */
 
+.search-form-div{
+	margin-top: 5px;
+
+}
+
+.search-form-div input{
+	margin-bottom: 5px !important;
+}
+
+.search-bar-button-div{
+	display: flex; 
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.search-bar-button-div .button{
+	padding-top: 12px;
+	padding-bottom: 12px;
+	margin-bottom: 5px;
+
+
+}
+
+/* ~~~~~~~~ Search Pages ~~~~~~~ */
+
+.search-results-div {
+	margin-top: 15px;
+	display: flex;
+	flex-direction: column; 
+	justify-content: center;
+}
+
+.search-results-div .swipe-row-div{
+	display: flex; 
+	justify-content: center; 
+}
+
+.search-results-div .button{
+	margin-top: 15px; 
+	margin-bottom: 10px; 
+	width: 100%; 
+}
+
+.swipe-row-elem-mobile{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+/*  */

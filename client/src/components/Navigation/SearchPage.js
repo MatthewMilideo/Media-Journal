@@ -1,14 +1,13 @@
 import React from "react";
 import { Container, Menu, Segment, Button } from "semantic-ui-react";
-import { connect } from "react-redux";
+
 import * as T from "../../actions/types";
 
 
-import { getSearch } from "../../reducers/index";
 
 import SearchBar from "../SearchBar";
-import Test from '../test';
-import SwipeRow from "../smallComponents/SwipeRow";
+import SearchContainer from '../SearchContainer';
+
 
 class SearchPage extends React.Component {
 	state = { searchType: T.MOVIE };
@@ -65,15 +64,14 @@ class SearchPage extends React.Component {
 
 	render() {
 		const searchType =  this.state.searchType;
-		const searchData = this.props[searchType];
 
-		//console.log('type', searchType, 'data', searchData);
+
 		
 		return (
 			<Container>
 				{this.renderMenu()}
 				{this.renderSearchBar(searchType)}
-				<Test type = {this.state.searchType}/>
+				<SearchContainer type = {this.state.searchType}/>
 			</Container>
 		);
 	}

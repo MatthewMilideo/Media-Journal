@@ -1,6 +1,7 @@
 import { formatDate, formatMoney } from "../helpers";
 import * as T from "../actions/types";
 
+/* Formats Results of search query to The Movie Database (TMDB) API */
 export const TMDBFormatter = (data, unused) => {
 	data.results = data.results.map(media => {
 		let smallImage;
@@ -26,35 +27,45 @@ export const TMDBFormatter = (data, unused) => {
 	return data;
 };
 
-const standardRoles = [
-	"Director",
-	"Executive Producer",
-	"Producer",
-	"Director of Photography",
-	"Writer"
-];
-
-const crewFormatter = (input, creator = null, output = standardRoles) => {
-	//console.log("crew", input);
-	//console.log("creator", creator);
-	let returnObj = {};
-	output.forEach(role => (returnObj[role] = []));
-
-	returnObj["Creator"] = [];
-	if (creator != null) {
-		creator.forEach(crew => {
-			returnObj["Creator"].push(crew);
-		});
+/* Formats Results of search query to Google Books API */
+export const bookFormatter = (books, curElem = 0) => {
+	if (!books.items) {
+		books.items = [];
+		return books;
 	}
 
-	input.forEach(crew => {
-		if (returnObj[crew.job]) returnObj[crew.job].push(crew);
-	});
+	books.items = books.items.map(book => {
+		let smallImage;
+		let largeImage;
+		let bigImage;
 
-	////console.log(('returnObj',returnObj);
-	return returnObj;
+		if (book.volumeInfo.hasOwnProperty("imageLinks")) {
+			smallImage = book.volumeInfo.imageLinks.smallThumbnail;
+			largeImage = book.volumeInfo.imageLinks.thumbnail;
+			largeImage = largeImage.concat("&zoom=.25");
+			bigImage = book.volumeInfo.imageLinks.small;
+		} else {
+			smallImage = null;
+			largeImage = null;
+			bigImage = null;
+		}
+		return {
+			ID: book.id,
+			title: book.volumeInfo.title,
+			subtitle: book.volumeInfo.subtitle,
+			authors: book.volumeInfo.authors,
+			overview: book.volumeInfo.description,
+			language: book.volumeInfo.language,
+			smallImage: smallImage,
+			largeImage: largeImage,
+			bigImage: bigImage
+		};
+	});
+	books.page = curElem;
+	return books;
 };
 
+/* Formats results of a search query for a specific movie from the TMDB API  */
 export const movieItemFormatter = data => {
 	let smallImage;
 	let largeImage;
@@ -66,8 +77,6 @@ export const movieItemFormatter = data => {
 		smallImage = null;
 		largeImage = null;
 	}
-
-	//////console.log((data);
 
 	const movieData = {
 		title: data.original_title,
@@ -93,6 +102,7 @@ export const movieItemFormatter = data => {
 	return movieData;
 };
 
+/* Formats results of a search query for a specific show from the TMDB API  */
 export const showItemFormatter = data => {
 	let smallImage;
 	let largeImage;
@@ -136,62 +146,41 @@ export const showItemFormatter = data => {
 	return showData;
 };
 
-export const bookFormatter = (books, curElem = 0) => {
-	if (!books.items) {
-		books.items = [];
-		return books;
+/* This object defines the standard crew rolls that I use in the fromatter below. */
+const standardRoles = [
+	"Director",
+	"Executive Producer",
+	"Producer",
+	"Director of Photography",
+	"Writer"
+];
+/* Formats the crew from a TMDB item query and returns roles listed above */
+const crewFormatter = (input, creator = null, output = standardRoles) => {
+	let returnObj = {};
+	output.forEach(role => (returnObj[role] = []));
+
+	returnObj["Creator"] = [];
+	if (creator != null) {
+		creator.forEach(crew => {
+			returnObj["Creator"].push(crew);
+		});
 	}
 
-	books.items = books.items.map(book => {
-		let smallImage;
-		let largeImage;
-		let bigImage;
-
-		if (book.volumeInfo.hasOwnProperty("imageLinks")) {
-			smallImage = book.volumeInfo.imageLinks.smallThumbnail;
-			largeImage = book.volumeInfo.imageLinks.thumbnail;
-			largeImage = largeImage.concat("&zoom=.25");
-			bigImage = book.volumeInfo.imageLinks.small;
-		} else {
-			smallImage = null;
-			largeImage = null;
-			bigImage = null;
-		}
-		return {
-			ID: book.id,
-			title: book.volumeInfo.title,
-			subtitle: book.volumeInfo.subtitle,
-			authors: book.volumeInfo.authors,
-			overview: book.volumeInfo.description,
-			language: book.volumeInfo.language,
-			smallImage: smallImage,
-			largeImage: largeImage,
-			bigImage: bigImage
-		};
+	input.forEach(crew => {
+		if (returnObj[crew.job]) returnObj[crew.job].push(crew);
 	});
-	books.page = curElem;
-	return books;
+
+	return returnObj;
 };
 
-const removeBR = text => {
-
-	if (text === undefined) return text; 
-
-	let value = text.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g,"")
-	//console.log(value);
-	return value; 
-}
-
-
-
+/* Formats theresults of a search query for a specific book from the GoogleBooks API  */
 export const bookItemFormatter = data => {
 	data = data.volumeInfo;
-
-
-
 	let pubDate = data.publishedDate;
 
-	pubDate === undefined ? pubDate = undefined : pubDate = formatDate(new Date(pubDate))
+	pubDate === undefined
+		? (pubDate = undefined)
+		: (pubDate = formatDate(new Date(pubDate)));
 
 	let returnObj = {
 		id: data.id,
@@ -211,4 +200,12 @@ export const bookItemFormatter = data => {
 	};
 
 	return returnObj;
+};
+
+/* Removes line breaks from the overview section of a google books item request */
+const removeBR = text => {
+	if (text === undefined) return text;
+	let value = text.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g, "");
+	//console.log(value);
+	return value;
 };

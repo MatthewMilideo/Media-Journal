@@ -43,7 +43,7 @@ export const fetchNextPage = (type) => (dispatch, getState) => {
 	dispatch(searchFunc(type, params, T._NEXT));
 };
 
-//TODO Build out game query builder.
+
 
 const itemObj = {};
 itemObj[T.MOVIE] = TMDBItemQuery;
@@ -51,11 +51,9 @@ itemObj[T.TV_SEASON] = TMDBItemQuery;
 itemObj[T.BOOK] = bookItemQuery;
 itemObj[T.GAME] = gameItemQuery;
 
-// Fetches data for an individual item
+// Fetches data for an individual item query 
 export const fetchItem = (type, id) => dispatch => {
-//	////console.log((' in fetch item' , type, id);
 	const itemFunc = itemObj[type];
-//	////console.log((itemFunc);
 
 	dispatch(itemFunc(type, id));
 };
@@ -63,7 +61,7 @@ export const fetchItem = (type, id) => dispatch => {
 export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 	let loc; 
 	qType === T.NOTE ? loc = 'notes/' : loc = 'tags/'
-//	////console.log((type, qType, params, id );
+
 	
 	const crudConfig = {
 		get: { aType: T._GET, func: myData.get, loc, params: {params}, id: null},
@@ -92,18 +90,14 @@ export const buildCrudQuery = (type, qType, params, id = null) => dispatch => {
 export const journalQuery = ( config ) => async dispatch => {
 
 	const {aType, func, loc, params, id} = config; 
-	//////console.log((aType,  loc, params, id);
 	let response;
 
 	dispatch({ type: `${T.NOTE}${T._BEGAN}${aType}` });
 
-	//console.log('loc', loc, 'params', params);
 
 	try {
 		response = await func(loc, params);
 	} catch (err) {
-		//console.log(err);
-		//console.log(response);
 		dispatch({ type: `${T.NOTE}${T._ERRORED}${aType}` });
 		return; 
 	}
@@ -117,58 +111,3 @@ export const journalQuery = ( config ) => async dispatch => {
 
 
 
-
-export const fetchTags = () => async dispatch => {
-	let response;
-
-	try {
-		response = await myData.get("tags/");
-	} catch (err) {
-		////console.log((err);
-	}
-	dispatch({ type: "FETCH_TAGS", payload: response.data });
-};
-
-export const fetchTag = tag => async dispatch => {
-//	////console.log(("in fetch tag");
-//	////console.log((tag);
-	let response;
-
-	//let query = { params: { id: tag } };
-
-	try {
-		response = await myData.get(`tags/${tag}`);
-	} catch (err) {
-		////console.log(("Error");
-		return "poop";
-	}
-//	////console.log(("did not error");
-//	////console.log((response);
-	return response;
-};
-
-export const addTag = tag => async dispatch => {
-	let response;
-
-	response = await dispatch(fetchTag(tag.id));
-	if (response !== "poop") {
-///		////console.log(("tag already added");
-		return;
-	}
-
-	try {
-		response = await myData.post(
-			"tags",
-			{
-				id: tag.id,
-				value: tag.value,
-				text: tag.text
-			},
-			{ headers: { "Content-Type": "application/json" } }
-		);
-	} catch (err) {
-		////console.log((err);
-	}
-	////console.log((response);
-	dispatch({ type: "ADD_TAG", payload: response.data });
-};

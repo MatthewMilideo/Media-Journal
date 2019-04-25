@@ -27,12 +27,11 @@ const configureInputList = (list, configObj) => {
             id: elem.ID
         };
     });
-    ////console.log((localList);
+
     return localList
 };
 
 const renderContent = (type, searchData) => {
-    ////console.log((type, searchData);
     const configObj = {
         imageP1: "",
         imageP2: "largeImage",
@@ -88,11 +87,10 @@ const renderContent = (type, searchData) => {
     }
 };
 
-
-const test = (props) => {
+// Add B
+const SearchContainer = (props) => {
    
     const {type} = props;
-    //console.log(type)
     const data = props[type];
 
     const loadMore = () => {
@@ -109,11 +107,6 @@ const test = (props) => {
     ) 
 }
 
-
-
-
-  
-
 const mapStateToProps = state => {
 	return {
 		MOVIE: getSearch(T.MOVIE, state),
@@ -123,4 +116,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps,{fetchNextPage})(test); 
+export default connect(mapStateToProps,{fetchNextPage})(SearchContainer); 

@@ -40,27 +40,26 @@ class SwipeRow extends React.Component {
 	onResize = e => {
 		let winSize = window.innerWidth;
 		for (let i = 0; i < sizeArr.length; i++) {
-			
 			if (winSize <= sizeArr[i].max && this.state.windowSize !== i) {
-				if ( i > 0  &&  winSize >=  sizeArr[i-1].max || i === 0) {
-				////console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
-				winSize = sizeArr[i].min;
-				let rowSize = Math.floor(winSize / this.props.eSize);
-				if (rowSize === 0 && this.props.type !== 1) rowSize = 5;
-				if (rowSize === 0 && this.props.type === 1) rowSize = 0;
-				let rows = this.buildRowLists(rowSize);
+				if ((i > 0 && winSize >= sizeArr[i - 1].max) || i === 0) {
+					////console.log(("winSize", winSize, 'sizeArr', sizeArr[i].max );
+					winSize = sizeArr[i].min;
+					let rowSize = Math.floor(winSize / this.props.eSize);
+					if (rowSize === 0 && this.props.type !== 1) rowSize = 5;
+					if (rowSize === 0 && this.props.type === 1) rowSize = 0;
+					let rows = this.buildRowLists(rowSize);
 
-				let rowsPos = this.state.rowsPos
-				if (this.state.rowsPos > rows.length -1) rowsPos = rows.length -1
+					let rowsPos = this.state.rowsPos;
+					if (this.state.rowsPos > rows.length - 1) rowsPos = rows.length - 1;
 
-				this.setState({
-					windowSize: i,
-					rowSize: rowSize,
-					rows: rows,
-					rowsPos
-				});
-				break;
-			}
+					this.setState({
+						windowSize: i,
+						rowSize: rowSize,
+						rows: rows,
+						rowsPos
+					});
+					break;
+				}
 			}
 		}
 	};
@@ -159,12 +158,16 @@ class SwipeRow extends React.Component {
 		let returnData = null;
 		if (num === 1) {
 			returnData = rows[rowsPos].map((elem, index) => {
-				if (elem === null){
-					return( <Grid.Column key = {index} > </Grid.Column>)
+				if (elem === null) {
+					return <Grid.Column key={index}> </Grid.Column>;
 				}
 				return (
 					<Grid.Column key={elem.id}>
-						 <SwipeRowElem type = {this.props.elemType} key={elem.id} elem={elem}  /> 
+						<SwipeRowElem
+							type={this.props.elemType}
+							key={elem.id}
+							elem={elem}
+						/>
 					</Grid.Column>
 				);
 			});
@@ -172,40 +175,52 @@ class SwipeRow extends React.Component {
 		}
 		returnData = rows.map((list, index) => {
 			return (
-				<Grid.Row key = {index} stretched>
-					{list.map( (elem, index) => {
-						if (elem === null){
-							return( <Grid.Column key = {index}> </Grid.Column>)
+				<Grid.Row key={index} stretched>
+					{list.map((elem, index) => {
+						if (elem === null) {
+							return <Grid.Column key={index}> </Grid.Column>;
 						}
-						
+
 						return (
 							<Grid.Column key={elem.id}>
 								<Link to={`/media/${this.props.cType}/${elem.id}`}>
-									<SwipeRowElem type = {this.props.elemType} key = {elem.id} elem={elem} />
+									<SwipeRowElem
+										type={this.props.elemType}
+										key={elem.id}
+										elem={elem}
+									/>
 								</Link>
 							</Grid.Column>
 						);
 					})}
-
 				</Grid.Row>
 			);
 		});
 		return returnData;
 	};
-	// needs fixing
+
 	renderRowMobile() {
 		let { rows, rowsPos } = this.state;
 		return (
 			<Segment>
-					
 				<Item.Group divided>
-					{rows[rowsPos].map(elem => (
-						<Link to={`/media/${this.props.cType}/${elem.id}`}>	
-						<SwipeRowElem type = {this.props.elemType} key={elem.id} elem={elem} size={0} />
-						</Link>
-					))}
+					{rows[rowsPos].map(elem => {
+						return (
+							<div className = 'swipe-row-elem-mobile'>
+								{elem === null ? null:
+								<Link to={`/media/${this.props.cType}/${elem.id}`}>
+									<SwipeRowElem
+										type={this.props.elemType}
+										key={elem.id}
+										elem={elem}
+										size={0}
+									/>
+								</Link>
+								}
+							</div>
+						);
+					})}
 				</Item.Group>
-				
 			</Segment>
 		);
 	}
@@ -224,9 +239,9 @@ class SwipeRow extends React.Component {
 				: this.renderRowMobile();
 
 		return (
-			<div> 
-				{this.props.headerText? <h1> {this.props.headerText} </h1> : null }
-				
+			<div className="swipe-row-div">
+				{this.props.headerText ? <h1> {this.props.headerText} </h1> : null}
+
 				<Grid stackable columns="equal">
 					{this.props.type ? this.buildLeftButton() : null}
 					{returnData}

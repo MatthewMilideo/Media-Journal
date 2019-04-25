@@ -53,7 +53,7 @@ export const nextQueryBuilder = (type, curElem, totalElems, query) => {
 
 /* Experimental */
 const checkNotes = (response) => {
-	////console.log(('poop');
+
 
 	response = response.map( elem => { 
 		return {id: elem.ID} 
@@ -85,8 +85,7 @@ export const TMDBSearchQuery = (
 	}
 
 	response = TMDBFormatter(response.data);
-	let poop = checkNotes(response.results);
-	////console.log(('poop');
+
 
 	dispatch({
 		type: `${type}${T._FINISHED_SEARCH}${typeMod}`,
@@ -126,6 +125,7 @@ export const bookSearchQuery = (
 	});
 };
 
+// TODO
 export const gameSearchQuery = (params, typeMod = "") => async dispatch => {
 	/*
 	igdbQuery = () => {

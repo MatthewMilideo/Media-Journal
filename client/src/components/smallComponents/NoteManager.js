@@ -4,7 +4,7 @@ import { Button, PopupContent } from "semantic-ui-react";
 import { connect } from "react-redux";
 
 import * as T from "../../actions/types";
-import { buildCrudQuery, addTag } from "../../actions";
+import { buildCrudQuery} from "../../actions";
 import { getItemNotes } from "../../reducers";
 import "../../styles/style.css";
 
@@ -117,6 +117,6 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ buildCrudQuery, addTag }
+	{ buildCrudQuery}
 )(NoteManager);
 
