@@ -1,6 +1,6 @@
 import React from "react";
 import Note from "./Note";
-import { Button } from "semantic-ui-react";
+import { Button, PopupContent } from "semantic-ui-react";
 import { connect } from "react-redux";
 
 import * as T from "../../actions/types";
@@ -32,14 +32,6 @@ class NoteManager extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		console.log(
-			"state",
-			this.state.notes,
-			"props",
-			this.props.notes,
-			"prev props",
-			prevProps.notes
-		);
 		if (this.props.notes.length != prevProps.notes.length) {
 			this.setState({
 				notes: [...this.props.notes]
@@ -59,12 +51,20 @@ class NoteManager extends React.Component {
 						tags={null}
 						addTag={null}
 						query={this.props.buildCrudQuery}
+					
 					/>
 				);
 			});
 		}
 		return notes;
 	};
+	removeNewNote = (id) => {
+		let notes = this.state.notes; 
+
+		notes = notes.filter( elem => elem.id !== id);
+		console.log(notes);
+		this.setState({notes});
+		}
 
 	handleClick = e => {
 		let { notes } = this.state;
@@ -80,14 +80,16 @@ class NoteManager extends React.Component {
 			type: type,
 			cID: cID,
 			id: 9000000 + notes.length,
-			new: true
+			new: true,
+			remove: this.removeNewNote
 		};
 
 		notes.push(newNote);
-		//	console.log("state notes", notes);
-		//	console.log("props Notes", this.props.notes);
 		this.setState({ notes: notes });
 	};
+
+	
+	
 
 	render() {
 		if (this.state.notes === []) return null;
@@ -117,3 +119,4 @@ export default connect(
 	mapStateToProps,
 	{ buildCrudQuery, addTag }
 )(NoteManager);
+
