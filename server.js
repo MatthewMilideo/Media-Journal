@@ -1,46 +1,42 @@
 //Static file declaration
 const express = require("express");
-const jsonServer = require("json-server");
-const middlewares = jsonServer.defaults();
-const path = require("path");
-
-const app = express();
+const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000;
-const url = process.env.PUBLIC_URL || 'http://localhost:3000'
+const app = express();
 
-var cors = require("cors");
+const locPool = process.env.POOL || {
+	user: 'matthewmilideo',
+	host: 'localhost',
+	database: 'Media-Journal',
+	password: 'password',
+	port: 5432,
+  };
 
 
-	app.use(
-		cors({
-			origin: url
-		})
-	)
-//console.log(url);
+app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
-//app.use(middlewares);
-const router = jsonServer.router("db.json");
-router.use(middlewares);
-app.use("/api", router);
+const Pool = require('pg').Pool
+const pool = new Pool(locPool); 
 
-// You may want to mount JSON Server on a specific end-point, for example /api
-// Optiona,l except if you want to have JSON Server defaults
-// server.use('/api', jsonServer.defaults());
 
-//production mode
-if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "/client/build")));
+const getUsers = (request, response) => {
+	pool.query('SELECT * FROM "Media"', (error, results) => {
+	  if (error) {
+		console.log(error);
+	  }
+	  response.status(200).json(results.rows)
+	})
+  }
 
-	app.get("*", (req, res) => {
-		res.sendfile(path.join(__dirname, "client/build/index.html"));
-	});
-}
+app.get('/', getUsers);
 
-//build mode
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "/client/public/index.html"));
-});
 
-//console.log("test");
-//start server
-app.listen(port, (req, res) => {});
+
+  app.listen(port, () => {
+	console.log(`App running on port ${port}.`)
+  })
