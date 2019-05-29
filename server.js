@@ -1,17 +1,9 @@
 //Static file declaration
 const express = require("express");
 const bodyParser = require('body-parser');
+const mountRoutes = require('./routes')
 const port = process.env.PORT || 5000;
 const app = express();
-
-const locPool = process.env.POOL || {
-	user: 'matthewmilideo',
-	host: 'localhost',
-	database: 'Media-Journal',
-	password: 'password',
-	port: 5432,
-  };
-
 
 app.use(bodyParser.json())
 app.use(
@@ -20,23 +12,50 @@ app.use(
   })
 );
 
-const Pool = require('pg').Pool
-const pool = new Pool(locPool); 
+/*
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
+*/
 
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.json({
+      message: err.message,
+      error: err
+    });
+  });
+}
 
-const getUsers = (request, response) => {
-	pool.query('SELECT * FROM "Media"', (error, results) => {
-	  if (error) {
-		console.log(error);
-	  }
-	  response.status(200).json(results.rows)
-	})
-  }
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({
+    message: err.message,
+    error: {}
+  });
+});
 
-app.get('/', getUsers);
+mountRoutes(app);
+
 
 
 
   app.listen(port, () => {
 	console.log(`App running on port ${port}.`)
-  })
+	})
+
+	
+
+
+module.exports = app
+	
+
+
+
+
+
