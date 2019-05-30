@@ -1,5 +1,10 @@
 const db = require("../db/index.js");
 
+
+const Proto = require("../models/proto_model");
+
+let User2 = new Proto ('user', null)
+
 const User = {};
 
 // Finds all Users
@@ -25,7 +30,7 @@ User.findAll = async () => {
 // Fetch a user by ID
 User.findByID = async user_id => {
 	// Checks if the ID is an integer. 
-	if (Number.isInteger(user_id) === false)
+	if (Number.isInteger(parseInt(user_id)) === false)
 		return { code: 406, data: "ID must be an integer" };
 
 	let dbRes;
@@ -81,7 +86,7 @@ User.postUser = async (user_name, user_email) => {
 	}
 	return {
 		code: 201,
-		data: dbRes.rows
+		data: dbRes.rows[0]
 	};
 };
 // Edits an existing user. 
@@ -150,73 +155,4 @@ User.deleteUser = async (user_id) => {
 	return {code: 200, data: dbRes}
 };
 
-module.exports = User;
-
-/*
-async function editUser(req, res) {
-	let query;
-	let dbRes;
-	let section;
-	let { user_id, user_name, user_email } = req.body;
-
-	console.log(user_name, user_email);
-
-	if (user_name !== undefined && user_email !== undefined) {
-		try {
-			dbRes = await db.query(
-				`UPDATE users SET user_name = $1, user_email = $2 WHERE user_id = $3`,
-				[user_name, user_email, user_id]
-			);
-		} catch (err) {
-			console.log("Error Editing user");
-			console.log(err);
-			return;
-		}
-	} else if (user_name !== undefined) {
-		try {
-			dbRes = await db.query(
-				`UPDATE users SET user_name = $1 WHERE user_id = $2`,
-				[user_name, user_id]
-			);
-		} catch (err) {
-			console.log("Error Editing user");
-			console.log(err);
-			return;
-		}
-		section = "user_name = $1 ";
-	} else if (user_email !== undefined) {
-		try {
-			dbRes = await db.query(
-				`UPDATE users SET user_email = $1 WHERE user_id = $2`,
-				[user_email, user_id]
-			);
-		} catch (err) {
-			console.log("Error Editing user");
-			console.log(err);
-			return;
-		}
-	} else {
-		res.send("Edit unsuccesful");
-		return;
-	}
-
-	res.send("Edit succesful");
-}
-
-async function deleteUser(req, res) {
-	const { user_id } = req.body;
-	let dbRes;
-
-	try {
-		dbRes = await db.query("DELETE FROM users WHERE user_id = $1", [user_id]);
-		if (dbRes.rowCount === 0) {
-			res.send("The Entry was not present. Please try a different id");
-			return;
-		}
-	} catch (err) {
-		console.log(err);
-	}
-	res.send("The entry was deleted!");
-}
-
-*/
+module.exports = User2;

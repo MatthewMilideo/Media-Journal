@@ -8,7 +8,12 @@ userController.findAll = (req, res) => {
 	let response;
 	// Uses the findAll method from Quote
 	response = User.findAll();
-	response.then(data => res.status(data.code).send(data.data));
+	
+	response.then(data => {
+		console.log(data);
+		res.status(data.code).send(data.data)
+	}
+		);
 };
 
 userController.findByID = (req, res) => {
@@ -16,7 +21,7 @@ userController.findByID = (req, res) => {
 	const { user_id } = req.params;
 	response = User.findByID(user_id);
 	response.then(data => {
-		console.log(data);
+		//console.log(data);
 		res.status(data.code).send(data.data);
 	});
 };
@@ -26,7 +31,7 @@ userController.postUser = (req, res) => {
 	const { user_name, user_email } = req.body;
 	response = User.postUser(user_name, user_email);
 	response.then(data => {
-		console.log(data);
+	//	console.log(data);
 		res.status(data.code).send(data.data);
 	});
 };
@@ -37,7 +42,7 @@ userController.editUser = (req, res) => {
 	const { user_name, user_email } = req.body;
 	response = User.editUser(user_id, user_name, user_email);
 	response.then(data => {
-		console.log(data);
+	//	console.log(data);
 		res.status(data.code).send(data.data);
 	});
 };
@@ -47,7 +52,7 @@ userController.deleteUser = (req, res) => {
 	const { user_id } = req.params;
 	response = User.deleteUser(user_id);
 	response.then(data => {
-		console.log(data);
+//		console.log(data);
 		res.status(data.code).send(data.data);
 	});
 };
