@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Form, Button } from "semantic-ui-react";
+import { Form} from "semantic-ui-react";
 
-import { fetchSearchResult } from "../actions";
+import { fetchSearchResult } from "../actions/ExtAPISearch";
 
 /* Props: 
 	searchType - the redux store's current searchType, 
@@ -17,6 +17,10 @@ class SearchBar extends React.Component {
 
 	componentWillMount(props) {
 		this.setState({ textValues: this.props.config.textValues });
+	}
+
+	componentDidMount(){
+		console.log('in mount function');
 	}
 
 	onSearchSubmit = e => {
@@ -69,5 +73,5 @@ class SearchBar extends React.Component {
 
 export default connect(
 	null,
-	{ fetchSearchResult }
+	{ fetchSearchResult}
 )(SearchBar);

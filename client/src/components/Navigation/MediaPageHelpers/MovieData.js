@@ -81,6 +81,7 @@ const MovieData = props => {
 	);
 };
 
+/*
 const renderBudget = (budget, revenue) => {
 	if (budget !== null) budget = <p> Budget: {budget} </p>;
 	if (revenue !== null) revenue = <p> Revenue: {revenue} </p>;
@@ -95,5 +96,5 @@ const renderBudget = (budget, revenue) => {
 		</div>
 	) : null;
 };
-
+*/
 export default MovieData;

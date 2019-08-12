@@ -1,3 +1,44 @@
+/* Log In Page */
+.icon{
+	float: none !important;
+}
+
+.login-main-div{
+	display: flex; 
+	flex-direction: column;
+}
+
+.login-top-div{
+	display: flex;
+	flex-direction: row;
+	align-items: center; 
+}
+
+.login-top-div{
+	box-sizing: border-box;
+}
+
+.login-radio-div{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	margin-left: auto;
+	font-size: 14px; 
+}
+.login-radio-div :first-child{
+	padding-right: 4px;
+}
+.login-radio-div :last-child{
+	padding-left: 4px;
+}
+
+.login-form-div form{
+	display: flex;
+	flex-direction: column;
+}
+
+
+
 /* Secondary Segment */
 
 .secondary{
@@ -251,8 +292,6 @@
 	flex-direction: column; 
 	justify-content: center;
 }
-
-
 
 .search-results-div .button{
 	margin-top: 15px; 

@@ -1,3 +1,14 @@
+// Bootstrap Variables 
+export const breakpoints = {
+// Small devices (landscape phones, 576px and up)
+sm: 576, 
+md: 768,
+lg: 992, 
+xl: 1200,
+arr: [576, 768, 992, 1200,10000]
+}
+
+
 
 // External Data Types 
 export const MOVIE = 'MOVIE';
@@ -18,6 +29,32 @@ export const _ERRORED_SEARCH_NEXT = '_ERRORED_SEARCH_NEXT';
 export const BEGAN_ITEM = 'BEGAN_ITEM';
 export const FINISHED_ITEM = 'FINISHED_ITEM';
 export const ERRORED_ITEM = 'ERRORED_ITEM';
+
+//LOGIN Constants 
+export const BEGAN_LOGIN = 'BEGAN_LOGIN';
+export const FINISHED_LOGIN = 'FINISHED_LOGIN';
+export const ERRORED_LOGIN = 'ERRORED_LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const BEGAN_REGISTER = 'BEGAN_REGISTER';
+export const FINISHED_REGISTER = 'FINISHED_REGISTER';
+export const ERRORED_REGISTER = 'ERRORED_REGISTER';
+
+
+// Registration Verification 
+export const REG_UNDEFINED = 'REG_UNDEFINED';
+export const CHECK_USER = 'CHECK_USER';
+export const VALID_USER = 'VALID_USER';
+export const INVALID_USER = 'INVALID_USER';
+export const CHECK_EMAIL = 'CHECK_EMAIL';
+export const VALID_EMAIL = 'VALID_EMAIL';
+export const INVALID_EMAIL = 'INVALID_EMAIL';
+
+export const VALID = 'VALID';
+export const INVALID = 'INVALID';
+
+
+
+
 
 
 export const NOTE_STATUS = 'NOTE_STATUS'
@@ -65,6 +102,44 @@ export const _ERRORED_PATCH = 'ERRORED_PATCH';
 export const _BEGAN_PUT = '_BEGAN_PUT';
 export const _FINISHED_PUT = '_FINISHED_PUT';
 export const _ERRORED_PUT = 'ERRORED_PUT';
+
+
+// Notes Sync
+
+export const EDIT_NOTE_TITLE = 'EDIT_NOTE_TITLE'; 
+export const EDIT_NOTE_DATA = 'EDIT_NOTE_DATA'; 
+export const NOTE_EDIT_STATE = 'NOTE_EDIT_STATE'; 
+export const DISCARD_NOTE_CHANGES = 'DISCARD_NOTE_CHANGES'
+
+export const BEG_SAVE_NOTE = 'BEG_SAVE_NOTE'
+export const FIN_SAVE_NOTE = 'FIN_SAVE_NOTE'
+export const ERR_SAVE_NOTE = 'ERR_SAVE_NOTE'
+
+
+export const BEG_SAVE_NOTE_CHANGES = 'BEG_SAVE_NOTE_CHANGES'
+export const FIN_SAVE_NOTE_CHANGES = 'FIN_SAVE_NOTE_CHANGES'
+export const ERR_SAVE_NOTE_CHANGES = 'ERR_SAVE_NOTE_CHANGES'
+
+// Notes 
+export const BEG_GET_ALL_NOTES = 'BEG_GET_ALL_NOTES'; 
+export const FIN_GET_ALL_NOTES = 'FIN_GET_ALL_NOTES'; 
+export const ERR_GET_ALL_NOTES = 'ERR_GET_ALL_NOTES'; 
+
+export const BEG_GET_USER_NOTES = 'BEG_GET_USER_NOTES'; 
+export const FIN_GET_USER_NOTES = 'FIN_GET_USER_NOTES'; 
+export const ERR_GET_USER_NOTES = 'ERR_GET_USER_NOTES'; 
+
+export const BEG_GET_MEDIA_NOTES = 'BEG_GET_MEDIA_NOTES'; 
+export const FIN_GET_MEDIA_NOTES = 'FIN_GET_MEDIA_NOTES'; 
+export const ERR_GET_MEDIA_NOTES = 'ERR_GET_MEDIA_NOTES'; 
+
+export const BEG_GET_MEDIAUSER_NOTES = 'BEG_GET_MEDIAUSER_NOTES'; 
+export const FIN_GET_MEDIAUSER_NOTES = 'FIN_GET_MEDIAUSER_NOTES'; 
+export const ERR_GET_MEDIAUSER_NOTES = 'ERR_GET_MEDIAUSER_NOTES'; 
+
+export const BEG_POST_NOTE = 'BEG_POST_NOTE'; 
+export const FIN_POST_NOTE = 'FIN_POST_NOTE'; 
+export const ERR_POST_NOTE = 'ERR_POST_NOTE'; 
 
 
 

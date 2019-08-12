@@ -1,57 +1,90 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Menu } from "semantic-ui-react";
-import history from "../history";
+import { Button } from "semantic-ui-react";
+
+import Nav from "react-bootstrap/Nav";
+
+import { getUserInfo, getUserErr } from "../reducers";
+import { logoutUser } from "../actions";
 
 class NavBar extends React.Component {
 	state = { activeItem: "Add Content" };
 
-	handleItemClick = (e, { name }) => {
-		this.setState({ activeItem: name });
+	handleLogout = (e, { name }) => {
+		console.log("hello 2");
+		this.props.logoutUser();
+		this.setState({ activeItem: "Log In" });
+	};
+
+	renderLogin = () => {
+		if (!this.props.userInfo.loggedIn) {
+			return (
+				<Nav.Item
+					as={Link}
+					to="/login"
+					position="right"
+					name="Log In"
+					active={this.state.activeItem === "Log In" ? true : undefined}
+					onClick={this.handleItemClick}
+				/>
+			);
+		}
+		return (
+			<Nav.Item
+				as={Button}
+				to="/login"
+				position="right"
+				name={`Logout ${this.props.userInfo.userName}`}
+				active={
+					this.state.activeItem === `Logout ${this.props.userInfo.userName}`
+				}
+				onClick={this.handleLogout}
+			/>
+		);
 	};
 
 	render() {
-		let temp = history.location.pathname;
+		//const { activeItem } = this.state;
 
-		
-		const { activeItem } = this.state;
+		//console.log("Test", this.props.userInfo);
 
 		return (
-			<Menu className = 'test2' color="blue" pointing secondary>
-				<Menu.Item
-					as={Link}
-					to="/Home"
-					name="Home"
-					active={activeItem === "Home"}
-					onClick={this.handleItemClick}
-				/>
-
-				<Menu.Item
-					as={Link}
-					to="/journal"
-					name="Notes"
-					active={this.state.activeItem === "Notes"}
-					onClick={this.handleItemClick}
-				/>
-
-				<Menu.Item
-					as={Link}
-					to="/"
-					name="Add Content"
-					active={activeItem === "Add Content"}
-					onClick={this.handleItemClick}
-				/>
-
-				<Menu.Item
-					position="right"
-					name="Log In"
-					active={activeItem === "Log In"}
-					onClick={this.handleItemClick}
-					disabled
-				/>
-			</Menu>
+			<Nav variant="tabs" defaultActiveKey="home">
+				<Nav.Item>
+					<Nav.Link as={Link} to="/home" eventKey="home">
+						{" "}
+						Home{" "}
+					</Nav.Link>
+				</Nav.Item>
+				<Nav.Item>
+					<Nav.Link as={Link} to="/" eventKey="Content">
+						Browse Content
+					</Nav.Link>
+				</Nav.Item>
+				<Nav.Item>
+					<Nav.Link as={Link} to="/journal" eventKey="Notes">
+						Browse Notes
+					</Nav.Link>
+				</Nav.Item>
+				{this.renderLogin()}
+			</Nav>
 		);
 	}
 }
 
-export default NavBar;
+const mapStateToProps = state => {
+	return {
+		userInfo: getUserInfo(state),
+		userErr: getUserErr(state)
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	{
+		getUserInfo,
+		getUserErr,
+		logoutUser
+	}
+)(NavBar);

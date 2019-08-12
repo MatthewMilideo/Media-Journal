@@ -1,9 +1,8 @@
 import React from "react";
-import { Container, Menu, Segment, Button } from "semantic-ui-react";
+import { Container, Menu } from "semantic-ui-react";
+
 
 import * as T from "../../actions/types";
-
-
 
 import SearchBar from "../SearchBar";
 import SearchContainer from '../SearchContainer';

@@ -1,17 +1,13 @@
 const Router = require("express-promise-router");
-
-const db = require("../db/index.js");
 const MediaController = require('../controllers/media_cont');
-
 const router = new Router();
 
-router.get('/', MediaController.findAll);
-router.get('/content/', MediaController.findByCID);
-router.get('/:media_id', MediaController.findByMID);
-router.post('/', MediaController.postMedia);
-router.delete('/content/', MediaController.deleteMediaByCID);
-router.delete('/:media_id', MediaController.deleteMedia);
-
+router.get('/', MediaController.getAllMedia);
+router.get('/user/', MediaController.getUserMedia);
+//router.get('/content/', MediaController.getCIDMedia);
+//router.post('/', MediaController.postMedia);
+//router.put('/', MediaController.editMedia);
+//router.delete('/', MediaController.deleteMedia);
 
 module.exports = router;
 

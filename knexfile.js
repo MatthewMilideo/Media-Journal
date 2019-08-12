@@ -1,4 +1,5 @@
 module.exports = {
+
   test: {
     client: 'pg',
     connection: 'postgres://localhost/media_journal_test',
@@ -6,27 +7,18 @@ module.exports = {
       directory: __dirname + '/db/migrations'
     },
     seeds: {
-      directory: __dirname + '/db/seeds/test'
+      directory: __dirname + '/db/seeds/dev'
     }
   },
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/Media-Journal',
+    connection: 'postgres://localhost/media_journal',
     migrations: {
-      directory: __dirname + '/db/migrations'
+      directory: './db/migrations'
     },
     seeds: {
-      directory: __dirname + '/db/seeds/development'
-    }
+      directory: './db/seeds/dev'
+    },
+    useNullAsDefault: true
   },
-  production: {
-    client: 'pg',
-    connection: process.env.DATABASE_URL,
-    migrations: {
-      directory: __dirname + '/db/migrations'
-    },
-    seeds: {
-      directory: __dirname + '/db/seeds/production'
-    }
-  }
 };

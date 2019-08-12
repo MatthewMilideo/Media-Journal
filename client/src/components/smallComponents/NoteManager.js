@@ -1,11 +1,10 @@
 import React from "react";
 import Note from "./Note";
-import { Button, PopupContent } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 
-import * as T from "../../actions/types";
-import { buildCrudQuery} from "../../actions";
-import { getItemNotes } from "../../reducers";
+import { getAllNotes, postNote } from "../../actions";
+import { getItemNotes, getNotesState } from "../../reducers";
 import "../../styles/style.css";
 
 /*
@@ -21,15 +20,10 @@ class NoteManager extends React.Component {
 
 	componentDidMount() {
 		//console.log(this.props);
-		if (this.props.type === "ALL") {
-			this.props.buildCrudQuery("get", T.NOTE);
-		} else {
-			this.props.buildCrudQuery("get", T.NOTE, {
-				type: this.props.type,
-				cID: this.props.cID
-			});
-		}
+		this.props.getAllNotes();
+		//this.props.postNote( 'Test Note', 'The test note has this data', 61, 70 )
 	}
+	//70
 
 	componentDidUpdate(prevProps) {
 		if (this.props.notes.length != prevProps.notes.length) {
@@ -51,20 +45,20 @@ class NoteManager extends React.Component {
 						tags={null}
 						addTag={null}
 						query={this.props.buildCrudQuery}
-					
 					/>
 				);
 			});
 		}
 		return notes;
 	};
-	removeNewNote = (id) => {
-		let notes = this.state.notes; 
 
-		notes = notes.filter( elem => elem.id !== id);
+	removeNewNote = id => {
+		let notes = this.state.notes;
+
+		notes = notes.filter(elem => elem.id !== id);
 		console.log(notes);
-		this.setState({notes});
-		}
+		this.setState({ notes });
+	};
 
 	handleClick = e => {
 		let { notes } = this.state;
@@ -88,15 +82,26 @@ class NoteManager extends React.Component {
 		this.setState({ notes: notes });
 	};
 
-	
-	
+	newRenderNotes = () => {
+		const { notes } = this.props;
+		if (!notes.currNotes || !notes.allNotes)
+			return <div> Error: Missing data from the store. </div>;
+		let retNotes = [];
+		for (let i = 0; i < notes.currNotes.length; i++) {
+			let id = notes.currNotes[i];
+			retNotes.push(
+				<Note key={id} data={notes.allNotes[id]} tags={null} addTag={null} />
+			);
+		}
+		return retNotes;
+	};
 
 	render() {
-		if (this.state.notes === []) return null;
+		if (!this.props.notes) return <div> No Notes</div>;
 
 		return (
 			<div className="note-manager-div">
-				{this.renderNotes()}
+				{this.newRenderNotes()}
 				<Button
 					className="note-button"
 					color="blue"
@@ -111,12 +116,11 @@ class NoteManager extends React.Component {
 
 const mapStateToProps = state => {
 	return {
-		notes: getItemNotes(state)
+		notes: getNotesState(state)
 	};
 };
 
 export default connect(
 	mapStateToProps,
-	{ buildCrudQuery}
+	{ getAllNotes, postNote }
 )(NoteManager);
-

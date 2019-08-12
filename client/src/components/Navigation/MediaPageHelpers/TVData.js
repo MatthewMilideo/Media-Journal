@@ -81,9 +81,3 @@ const TVData = props => {
 };
 
 export default TVData;
-
-/*
-
-{renderGenres(show.genres)}
-								{renderCrew(show.crew)}
-								*/

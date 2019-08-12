@@ -1,10 +1,14 @@
 import { combineReducers } from "redux";
+
+import notesReducer, * as noteFuncs from "./notesReducer";
+
 import * as T from "../actions/types";
 import itemReducer, * as item from "./itemReducer";
-import journalReducer, * as ents from "./journalReducer";
-import {  searchHOR, journalHOR } from "./higherOrderReducers";
+import * as ents from "./journalReducer";
+import userReducer, * as user from "./userReducer";
+import { searchHOR, journalHOR } from "./higherOrderReducers";
 
-const types = [T.MOVIE, T.TV_SEASON, T.BOOK, T.GAME]; 
+const types = [T.MOVIE, T.TV_SEASON, T.BOOK, T.GAME];
 
 const defaultState = {
 	status: T.UNLOADED,
@@ -17,23 +21,47 @@ const defaultState = {
 
 const defaultJournalState = {
 	data: [],
-	Status: null,
+	Status: null
 };
 
 const empty = (state = defaultState, action) => state;
 const empty2 = (state = defaultJournalState, action) => state;
 
-let combineReducerObj = {}
-types.map( t => combineReducerObj[t] = searchHOR(t, empty));
+let combineReducerObj = {};
+types.map(t => (combineReducerObj[t] = searchHOR(t, empty)));
 combineReducerObj[T.NOTE] = journalHOR(T.NOTE, empty2);
 combineReducerObj[T.TAG] = journalHOR(T.TAG, empty2);
 
 export default combineReducers({
 	...combineReducerObj,
 	item: itemReducer,
+	user: userReducer,
+	notes: notesReducer
 });
 
 // ~~~~ Public Selectors ~~~~
+
+// ~~~~~~ Notes Selector ~~~~~~~~~~
+
+export function getNotesState(store) {
+	return noteFuncs._getNotesState(store["notes"])
+}
+
+// ~~~~~Internal API User Selectors ~~~~~~~
+
+export function getUserInfo(store) {
+	return user._getUserInfo(store["user"]);
+}
+
+export function getUserErr(store) {
+	return user._getUserErr(store["user"]);
+}
+
+export function getUser(store) {
+	return user._getUser(store["user"]);
+}
+
+// ~~~~~~~~ Other Selectors ~~~~~~
 
 export const getSearchData = (type, store) => {
 	return store[type].data;
@@ -47,10 +75,9 @@ export const getSearch = (type, store) => {
 	return { status: store[type].status, data: store[type].data };
 };
 
-export const getItemNotes = (store) => {
+export const getItemNotes = store => {
 	return store[T.NOTE].data;
 };
-
 
 export function getItemStatus(store) {
 	return item._getItemStatus(store["item"]);

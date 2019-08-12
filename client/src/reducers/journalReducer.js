@@ -9,8 +9,6 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
 	let localNotes = state.notes; 
-	let index; 
-
 	switch (action.type) {
 		case `${T.NOTE}${T._BEGAN_GET}`:
 			return {

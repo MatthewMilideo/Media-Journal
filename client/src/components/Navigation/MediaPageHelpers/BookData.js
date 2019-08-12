@@ -1,7 +1,6 @@
 import React from "react";
-import { Grid, Image, Button, Segment, Divider } from "semantic-ui-react";
+import { Grid, Segment, Divider } from "semantic-ui-react";
 import DOMPurify from "dompurify";
-import { renderCrew, renderProdComps } from "./helperFunctions";
 
 /* Props 
 Movie: All of the relevant data about the movie.
@@ -15,16 +14,14 @@ const renderImage = obj => {
 	let url = obj[keys[keys.length - 1]];
 	//console.log(url);
 
-	return <img className="image" src={url} />;
+	return <img className="image" src={url} alt='test'/>;
 };
 
 const renderAuthors = list => {
 	if (list === undefined) return null;
 
 	let returnData = null;
-	let s = "";
-
-	if (list.length > 1) s = "s";
+	
 
 	list.length === 0
 		? (returnData = null)

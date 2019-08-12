@@ -49,11 +49,15 @@ export const searchHOR = (type, reducer) => (state, action) => {
 	}
 };
 
+/*
+
 const defaultJournalState = {
 	allData: [],
 	data: [],
 	Status: null
 };
+
+*/
 
 export const journalHOR = (type, reducer) => (state, action) => {
 	

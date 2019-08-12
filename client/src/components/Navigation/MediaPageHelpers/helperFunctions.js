@@ -10,7 +10,7 @@ export const renderPoster = poster => {
 				width: 10,
 				poster: (
 					<Grid.Column width={6}>
-						<img src={poster} />
+						<img src={poster} alt= 'test'/>
 					</Grid.Column>
 				)
 		  };
@@ -38,7 +38,7 @@ export const RenderList = props => {
 	num > list.length ? (num = list.length - 1) : (num = num);
 	returnData = list.map((elem, index) => {
 		index === num ? (comma = "") : (comma = ", ");
-		if (index > num) return;
+		if (index > num) return null;
 		return <p key={func(elem)}> {`${func(elem)}${comma} `}</p>;
 	});
 	let s;
@@ -53,9 +53,8 @@ export const RenderList = props => {
 
 export const RenderObj = props => {
 	let { title, obj, num } = props.config;
-	let max;
 	let keys = Object.keys(obj);
-	let s = "";
+
 	keys.sort();
 
 	let list = keys.map(key => {

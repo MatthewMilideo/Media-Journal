@@ -1,10 +1,10 @@
 import React from 'react'
 import * as T from '../actions/types';
-import SwipeRow from './smallComponents/SwipeRow';
-import { Container, Menu, Segment, Button, Search } from "semantic-ui-react";
+import MediaGrid from './smallComponents/MediaGrid'
+import { Segment, Button} from "semantic-ui-react";
 import { connect } from "react-redux";
-import { getSearch, getSearchData } from '../reducers';
-import { fetchNextPage } from "../actions";
+import { getSearch} from '../reducers';
+import { fetchNextPage } from "../actions/ExtAPISearch";
 
 const configureInputList = (list, configObj) => {
     if (!list) return;
@@ -44,23 +44,21 @@ const renderContent = (type, searchData) => {
     };
 
     let data = configureInputList (searchData.data, configObj); 
-    console.log('calculated data in renderContent', data);
+    //console.log('calculated data in renderContent', data);
 
     let swipeRow = (
-        <SwipeRow
-            key = {type}
-            cType = {type}
-            type={0}
-            elemType = {'search'}
-            rows={1}
-            eSize={215}
-            list={data}
-            list2 = {getSearchData.data}
-            listConfig={configObj}
-        />
+        <MediaGrid
+        key = {type}
+        type = {type}
+        media = {searchData.data}
+        >
+        </MediaGrid>
+    
     );
 
     switch (searchData.status) {
+        default:
+            return null; 
         case T.UNLOADED:
             return <Segment textAlign = 'center'> Please search for some content. </Segment>;
         case `${type}${T._BEGAN_SEARCH}`:

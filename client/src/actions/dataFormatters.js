@@ -124,7 +124,6 @@ export const showItemFormatter = data => {
 		title: data.original_name,
 		overview: data.overview,
 		runtime: data.episode_run_time,
-		creator: data.created_by,
 		firstDate: firstDate,
 		lastDate: lastDate,
 		creator: data.created_by,

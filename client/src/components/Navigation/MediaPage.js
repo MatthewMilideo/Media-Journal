@@ -1,13 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid, Image, Button, Segment, Dropdown } from "semantic-ui-react";
 import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
 import MovieData from "./MediaPageHelpers/MovieData";
 import TVData from "./MediaPageHelpers/TVData";
 import BookData from './MediaPageHelpers/BookData';
 import NoteManager from "../smallComponents/NoteManager";
-import SwipeRow from "../smallComponents/SwipeRow";
+import ActorCarousel from '../smallComponents/ActorCarousel';
+
+
 import * as T from "../../actions/types";
 import { sizeArr } from "../../setupGlobals";
 import _ from "lodash";
@@ -120,15 +121,7 @@ class MediaPage extends React.Component {
 		cast = this.configureInputList(cast, configObj);
 
 		return (
-			<SwipeRow
-				type={1}
-				elemType="cast"
-				rows={0}
-				eSize={215}
-				list={cast}
-				listConfig={configObj}
-				headerText="Cast"
-			/>
+			<ActorCarousel media = {cast} />
 		);
 	};
 

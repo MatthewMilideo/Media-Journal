@@ -1,182 +1,120 @@
 import React from "react";
-import {
-	Form,
-	TextArea,
-	Button,
-	Container,
-	Segment,
-	Divider,
-	Icon
-} from "semantic-ui-react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import FormControl from "react-bootstrap/FormControl";
+
+import {
+	editNoteTitle,
+	editNoteData,
+	discardNoteChanges,
+	noteEditState,
+	saveNote
+} from "../../actions";
 import * as T from "../../actions/types";
-import { typeToStr } from "../../helpers";
-import Dropdown2 from "../smallComponents/Dropdown";
-import "../../styles/style.css";
+
+const StyledCard = styled(Card)`
+	:hover {
+		span {
+			color: blue;
+		}
+	}
+`;
 
 class Note extends React.Component {
-	state = {
-		noteTitle: "",
-		noteValue: "",
-		noteTags: [],
-		currentValues: [],
-		active: 1,
-		mouse: false
-	};
-
-	componentDidMount() {
-		this.props.data.title === ""
-			? this.setState({
-					noteTitle: this.props.data.title,
-					noteValue: this.props.data.text,
-					active: 1
-			  })
-			: this.setState({
-					noteTitle: this.props.data.title,
-					noteValue: this.props.data.text,
-					active: 0
-			  });
-	}
-
 	onTitleChange = e => {
-		this.setState({ noteTitle: e.target.value });
+		this.props.editNoteTitle(this.props.data.id, e.target.value);
 	};
 
-	onValueChange = e => {
-		this.setState({ noteValue: e.target.value });
+	onDataChange = e => {
+		this.props.editNoteData(this.props.data.id, e.target.value);
 	};
 
-	mouseEnter = () => {
-		this.setState({ mouse: true });
+	onCardClick = () => {
+		const { data } = this.props;
+
+		if (data.editState === false) this.props.noteEditState(data.id);
 	};
 
-	mouseLeave = () => {
-		this.setState({ mouse: false });
-	};
-
-	onHandleSegClick = () => {
-		this.setState({ active: 1 });
+	onDiscardClick = () => {
+		this.props.discardNoteChanges(this.props.data.id);
 	};
 
 	onSaveClick = () => {
-		this.setState({
-			active: 0,
-			title: this.state.noteTitle,
-			text: this.state.noteValue
-		});
-		this.props.data.new === true
-			? this.props.query("post", T.NOTE, {
-					title: this.state.noteTitle,
-					text: this.state.noteValue,
-					cTitle: this.props.data.cTitle,
-					type: this.props.data.type,
-					cID: this.props.data.cID
-			  })
-			: this.props.query(
-					"patch",
-					T.NOTE,
-					{
-						title: this.state.noteTitle,
-						text: this.state.noteValue,
-						type: this.props.data.type,
-						cTitle: this.props.data.cTitle,
-						cID: this.props.data.cID,
-						id: this.props.data.id
-					},
-					this.props.data.id
-			  );
+		this.props.saveNote(this.props.data.id);
 	};
 
-	onDeleteClick = () => {
-		this.props.data.new === true ? this.props.data.remove(this.props.data.id) : 
-		this.props.query("delete", T.NOTE, null, this.props.data.id);
+	renderActive = () => {
+		const { data } = this.props;
+		return (
+			<StyledCard
+				key={data.id}
+				className="mt-3 ml-3 mr-3 p-3 rounded-lg shadow"
+				onClick={this.onCardClick}
+			>
+				<Card.Title className="d-flex">
+					{" "}
+					<FormControl
+						value={data.newTitle}
+						aria-label="The Note Title"
+						onChange={this.onTitleChange}
+					/>
+				</Card.Title>
+				<Card.Body>
+					<FormControl
+						value={data.newData}
+						aria-label="The Note Data"
+						onChange={this.onDataChange}
+					/>
+				</Card.Body>
+				<div className="d-flex">
+					<Button variant="primary"
+						onClick={this.onSaveClick}> Save </Button>
+					<Button
+						className="ml-3"
+						variant="warning"
+						onClick={this.onDiscardClick}
+					>
+						{" "}
+						Discard{" "}
+					</Button>
+					<Button className="ml-auto" variant="danger">
+						{" "}
+						Delete{" "}
+					</Button>
+				</div>
+			</StyledCard>
+		);
 	};
 
-	renderActive() {
-		let color;
-		this.state.mouse ? (color = "orange") : (color = null);
-
+	renderInactive = () => {
+		const { data } = this.props;
 		return (
-			<div className="note-div-active note-div">
-				<Segment
-					raised
-					color={color}
-					onMouseEnter={this.mouseEnter}
-					onMouseLeave={this.mouseLeave}
-				>
-					<Form>
-						<Form.Field
-							label="Note Title"
-							placeholder="Title"
-							control="input"
-							value={this.state.noteTitle}
-							onChange={this.onTitleChange}
-						/>
-
-						<TextArea
-							rows={4}
-							value={this.state.noteValue}
-							onChange={this.onValueChange}
-						/>
-						<div> 
-						<Button onClick={this.onSaveClick}> Save Note </Button>
-						<Button onClick={this.onDeleteClick}> Delete Note </Button>
-						</div>
-					</Form>
-				</Segment>
-			</div>
+			<StyledCard
+				key={data.id}
+				className="mt-3 ml-3 mr-3 p-3 rounded-lg shadow"
+				onClick={this.onCardClick}
+			>
+				<Card.Title className="d-flex">
+					{" "}
+					{data.newTitle} <span className="oi oi-pencil ml-auto" />
+				</Card.Title>
+				<Card.Body>{data.newData}</Card.Body>
+			</StyledCard>
 		);
-	}
-
-	/*
-	<Dropdown2
-							disabled
-							tags={this.props.tags}
-							selectedTags={this.state.currentValues}
-							fetchTags={this.props.fetchTags}
-							addTag={this.props.addTag}
-							placeholder="A Tag"
-						/>
-					*/
-
-	renderInactive() {
-		let color;
-		this.state.mouse ? (color = "teal") : (color = null);
-
-		return (
-			<div className="note-outer-div-inactive note-div">
-				<Segment
-					color={color}
-					raised
-					onMouseEnter={this.mouseEnter}
-					onMouseLeave={this.mouseLeave}
-					onClick={this.onHandleSegClick}
-				>
-					<div className="note-inner-div-inactive">
-						<div>
-							<h1> {this.state.noteTitle} </h1>
-							<h2>
-								{` ${this.props.data.cTitle} ${typeToStr(
-									this.props.data.type
-								)}`}
-							</h2>
-						</div>
-						<Icon className="icon" name="edit" size="large" color={color} />
-						<Divider />
-						<p> {this.state.noteValue} </p>
-					</div>
-				</Segment>
-			</div>
-		);
-	}
+	};
 
 	render() {
+		const { data } = this.props;
 		return (
-			<Container>
-				{this.state.active ? this.renderActive() : this.renderInactive()}
-			</Container>
+			<div>{data.editState ? this.renderActive() : this.renderInactive()}</div>
 		);
 	}
 }
 
-export default Note;
+export default connect(
+	null,
+	{ editNoteTitle, editNoteData, discardNoteChanges, noteEditState, saveNote }
+)(Note);

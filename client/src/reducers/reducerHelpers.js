@@ -22,12 +22,6 @@ export const searchReducersBuilder = () => {
 	return reducersBuilder(searchTypes, searchHOR, emptySearchReducer); 
 }
 
-
-
-
-
-
-
 export const removeCollisions = (stateL, newL) => {
 	let flag = false;
 	let newList2 = [];

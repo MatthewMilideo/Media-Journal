@@ -1,8 +1,17 @@
 //Static file declaration
 const express = require("express");
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const mountRoutes = require('./routes')
 const port = process.env.PORT || 5000;
+
+const environment = process.env.NODE_ENV || "development";
+const configuration = require("./knexfile")[environment];
+const database = require("knex")(configuration);
+
+
+
+
 const app = express();
 
 app.use(bodyParser.json())
@@ -12,14 +21,11 @@ app.use(
   })
 );
 
-/*
-if (process.env.NODE_ENV !== 'test') {
-  app.use(logger('dev'));
-}
-*/
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
+mountRoutes(app);
 
-// development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -30,32 +36,12 @@ if (app.get('env') === 'development') {
   });
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.json({
-    message: err.message,
-    error: {}
-  });
-});
-
-mountRoutes(app);
-
-
-
-
   app.listen(port, () => {
 	console.log(`App running on port ${port}.`)
 	})
 
-	
 
-
-module.exports = app
-	
-
-
-
-
-
+module.exports = {
+  app,
+  database
+}
