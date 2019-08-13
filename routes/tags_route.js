@@ -5,8 +5,8 @@ const TagController = require('../controllers/tags_cont');
 
 const router = new Router();
 
-router.get('/', TagController.findAll);
-router.get('/:tag_id', TagController.findByID);
+router.get('/', TagController.getAllTags);
+router.get('/ID/', TagController.getTagID);
 router.post('/', TagController.postTag);
 router.delete('/:tag_id', TagController.deleteTag);
 

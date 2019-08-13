@@ -28,11 +28,11 @@ describe("Route: '/media/ ", function() {
 		});
 	});
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~ GET ALL MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
+	/* ~~~~~~~~~~~~~~~~~~~~~~~ GET ALL MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
 
-// This test needs to be one once most of my functionality is built out becasue many things need to be deleted
-// due to foreign keys.
-/*
+	// This test needs to be one once most of my functionality is built out becasue many things need to be deleted
+	// due to foreign keys.
+	/*
 describe("getAllMedia | /media/", function() {
 	it("getAllMedia returns 404 when no media is found", function(done) {
 		chai
@@ -47,28 +47,130 @@ describe("getAllMedia | /media/", function() {
 });
 */
 
-describe("getAllMedia | /media/", function() {
-	it("getAllMedia returns 200 when media is found", function(done) {
-		chai
-			.request(server.app)
-			.get("/media/")
-			.end(function(err, res) {
-				res.should.have.status(200);
-                res.body.should.be.a("array");
-                res.body.should.have.length(3);
-				res.body[0].should.have.property("id");
-				res.body[0].id.should.equal(1);
-				res.body[0].should.have.property("title");
-                res.body[0].title.should.equal("First Reformed");
-                done();
-			});
+	describe("getAllMedia | /media/", function() {
+		it("getAllMedia returns 200 when media is found", function(done) {
+			chai
+				.request(server.app)
+				.get("/media/")
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("array");
+					res.body.should.have.length(3);
+					res.body[0].should.have.property("id");
+					res.body[0].id.should.equal(1);
+					res.body[0].should.have.property("title");
+					res.body[0].title.should.equal("First Reformed");
+					done();
+				});
+		});
+    });
+    
+    describe("getMediaCID | /media/", function() {
+		it("getMediaCID returns 400 when arguments aren't provided", function(done) {
+			chai
+				.request(server.app)
+				.get("/media/CID")
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal('The title, and cID, must be provided.')
+					done();
+				});
+        });
+        it("getMediaCID returns 400 when arguments aren't provided", function(done) {
+			chai
+				.request(server.app)
+                .get("/media/CID")
+                .query({CID: null, type: 'TEST'})
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal('The title, and cID, must be provided.')
+					done();
+				});
+        });
+        it("getMediaCID returns 404 no data is found.", function(done) {
+			chai
+				.request(server.app)
+                .get("/media/CID")
+                .query({CID: '8910112', type:'GAME'})
+				.end(function(err, res) {
+					res.should.have.status(404);
+					res.text.should.equal('No media found.')
+					done();
+				});
+        });
+        it("getMediaCID returns 200 when data is found.", function(done) {
+			chai
+				.request(server.app)
+                .get("/media/CID")
+                .query({CID: '1234', type:'MOVIE'})
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("array");
+					res.body.should.have.length(1);
+					res.body[0].should.have.property("id");
+					res.body[0].id.should.equal(1);
+					res.body[0].should.have.property("title");
+                    res.body[0].title.should.equal("First Reformed");
+                    done(); 
+				});
+        });
+        
+	});
+
+	/* ~~~~~~~~~~~~~~~~~~~~~~~ POST MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
+
+	describe("postMedia | /media/", function() {
+		it("postMedia returns 400 when the required arguments are not provided", function(done) {
+			chai
+				.request(server.app)
+				.post("/media/")
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal("The title, type, cID, must be provided.");
+					done();
+				});
+		});
+
+		it("postNote returns 409 when the entry already exists", function(done) {
+			chai
+				.request(server.app)
+				.post("/media/")
+				.send({ title: "First Reformed", type: "MOVIE", CID: "1234" })
+				.end(function(err, res) {
+					res.should.have.status(409);
+					res.text.should.equal("The media must be unique.");
+					done();
+				});
+		});
+
+		it("postNote returns 201 when provided correct info", async () => {
+			let requester = chai.request(server.app).keepOpen();
+			let res = await requester
+				.post("/media/")
+				.send({ title: "Doom The Movie", CID: "100", type: "MOVIE" });
+			res.should.have.status(201);
+			res.body.should.be.a("array");
+			res.body[0].should.have.property("id");
+			res.body[0].id.should.equal(4);
+			res.body[0].should.have.property("title");
+			res.body[0].title.should.equal("Doom The Movie");
+
+            res = await requester.get("/media/");
+			res.should.have.status(200);
+			res.body.should.be.a("array");
+			res.body.should.have.length(4);
+			res.body[3].should.have.property("id");
+			res.body[3].id.should.equal(4);
+			res.body[3].should.have.property("title");
+			res.body[3].title.should.equal("Doom The Movie");
+
+			requester.close();
+		});
 	});
 });
 
-router.get('/user/', MediaController.getUserMedia);
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~ DELETE MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
-/*
+	/* ~~~~~~~~~~~~~~~~~~~~~~~ DELETE MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
+	/*
 describe("deleteMedia | /media/:id", function() {
 	it("deleteMedia returns 400 when a valid media_id is not provided.", function(done) {
 		chai
@@ -121,51 +223,6 @@ describe("deleteMedia | /media/:id", function() {
 
 		requester.close();
 		done();
-	});
-
-	/* ~~~~~~~~~~~~~~~~~~~~~~~ POST MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
-/*
-	describe("postMedia | /media/", function() {
-		it("postMedia returns 400 when the required arguments are not provided", function(done) {
-			chai
-				.request(server.app)
-				.post("/media/")
-				.end(function(err, res) {
-					res.should.have.status(400);
-					res.text.should.equal("The title, type, cID, must be provided.");
-					done();
-				});
-		});
-
-		it("postNote returns 201 when provided correct info", async () => {
-			let requester = chai.request(server.app).keepOpen();
-			let res = await requester
-				.request(server.app)
-				.post("/media/")
-				.send({ title: "Doom The Movie", cID: 100, type: "MOVIE" });
-
-			res.should.have.status(201);
-			res.body.should.be.a("array");
-			res.body[0].should.have.property("id");
-			res.body[0].id.should.equal(4);
-			res.body[0].should.have.property("title");
-			res.body[0].title.should.equal("Doom The Movie");
-
-			res = await requester.get("/media/");
-			res.should.have.status(200);
-			res.body.should.be.a("array");
-			res.body.should.have.length(4);
-			res.body[3].should.have.property("id");
-			res.body[3].id.should.equal(4);
-			res.body[3].should.have.property("title");
-			res.body[3].title.should.equal("Doom The Movie");
-
-			requester.close();
-		});
-	});
-});
-
-
-*/
-
-}); 
+    });
+    
+    */
