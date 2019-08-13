@@ -65,8 +65,8 @@ Tags.postTag = title => {
 
 Tags.deleteTag = id => {
 	return database("tags")
-		.returning("*")
-		.where({id})
+		.returning(["id", "title"])
+		.where({ id })
 		.del()
 		.then(data => {
 			if (data.length === 0) return { status: 404, data: "Tag not found." };

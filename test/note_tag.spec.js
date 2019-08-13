@@ -117,7 +117,6 @@ describe("Route: '/note_tag/ ", function() {
         });
     })
 
-
     describe("getTagNT | /note_tag/note", function() {
         it("getTagNT returns 400 when the tag_id is not present ", function(done) {
 			chai
@@ -174,9 +173,6 @@ describe("Route: '/note_tag/ ", function() {
 				});
         });
     })
-
-
-
 
 	describe("postNT | /note_tag/", function() {
 		it("postNT returns 400 when the note_id and or tag_id are not present ", function(done) {
