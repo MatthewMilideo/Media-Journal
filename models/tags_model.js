@@ -1,51 +1,90 @@
-const db = require("../db/index.js");
+const environment = process.env.NODE_ENV || "development";
+const configuration = require("../knexfile")[environment];
+const database = require("knex")(configuration);
 
-const Tag = {};
+const Tags = {};
 
-// Finds all tags
-Tag.findAll = async () => {
-	let dbRes;
-	try {
-		dbRes = await db.query("SELECT * FROM tags ");
-	} catch (err) {
-		// Catches any currently undefined errors.
-		return {
-			message: "There was an error in Tags.fetchAll",
-			code: 500
-		};
-	}
-	// Checks if any entries were found.
-	if (dbRes.rowCount === 0) return { code: 204, data: "No entry found." };
-	return {
-		code: 200,
-		data: dbRes.rows
-	};
+// Gets all Notes by all users
+Tags.getAllTags = () => {
+	return database
+		.from("tags")
+		.select()
+		.then(data => {
+			if (data.length === 0) return { status: 404, data: "There are no tags." };
+			return { status: 200, data };
+		})
+		.catch(error => {
+			throw {
+				status: 400,
+				data: "There was an error getting all tags.",
+				error
+			};
+		});
 };
 
-// Fetch a tag by ID
-Tag.findByID = async tag_id => {
-	// Checks if the ID is an integer.
-	if (Number.isInteger(parseInt(tag_id)) === false)
-		return { code: 406, data: "ID must be an integer" };
-
-	let dbRes;
-	try {
-		dbRes = await db.query("SELECT * FROM tags WHERE tag_id = $1", [tag_id]);
-	} catch (err) {
-		// Catches any currently undefined errors.
-		return {
-			code: 500,
-			message: "There was an error in Tag.findByID",
-			error: err
-		};
-	}
-	// Checks if any entries were found.
-	if (dbRes.rows.length === 0) return { code: 204, data: "No entry found." };
-	return {
-		code: 200,
-		data: dbRes.rows
-	};
+// Gets all Notes by all users
+Tags.getTagID = id => {
+	return database
+		.from("tags")
+		.where({ id })
+		.select()
+		.then(data => {
+			if (data.length === 0) return { status: 404, data: "There are no tags." };
+			return { status: 200, data };
+		})
+		.catch(error => {
+			throw {
+				status: 400,
+				data: "The title must be provided",
+				error
+			};
+		});
 };
 
+// Gets all Notes by all users
+Tags.postTag = title => {
+	return database("tags")
+		.insert({ title }, ["id", "title"])
+		.then(data => {
+			return { status: 201, data };
+		})
+		.catch(error => {
+			if (error.constraint === "tags_title_unique")
+				throw {
+					status: 409,
+					data: "Title already in use.",
+					error
+				};
+			throw {
+				status: 400,
+				data: "There was an error getting the tag.",
+				error
+			};
+		});
+};
 
-module.exports = Tag;
+Tags.deleteTag = id => {
+	return database("tags")
+		.returning("*")
+		.where({id})
+		.del()
+		.then(data => {
+			if (data.length === 0) return { status: 404, data: "Tag not found." };
+			return { status: 200, data };
+		})
+		.catch(error => {
+			if (error.constraint === "note_tag_tag_id_foreign")
+				throw {
+					status: 403,
+					data: "Foreign Key constraint",
+					error
+				};
+			throw {
+				status: 400,
+				data: "There was an error getting the tag.",
+				error
+			};
+		});
+};
+
+module.exports = Tags;

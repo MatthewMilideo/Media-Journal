@@ -1,44 +1,53 @@
-const Tag = require("../models/tags_model");
+const Tags = require("../models/tags_model");
+const helpers = require("../models/model_helpers")
 
 // Instantiate the controller object
 const TagController = {};
 
 // Controller method for handling a request for all Tags
-TagController.findAll = (req, res) => {
-	let response;
-	response = Tag.findAll();
-	response.then(data => res.status(data.code).send(data.data));
+TagController.getAllTags = (req, res) => {
+	Tags.getAllTags()
+		.then(response => {
+			res.status(response.status).send(response.data);
+		})
+		.catch(error => {
+			res.status(error.status).send(error.data);
+		});
 };
 
-// Finds tag given a tagID
-TagController.findByID = (req, res) => {
-	let response;
-	const { tag_id } = req.params;
-	response = Tag.findByID(tag_id);
-	response.then(data => {
-		console.log(data);
-		res.status(data.code).send(data.data);
+TagController.getTagID = (req, res) => {
+	const { id } = req.query;
+	if (!helpers.checkParamsInt([id]))
+		return res.status(400).send('The id must be provided.');
+	Tags.getTagID(id).then(response => {
+		res.status(response.status).send(response.data);
 	});
 };
 
 TagController.postTag = (req, res) => {
-	let response;
-	const { tag_name,  } = req.body;
-	response = Tag.postTag(tag_name);
-	response.then(data => {
-	//	console.log(data);
-		res.status(data.code).send(data.data);
-	});
+	const { title } = req.body;
+	if (!helpers.checkParams([title]))
+		return res.status(400).send('The title must be provided.');
+	Tags.postTag(title)
+	.then(response => {
+		return res.status(response.status).send(response.data);
+	})
+	.catch( error => {
+		return res.status(error.status).send(error.data);
+	})
 };
 
 TagController.deleteTag = (req, res) => {
-	let response;
-	const { tag_id } = req.params;
-	response = Tag.deleteTag(tag_id);
-	response.then(data => {
-//		console.log(data);
-		res.status(data.code).send(data.data);
-	});
+	const { id } = req.body;
+	if (!helpers.checkParamsInt([id])) 
+		return res.status(400).send('The id must be provided.');
+	Tags.deleteTag(id)
+	.then(response => {
+		return res.status(response.status).send(response.data);
+	})
+	.catch( error => {
+		return res.status(error.status).send(error.data);
+	})
 };
 
 module.exports = TagController;

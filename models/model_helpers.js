@@ -13,7 +13,7 @@ exports.checkParamsInt = function(params) {
 exports.checkParams = function(params) {
 	if (params === null || params === undefined) return false; 
 	for (let i = 0; i < params.length; i++) {
-		if (params[i] === false) return false;
+		if (!params[i]) return false;
 	}
 	return true;
 };
