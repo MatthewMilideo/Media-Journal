@@ -63,46 +63,46 @@ describe("getAllMedia | /media/", function() {
 					done();
 				});
 		});
-    });
-    
-    describe("getMediaCID | /media/", function() {
+	});
+
+	describe("getMediaCID | /media/", function() {
 		it("getMediaCID returns 400 when arguments aren't provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/media/CID")
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal('The title, and cID, must be provided.')
+					res.text.should.equal("You must provide a valid CID and type.");
 					done();
 				});
-        });
-        it("getMediaCID returns 400 when arguments aren't provided", function(done) {
+		});
+		it("getMediaCID returns 400 when arguments aren't provided", function(done) {
 			chai
 				.request(server.app)
-                .get("/media/CID")
-                .query({CID: null, type: 'TEST'})
+				.get("/media/CID")
+				.query({ CID: null, type: "TEST" })
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal('The title, and cID, must be provided.')
+					res.text.should.equal("You must provide a valid CID and type.");
 					done();
 				});
-        });
-        it("getMediaCID returns 404 no data is found.", function(done) {
+		});
+		it("getMediaCID returns 404 no data is found.", function(done) {
 			chai
 				.request(server.app)
-                .get("/media/CID")
-                .query({CID: '8910112', type:'GAME'})
+				.get("/media/CID")
+				.query({ CID: "8910112", type: "GAME" })
 				.end(function(err, res) {
 					res.should.have.status(404);
-					res.text.should.equal('No media found.')
+					res.text.should.equal("The requested media was not found.");
 					done();
 				});
-        });
-        it("getMediaCID returns 200 when data is found.", function(done) {
+		});
+		it("getMediaCID returns 200 when data is found.", function(done) {
 			chai
 				.request(server.app)
-                .get("/media/CID")
-                .query({CID: '1234', type:'MOVIE'})
+				.get("/media/CID")
+				.query({ CID: "1234", type: "MOVIE" })
 				.end(function(err, res) {
 					res.should.have.status(200);
 					res.body.should.be.a("array");
@@ -110,11 +110,10 @@ describe("getAllMedia | /media/", function() {
 					res.body[0].should.have.property("id");
 					res.body[0].id.should.equal(1);
 					res.body[0].should.have.property("title");
-                    res.body[0].title.should.equal("First Reformed");
-                    done(); 
+					res.body[0].title.should.equal("First Reformed");
+					done();
 				});
-        });
-        
+		});
 	});
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~ POST MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -126,7 +125,9 @@ describe("getAllMedia | /media/", function() {
 				.post("/media/")
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal("The title, type, cID, must be provided.");
+					res.text.should.equal(
+						"You must provide a valid title, type, and CID."
+					);
 					done();
 				});
 		});
@@ -138,7 +139,9 @@ describe("getAllMedia | /media/", function() {
 				.send({ title: "First Reformed", type: "MOVIE", CID: "1234" })
 				.end(function(err, res) {
 					res.should.have.status(409);
-					res.text.should.equal("The media must be unique.");
+					res.text.should.equal(
+						"There was a conflict during insertion. You must provide a unique piece of media."
+					);
 					done();
 				});
 		});
@@ -155,7 +158,7 @@ describe("getAllMedia | /media/", function() {
 			res.body[0].should.have.property("title");
 			res.body[0].title.should.equal("Doom The Movie");
 
-            res = await requester.get("/media/");
+			res = await requester.get("/media/");
 			res.should.have.status(200);
 			res.body.should.be.a("array");
 			res.body.should.have.length(4);
@@ -167,62 +170,58 @@ describe("getAllMedia | /media/", function() {
 			requester.close();
 		});
 	});
-});
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~ DELETE MEDIA TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
-	/*
-describe("deleteMedia | /media/:id", function() {
-	it("deleteMedia returns 400 when a valid media_id is not provided.", function(done) {
-		chai
-			.request(server.app)
-			.delete("/media/")
-			.end(function(err, res) {
-				res.should.have.status(400);
-				res.text.should.equal("A valid media_id must be provided.");
-				done();
-			});
+
+	describe("deleteMedia | /media/:id", function() {
+		it("deleteMedia returns 400 when a type and CID are not provided.", function(done) {
+			chai
+				.request(server.app)
+				.delete("/media/")
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal("You must provide a valid type and CID.");
+					done();
+				});
+		});
+
+		it("deleteMedia returns 400 when valid type and CID are not provided.", function(done) {
+			chai
+				.request(server.app)
+				.delete("/media/")
+				.send({ type: 5, CID: 5 })
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal("You must provide a valid type and CID.");
+					done();
+				});
+		});
+
+		it("deleteMedia returns 404 when no media is found", function(done) {
+			chai
+				.request(server.app)
+				.delete("/media/")
+				.send({ type: "MOVIE", CID: "100000000000" })
+				.end(function(err, res) {
+					res.should.have.status(404);
+					res.text.should.equal("The requested media was not found.");
+					done();
+				});
+		});
+
+		it("deleteMedia returns 403 when there is a foreign key constraint.", async () => {
+			let requester = chai.request(server.app).keepOpen();
+			let res = await requester
+				.delete("/media/")
+				.send({ type: "MOVIE", CID: "1234" });
+			res.should.have.status(403);
+			res.body.should.be.a("object");
+			res.text.should.equal(
+				"A constraint prevented this request from being fulfilled."
+			);
+			requester.close();
+		});
+
+		it("deleteMedia returns 200 when the delete functions", async () => {});
 	});
-
-	it("deleteMedia returns 400 when a valid media_id is not provided.", function(done) {
-		chai
-			.request(server.app)
-			.post("/media/InvalidData")
-			.end(function(err, res) {
-				res.should.have.status(400);
-				res.text.should.equal("A valid media_id must be provided.");
-				done();
-			});
-	});
-
-	it("deleteMedia returns 404 when no media is found", function(done) {
-		chai
-			.request(server.app)
-			.post("/media/10")
-			.end(function(err, res) {
-				res.should.have.status(404);
-				res.text.should.equal("Media not found.");
-				done();
-			});
-	});
-
-	it("deleteMedia returns 200 when media is deleted.", async () => {
-		let requester = chai.request(server.app).keepOpen();
-		let res = await requester.delete("/media/1");
-		res.should.have.status(200);
-		res.body.should.be.a("array");
-		res.body[0].should.have.property("id");
-		res.body[0].id.should.equal(1);
-		res.body[0].should.have.property("title");
-		res.body[0].title.should.equal("First Reformed");
-		res.body[0].should.have.property("type");
-		res.body[0].type.should.equal("MOVIE");
-		res.body[0].should.have.property("CID");
-		res.body[0].CID.should.equal("1234");
-
-		res = await requester.get("/media/");
-
-		requester.close();
-		done();
-    });
-    
-    */
+});

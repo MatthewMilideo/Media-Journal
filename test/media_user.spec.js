@@ -26,7 +26,41 @@ describe("Route: '/media_user/ ", function() {
 		database.migrate.rollback().then(function() {
 			done();
 		});
-    });
+	});
+	
+	describe("getAllMU | /media_user/", function() {
+		it('getallMU returns 404 when there are no MU', async() =>{
+			let requester = chai.request(server.app).keepOpen();
+
+			// Make sure elem is not inserted.
+			await requester.delete("/media_user/").send({ user_id: 1, media_id: 1 });
+			await requester.delete("/media_user/").send({ user_id: 1, media_id: 2 });
+			await requester.delete("/media_user/").send({ user_id: 2, media_id: 1 });
+			await requester.delete("/media_user/").send({ user_id: 2, media_id: 3 });
+			await requester.delete("/media_user/").send({ user_id: 3, media_id: 1 });
+			await requester.delete("/media_user/").send({ user_id: 3, media_id: 2 });
+			await requester.delete("/media_user/").send({ user_id: 3, media_id: 3 });
+
+			let res = await requester.get("/media_user/")
+			res.status.should.equal(404);
+			res.body.should.be.a("object");
+			res.text.should.equal("The requested media_users were not found.");
+			requester.close();
+		})
+
+
+		it("getAllMU returns 200 when retrieving data", function(done) {
+			chai
+				.request(server.app)
+				.get("/media_user/")
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("array");
+
+					done();
+				});
+		});
+	})
 
 	describe("getMedia | /media_user/", function() {
 		it("getMedia returns 404 when the user_id isn't in the list ", function(done) {
@@ -169,13 +203,13 @@ describe("Route: '/media_user/ ", function() {
 				.request(server.app)
 				.post("/media_user/")
 				.send({
-					media_id: 1,
-					user_id: 1,
+					media_id: 12,
+					user_id: 5,
 				})
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid mediaObj"
+						"You must provide a valid title, type, and CID."
 					);
 					done();
 				});
@@ -186,13 +220,13 @@ describe("Route: '/media_user/ ", function() {
 				.request(server.app)
 				.post("/media_user/")
 				.send({
-					media_id: 1,
-					user_id: 1,
+					media_id: 12,
+					user_id: 5,
 				})
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid mediaObj"
+						"You must provide a valid title, type, and CID."
 					);
 					done();
 				});
@@ -210,7 +244,7 @@ describe("Route: '/media_user/ ", function() {
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid mediaObj"
+						"You must provide a valid title, type, and CID."
 					);
 					done();
 				});
@@ -228,7 +262,7 @@ describe("Route: '/media_user/ ", function() {
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid mediaObj"
+						"You must provide a valid title, type, and CID."
 					);
 					done();
 				});
@@ -246,26 +280,25 @@ describe("Route: '/media_user/ ", function() {
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid mediaObj"
+						"You must provide a valid title, type, and CID."
 					);
 					done();
 				});
 		});
 
-
-		it("postMU returns 403 when there is a foreign key constraint on the piece of media.", function(done) {
+		it("postMU returns 400 when no mediaObj title is provided", function(done) {
 			chai
 				.request(server.app)
 				.post("/media_user/")
 				.send({
 					media_id: 6,
 					user_id: 1,
-					mediaObj: { type: "BOOK", CID: "test", title: "A Movie" }
+					mediaObj: { CID: '1234', type: 'MOVIE', title: "First Reformed" }
 				})
 				.end(function(err, res) {
-					res.should.have.status(403);
+					res.should.have.status(409);
 					res.text.should.equal(
-						"You have to add the media in question to your viewed media!"
+						"There was a conflict during insertion. You must provide a unique piece of media."
 					);
 					done();
 				});
@@ -277,13 +310,13 @@ describe("Route: '/media_user/ ", function() {
 				.post("/media_user/")
 				.send({
 					media_id: 1,
-					user_id: 6,
+					user_id: 500,
 					mediaObj: { type: "MOVIE", CID: "test", title: "A Movie" }
 				})
 				.end(function(err, res) {
 					res.should.have.status(404);
 					res.text.should.equal(
-						"The user_id is invalid, try making sure you are logged in."
+						"The user required for this operation could not be found."
 					);
 					done();
 				});
@@ -299,7 +332,7 @@ describe("Route: '/media_user/ ", function() {
 				})
 				.end(function(err, res) {
 					res.should.have.status(409);
-					res.text.should.equal("The entry already exists.");
+					res.text.should.equal("There was a conflict during insertion. You must provide a unique relation.");
 					done();
 				});
 		});
@@ -360,7 +393,7 @@ describe("Route: '/media_user/ ", function() {
 			chai
 				.request(server.app)
 				.delete("/media_user/")
-				.send({ media_id: "test", user_id: "test" })
+				.send({ media_id: "test", note_id: "test" })
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
@@ -373,10 +406,10 @@ describe("Route: '/media_user/ ", function() {
 			chai
 				.request(server.app)
 				.delete("/media_user/")
-				.send({ media_id: "10", user_id: "1" })
+				.send({ user_id: 10, media_id: 1 })
 				.end(function(err, res) {
 					res.should.have.status(404);
-					res.text.should.equal("Media_User Entry was not found.");
+					res.text.should.equal("The requested media_user was not found.");
 					done();
 				});
 		});

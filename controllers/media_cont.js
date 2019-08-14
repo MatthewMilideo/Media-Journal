@@ -10,41 +10,39 @@ MediaController.getAllMedia = (req, res) => {
 		.then(response => {
 			res.status(response.status).send(response.data);
 		})
-		// This catch should happen if there is an error calling Note.findAll, not an error in Notes.findAll
 		.catch(error => {
-			res.status(400).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
-
-const validTypes = ["MOVIE", "TV_SEASON", "BOOK", "GAME"];
-
 MediaController.getMediaCID = (req, res) => {
 	const { CID, type } = req.query;
-	if (!validTypes.includes(type) || !CID) {
-		return res.status(400).send("The title, and cID, must be provided.");
-	}
 	Media.getMediaCID(CID, type)
 		.then(response => {
 			res.status(response.status).send(response.data);
 		})
 		.catch(error => {
-			res.status(error.status).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
 MediaController.postMedia = (req, res) => {
 	const { title, type, CID } = req.body;
-	if (!title || !validTypes.includes(type) || !CID) {
-		return res.status(400).send("The title, type, cID, must be provided.");
-	}
-
-	Media.postMedia(title, type, CID)
+	Media.postMedia({title, type, CID})
 		.then(response => {
 			res.status(response.status).send(response.data);
 		})
 		.catch(error => {
-			res.status(error.status).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
-
+MediaController.deleteMedia = (req, res) => {
+	const { type, CID } = req.body;
+	Media.deleteMedia(type, CID)
+		.then(response => {
+			res.status(response.status).send(response.data);
+		})
+		.catch(error => {
+			res.status(error.status).send(error.data);
+		});
+};
 
 module.exports = MediaController;

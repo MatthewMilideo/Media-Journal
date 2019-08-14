@@ -10,10 +10,25 @@ let users = [
 		password: "pass"
 	},
 	{
-		email: "MJ@gmail.com",
+		email: "M5553453J@gmail.com",
 		name: "MJ",
 		password: "pass"
-	}
+	},
+	{
+		email: "M5555J@gmail.com",
+		name: "MJ",
+		password: "pass"
+	},
+	{
+		email: "MJ45@gmail.com",
+		name: "MJ",
+		password: "pass"
+	},
+	{
+		email: "testboboboboboob@gmail.com",
+		name: "Bo Bo Man",
+		password: "pass"
+	},
 ];
 
 let media = [

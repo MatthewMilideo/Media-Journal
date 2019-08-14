@@ -1,11 +1,34 @@
+const helpers = require("./helpers");
+
 const environment = process.env.NODE_ENV || "development";
 const configuration = require("../knexfile")[environment];
 const database = require("knex")(configuration);
 
 const Media_User = {};
 
+// Gets all Media_User Entries.
+Media_User.getAllMU = user_id => {
+	return database
+		.from("user_media")
+		.select()
+		.then(data => {
+			if (data.length === 0) {
+				return { status: 404, data: "The requested media_users were not found." };
+			}
+			return { status: 200, data };
+		})
+		.catch(error => {
+			throw { status: 400, message: error.message };
+		});
+};
+
 // Gets all Media for a given user_id
 Media_User.getMedia = user_id => {
+	if (!helpers.checkArgs([user_id]))
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid user_id."
+		});
 	return database
 		.from("user_media")
 		.select("media_id")
@@ -23,6 +46,11 @@ Media_User.getMedia = user_id => {
 
 // Gets all Users for a given media_id
 Media_User.getUsers = media_id => {
+	if (helpers.checkArgs([media_id]) === false)
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid media_id."
+		});
 	return database
 		.from("user_media")
 		.select("user_id")
@@ -39,6 +67,11 @@ Media_User.getUsers = media_id => {
 
 // Gets all Users for a given media_id
 Media_User.postMU = (media_id, user_id) => {
+	if (helpers.checkArgs([media_id, user_id]) === false)
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid media_id and user_id."
+		});
 	return database("user_media")
 		.insert(
 			{
@@ -55,25 +88,30 @@ Media_User.postMU = (media_id, user_id) => {
 				case "user_media_media_id_foreign":
 					throw {
 						status: 403,
-						message:
-							"You have to add the media in question to your viewed media!"
+						data: "The media required for this operation could not be found.",
+						error
 					};
 				case "user_media_user_id_foreign":
 					throw {
 						status: 404,
-						message:
-							"The user_id is invalid, try making sure you are logged in."
+						data: "The user required for this operation could not be found.",
+						error
 					};
 				case "user_media_pkey":
-					throw { status: 409, message: "The entry already exists." };
+					throw { status: 409, data: "There was a conflict during insertion. You must provide a unique relation.", error };
 				default:
-					throw { status: 500, messsage: "Error" };
+					throw { status: 500, data: "Error", error };
 			}
 		});
 };
 
 // Gets all Users for a given media_id
 Media_User.deleteMU = (media_id, user_id) => {
+	if (helpers.checkArgs([media_id, user_id]) === false)
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid media_id and user_id."
+		});
 	return database
 		.returning("*")
 		.from("user_media")
@@ -81,7 +119,7 @@ Media_User.deleteMU = (media_id, user_id) => {
 		.del()
 		.then(data => {
 			if (data.length === 0)
-				return { status: 404, data: "Media_User Entry was not found." };
+				return { status: 404, data: "The requested media_user was not found." };
 			return { status: 200, data };
 		})
 		.catch(error => {

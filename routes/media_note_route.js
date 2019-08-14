@@ -1,13 +1,13 @@
 const Router = require("express-promise-router");
-const Media_UserController = require('../controllers/media_user_cont');
+const Media_NoteController = require('../controllers/media_note_cont');
 
 const router = new Router();
 
-//router.get('/', Media_UserController.getAlllMN);
-//router.get('/media', Media_UserController.getMediaMN);
-//router.get('/note', Media_UserController.getNoteMN);
-router.post('/', Media_UserController.postMN);
-//router.delete('/', Media_UserController.deleteMN);
+router.get('/', Media_NoteController.getAllMN);
+router.get('/media', Media_NoteController.getMediaMN);
+router.get('/note', Media_NoteController.getNoteMN);
+router.post('/', Media_NoteController.postMN);
+router.delete('/', Media_NoteController.deleteMN);
 
 module.exports = router;
 
