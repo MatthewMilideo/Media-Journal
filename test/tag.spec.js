@@ -30,18 +30,25 @@ describe("Route: '/tags/ ", function() {
 	/* ~~~~~~~~~~~~~~~~~~~~~~~ GET ALL TAGS TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
 
 	describe("getAllTags | /tags/", function() {
-		it("getAllTags returns 404 when no tags are found", function(done) {
-			/*
-			chai
-				.request(server.app)
-				.get("/tags/")
-				.end(function(err, res) {
-					res.should.have.status(404);
-					res.text.should.equal("There is no media");
-					done();
-                });
-                */
-			done();
+		it("getAllTags returns 404 when no tags are found", async() => {
+			let requester = chai.request(server.app).keepOpen();
+			await requester.delete('/note_tag/').send({ note_id: 1, tag_id: 1});
+			await requester.delete('/note_tag/').send({ note_id: 1, tag_id: 2});
+			await requester.delete('/note_tag/').send({ note_id: 2, tag_id: 1});
+			await requester.delete('/note_tag/').send({ note_id: 2, tag_id: 2});
+			await requester.delete('/note_tag/').send({ note_id: 3, tag_id: 1});
+			await requester.delete('/note_tag/').send({ note_id: 3, tag_id: 2});
+			await requester.delete('/note_tag/').send({ note_id: 3, tag_id: 3});
+
+			await requester.delete('/tags/').send({ id: 1});
+			await requester.delete('/tags/').send({ id: 2});
+			await requester.delete('/tags/').send({ id: 3});
+
+			let res = await requester.get('/tags/');
+			res.should.have.status(404);
+			res.body.should.be.a("object");
+			res.text.should.equal('The requested tags were not found.')
+			requester.close();
 		});
 	});
 
@@ -64,13 +71,13 @@ describe("Route: '/tags/ ", function() {
 	});
 
 	describe("getTagID | /tags/", function() {
-		it("getTagID returns 400 when arguments aren't provided", function(done) {
+		it("getTagID returns 400 when an id is not provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/tags/ID")
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal("The id must be provided.");
+					res.text.should.equal("You must provide a valid id.");
 					done();
 				});
 		});
@@ -81,7 +88,7 @@ describe("Route: '/tags/ ", function() {
 				.query({ id: "TEST" })
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal("The id must be provided.");
+					res.text.should.equal("You must provide a valid id.");
 					done();
 				});
 		});
@@ -92,7 +99,7 @@ describe("Route: '/tags/ ", function() {
 				.query({ id: 10 })
 				.end(function(err, res) {
 					res.should.have.status(404);
-					res.text.should.equal("There are no tags.");
+					res.text.should.equal("The requested tag was not found.");
 					done();
 				});
 		});
@@ -120,7 +127,7 @@ describe("Route: '/tags/ ", function() {
 				.post("/tags/")
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal("The title must be provided.");
+					res.text.should.equal("You must provide a valid title.");
 					done();
 				});
 		});
@@ -131,7 +138,7 @@ describe("Route: '/tags/ ", function() {
 				.send({ title: "Sad" })
 				.end(function(err, res) {
 					res.should.have.status(409);
-					res.text.should.equal("Title already in use.");
+					res.text.should.equal("There was a conflict during insertion. You must provide a unique title.");
 					done();
 				});
 		});
@@ -165,7 +172,7 @@ describe("Route: '/tags/ ", function() {
 				.delete("/tags/")
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal("The id must be provided.");
+					res.text.should.equal("You must provide a valid id.");
 					done();
 				});
 		});
@@ -176,7 +183,7 @@ describe("Route: '/tags/ ", function() {
 				.send({ id: "test" })
 				.end(function(err, res) {
 					res.should.have.status(400);
-					res.text.should.equal("The id must be provided.");
+					res.text.should.equal("You must provide a valid id.");
 					done();
 				});
 		});
@@ -187,7 +194,7 @@ describe("Route: '/tags/ ", function() {
 				.send({ id: "100" })
 				.end(function(err, res) {
 					res.should.have.status(404);
-					res.text.should.equal("Tag not found.");
+					res.text.should.equal("The requested tag was not found.");
 					done();
 				});
 		});
@@ -198,7 +205,7 @@ describe("Route: '/tags/ ", function() {
 				.send({ id: 1 })
 				.end(function(err, res) {
 					res.should.have.status(403);
-					res.text.should.equal("Foreign Key constraint");
+					res.text.should.equal("A constraint prevented this request from being fulfilled.");
 					done();
 				});
 		});
