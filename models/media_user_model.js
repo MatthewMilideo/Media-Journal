@@ -23,6 +23,28 @@ Media_User.getAllMU = user_id => {
 };
 
 // Gets all Media for a given user_id
+Media_User.getMU = (media_id, user_id) => {
+	if (!helpers.checkArgs([user_id, media_id]))
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid user_id and media_id."
+		});
+	return database
+		.from("user_media")
+		.select("media_id")
+		.where({ user_id, media_id})
+		.then(data => {
+			if (data.length === 0) {
+				return { status: 404, data: "The requested media_user was not found." };
+			}
+			return { status: 200, data:'' };
+		})
+		.catch(error => {
+			throw { status: 400, message: error.message };
+		});
+};
+
+// Gets all Media for a given user_id
 Media_User.getMedia = user_id => {
 	if (!helpers.checkArgs([user_id]))
 		return Promise.reject({
@@ -35,7 +57,7 @@ Media_User.getMedia = user_id => {
 		.where({ user_id })
 		.then(data => {
 			if (data.length === 0) {
-				return { status: 404, data: "There is no media." };
+				return { status: 404, data: "The requested media_user was not found." };
 			}
 			return { status: 200, data };
 		})

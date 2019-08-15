@@ -14,6 +14,19 @@ Media_UserController.getAllMU = (req, res) => {
 		});
 };
 
+Media_UserController.getMU = (req, res) => {
+	const { user_id, media_id } = req.query;
+	Media_User.getMU(media_id, user_id)
+		.then(data => {
+			res.status(data.status).send(data.data);
+		})
+		.catch(error => {
+			res.status(error.status).send(error.data);
+		});
+};
+
+
+
 Media_UserController.getMedia = (req, res) => {
 	const { user_id } = req.query;
 	Media_User.getMedia(user_id)
@@ -44,20 +57,22 @@ Media_UserController.postMU = (req, res) => {
 			res.status(data.status).send(data.data);
 		})
 		.catch(error => {
-			// If the media object was not found, insert the media object. 
+			// If the media object was not found, insert the media object.
 			if (error.status === 403) {
-				return Media.postMedia(mediaObj)
-					//reinsert Media_User
-					.then(data => {
-						return Media_User.postMU(data.data[0].id, user_id);
-					})
-					.then(data => {
-						return res.status(data.status).send(data.data);
-					})
-					// Catch any error
-					.catch(err => {
-						return res.status(err.status).send(err.data);
-					});
+				return (
+					Media.postMedia(mediaObj)
+						//reinsert Media_User
+						.then(data => {
+							return Media_User.postMU(data.data[0].id, user_id);
+						})
+						.then(data => {
+							return res.status(data.status).send(data.data);
+						})
+						// Catch any error
+						.catch(err => {
+							return res.status(err.status).send(err.data);
+						})
+				);
 			}
 
 			res.status(error.status).send(error.data);

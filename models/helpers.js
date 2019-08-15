@@ -15,6 +15,7 @@ exports.checkArgs = function(ints, strings = []) {
 			if (!strings[i] || typeof strings[i] !== "string") {
 				return false;
 			}
+			//if (Number.isInteger(parseInt(strings[i])))  return false;
 		}
 		return true;
 	}

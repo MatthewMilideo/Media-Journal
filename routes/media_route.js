@@ -6,7 +6,6 @@ const router = new Router();
 router.get('/', MediaController.getAllMedia);
 router.get('/CID/', MediaController.getMediaCID);
 router.post('/', MediaController.postMedia);
-//router.put('/', MediaController.editMedia);
 router.delete('/', MediaController.deleteMedia);
 
 module.exports = router;

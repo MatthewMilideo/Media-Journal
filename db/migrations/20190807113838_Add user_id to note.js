@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
 	return Promise.all([
 		knex.schema.table("notes", function(table) {
-			table.dropColumn("user_id");
+			table.dropColumn('user_id');
 		})
 	]);
 };

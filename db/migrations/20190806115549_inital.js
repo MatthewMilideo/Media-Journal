@@ -68,9 +68,10 @@ exports.down = function(knex, Promise) {
         knex.schema.dropTable("media_note"),
         knex.schema.dropTable("note_tag"),
 		knex.schema.dropTable("media"),
-        knex.schema.dropTable("tags"),
-		knex.schema.dropTable("users"),
+		knex.schema.dropTable("tags"),
 		knex.schema.dropTable("notes"),
+		knex.schema.dropTable("users"),
+		
         
 	]);
 };

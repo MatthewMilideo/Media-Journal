@@ -62,6 +62,47 @@ describe("Route: '/media_user/ ", function() {
 		});
 	})
 
+	describe("getMU | /media_user/media_user", function() {
+
+		it("getMU returns 400 when the media_id and user_id aren't provided", function(done) {
+			chai
+				.request(server.app)
+				.get("/media_user/media_user/")
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.body.should.be.a("object");
+					res.text.should.equal("You must provide a valid user_id and media_id.");
+					done();
+				});
+		});
+
+		it("getMU returns 400 when the media_id and user_id isn't in the list ", function(done) {
+			chai
+				.request(server.app)
+				.get("/media_user/media_user/")
+				.query({ media_id: 1, user_id: 10 })
+				.end(function(err, res) {
+					res.should.have.status(404);
+					res.body.should.be.a("object");
+					res.text.should.equal("The requested media_user was not found.");
+					done();
+				});
+		});
+
+		it("getMU returns 200 when the media_id and user_id are found", function(done) {
+			chai
+				.request(server.app)
+				.get("/media_user/media_user/")
+				.query({ media_id: 1, user_id: 1 })
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("object");
+					res.text.should.equal("");
+					done();
+				});
+		});
+	}); 
+
 	describe("getMedia | /media_user/", function() {
 		it("getMedia returns 404 when the user_id isn't in the list ", function(done) {
 			chai
@@ -71,7 +112,7 @@ describe("Route: '/media_user/ ", function() {
 				.end(function(err, res) {
 					res.should.have.status(404);
 					res.body.should.be.a("object");
-					res.text.should.equal("There is no media.");
+					res.text.should.equal("The requested media_user was not found.");
 					done();
 				});
 		});

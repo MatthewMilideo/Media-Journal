@@ -1,156 +1,131 @@
 const Notes = require("../models/notes_model");
-const Media_Note = require("../models/media_note_model.js");
-const helpers = require("../models/model_helpers");
+const User = require("../models/users_model");
+const Media = require("../models/media_model");
+const Media_User = require("../models/media_user_model");
+const Media_Note = require("../models/media_note_model");
 
-const errorObj = {
-	"23503": {
-		status: 400,
-		message: "There was an error becasue of a Foreign Key Constraint"
-	},
-	"42703": {
-		status: 400,
-		message: "There was an error because a specified column does not exist!"
-	}
-};
-
-const errorHandling = error => {
-	let response = errorObj[error.code];
-	return !response ? { status: 500, message: "There was an error" } : response;
-};
-
-// Instantiate the controller object
 const NotesController = {};
 
-// Controller method for handling a request for all quotes
 NotesController.getAllNotes = (req, res) => {
 	Notes.getAllNotes()
 		.then(response => {
 			res.status(response.status).send(response.data);
 		})
-		// This catch should happen if there is an error calling Note.findAll, not an error in Notes.findAll
 		.catch(error => {
-			res.status(400).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
 
 NotesController.getUserNotes = (req, res) => {
 	const { user_id } = req.query;
-	if (helpers.checkParamsInt(user_id) === false) {
-		res.status(400).send("The user_id must be an integer.");
-		return;
-	}
 	Notes.getUserNotes(user_id)
-		.then(response => res.status(response.status).send(response.data))
-		// This catch should happen if there is an error calling Note.findAll, not an error in Notes.findAll
+		.then(response => {
+			res.status(response.status).send(response.data);
+		})
 		.catch(error => {
-			console.log("Error in NotesController.getUserNotes:", error);
-			res.status(500).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
 
 NotesController.getMediaNotes = (req, res) => {
 	const { media_id } = req.query;
-	if (helpers.checkParamsInt(media_id) === false) {
-		res.status(400).send("The media_id must be an integer.");
-		return;
-	}
 	Notes.getMediaNotes(media_id)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => {
-			console.log("Error in NotesController.getMediaNotes:", error);
-			res.status(500).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
 
 NotesController.getMediaUserNotes = (req, res) => {
 	const { media_id, user_id } = req.query;
-	if (helpers.checkParamsInt([media_id, user_id]) === false) {
-		res.status(400).send("The media_id and user_id must be integers.");
-		return;
-	}
-	//console.log(media_id, user_id);
 	Notes.getMediaUserNotes(media_id, user_id)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => {
-			console.log("Error in NotesController.getMediaUserNotes:", error);
-			res.status(500).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
 
-NotesController.postNote = (req, res) => {
-	const { note_title, note_data, media_id, user_id } = req.body;
-	// Check that data is okay 
-	if (helpers.checkParamsInt([media_id, user_id]) === false) {
-		res.status(400).send("The media_id and user_id must be integers");
-		return;
-	}
-	if (!note_title || !note_data) {
-		res.status(400).send("The note_title and note_data must be defined");
-		return;
-	}
-	// Insert Post
-	Notes.postNote(note_title, note_data, user_id)
-		.then(response => {
-			const note_id = response.data[0].id;
+NotesController.postNote = async (req, res) => {
+	const { title, data, user_id, mediaObj } = req.body;
+	let media_id;
+	let media_userFlag = false;
+	let postNoteRes = false;
+	try {
+		// Validate that the user is in the database.
+		let response = await User.getUserID(user_id);
+		// Throw an error if the user is not present. Eventually, this should
+		// take the user to a sign-up page.
+		if (response.status === 404)
+			throw {
+				status: response.status,
+				data: response.data,
+				error: response.error
+			};
+		// This validates the mediaObj before properties are pulled off it.
+		if (!mediaObj)
+			throw {
+				status: 400,
+				data: "You must provide a valid mediaObj."
+			};
 
-			addMediaNote(note_id, media_id)
-				.then(result => {
-					if (result.status === 201) {
-						res.status(201).send(response.data);
-					} else {
-						res.status(result.status).send(result.data);
-						// I probably have to remove the note if it doesn't get added to this table but I am going to table
-						// working on that logic for now.
-					}
-				})
-				.catch(error => {});
-		})
-		.catch(error => {
-			console.log("Error in NotesController.postNote:", error);
-			res.status(500).send(error.message);
-		});
-};
 
-const addMediaNote = (note_id, media_id) => {
-	if (helpers.checkParamsInt([note_id, media_id]) === false)
-		return { status: 400, data: "The note_id and media_id must be integers." };
-	return Media_Note.postMediaNote(note_id, media_id)
-		.then(response => {
-			return { status: response.status, data: response.data };
-		})
-		.catch(error => {
-			throw error;
-		});
+		// Checks if the piece of Media is in the database.
+		response = await Media.getMediaCID(mediaObj.CID, mediaObj.type);
+		// If the Media is not in the database, add it and a realtion between the media and
+		// the user.
+		if (response.status === 404) {
+			response = await Media.postMedia(mediaObj);
+			media_id = response.data[0].id;
+			response = await Media_User.postMU(media_id, user_id);
+			media_userFlag = true;
+		}
+		// If the media exists, verify that there is a Media_User relation,
+		// and add one if it is not present.
+		else {
+			//check this
+			media_id = response.data[0].id;
+			response = await Media_User.getMU(media_id, user_id);
+			if (response.status === 404) {
+				response = await Media_User.postMU(media_id, user_id);
+				media_userFlag = true;
+			}
+		}
+		// Post the Note
+		postNoteRes = await Notes.postNote(title, data, user_id);
+		// Post a Note Media realtion
+		response = await Media_Note.postMN(postNoteRes.data[0].id, media_id);
+	} catch (error) {
+		try {
+			if (media_userFlag === true) {
+				await Media_User.deleteMU(media_id, user_id);
+			}
+			if (postNoteRes !== false) {
+				await Notes.deleteNote(postNoteRes.data[0].id);
+			}
+		} catch (error) {
+			return  res.status(error.status).send(error.data);
+		}
+		return res.status(error.status).send(error.data);
+	}
+
+	res.status(postNoteRes.status).send(postNoteRes.data);
 };
 
 NotesController.editNote = (req, res) => {
 	const { note_id, note_title, note_data } = req.body;
-	if (
-		helpers.checkParamsInt([note_id]) === false &&
-		(!note_title || !note_data)
-	) {
-		res
-			.status(400)
-			.send(
-				"The note_id must be an integer, and the note_title and note_data must be defined and non-empty."
-			);
-		return;
-	}
 	Notes.editNote(note_id, note_title, note_data)
 		.then(response => res.status(response.status).send(response.data))
-		.catch(error => res.status(500).send(error.message));
+		.catch(error => res.status(error.status).send(error.message));
 };
 
 NotesController.deleteNote = (req, res) => {
-	const { note_id } = req.params;
-
-	if (helpers.checkParamsInt([note_id]) === false)
-		res.status(400).send("The note_id must be an integer");
-
+	const { note_id } = req.body;
 	Notes.deleteNote(note_id)
-		.then(response => res.status(response.status).send(response.data))
+		.then(response => {
+			res.status(response.status).send(response.data)
+		})
 		.catch(error => {
-			res.status(500).send(error.message);
+			res.status(error.status).send(error.data);
 		});
 };
 

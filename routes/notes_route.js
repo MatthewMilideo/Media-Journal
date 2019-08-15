@@ -11,8 +11,7 @@ router.get('/media/', NotesController.getMediaNotes);
 router.get('/mediauser', NotesController.getMediaUserNotes);
 router.post('/', NotesController.postNote);
 router.put('/', NotesController.editNote);
-
-router.delete('/:note_id', NotesController.deleteNote);
+router.delete('/', NotesController.deleteNote);
 
 
 module.exports = router;

@@ -2,32 +2,26 @@ let users = [
 	{
 		email: "mmilideo@gmail.com",
 		name: "Matthew",
-		password: "pass"
 	},
 	{
 		email: "tylerb7@gaol.com",
 		name: "Tyler",
-		password: "pass"
 	},
 	{
-		email: "M5553453J@gmail.com",
+		email: "MJ@gmail.com",
 		name: "MJ",
-		password: "pass"
 	},
 	{
 		email: "M5555J@gmail.com",
 		name: "MJ",
-		password: "pass"
 	},
 	{
 		email: "MJ45@gmail.com",
 		name: "MJ",
-		password: "pass"
 	},
 	{
 		email: "testboboboboboob@gmail.com",
 		name: "Bo Bo Man",
-		password: "pass"
 	},
 ];
 
