@@ -1,5 +1,4 @@
 const Tags = require("../models/tags_model");
-const helpers = require("../models/model_helpers");
 
 // Instantiate the controller object
 const TagController = {};

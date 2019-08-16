@@ -37,6 +37,7 @@ Media_NoteController.getNoteMN = (req, res) =>{
 
 Media_NoteController.postMN = (req, res) => {
 	const {note_id, media_id, mediaObj } = req.body;
+	console.log(note_id, media_id);
 	Media_Note.postMN(note_id, media_id)
 		.then(response => {
 			res.status(response.status).send(response.data);

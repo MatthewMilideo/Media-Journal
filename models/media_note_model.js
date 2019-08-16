@@ -78,10 +78,12 @@ Media_Note.postMN = (note_id, media_id) => {
 			data: "You must provide a valid note_id and media_id."
 		});
 	return database("media_note")
-		.insert({
-			note_id,
-			media_id
-		})
+		.insert(
+			{
+				note_id,
+				media_id
+			}["note_id", "media_id"]
+		)
 		.then(data => {
 			return { status: 201, data };
 		})
@@ -118,8 +120,8 @@ Media_Note.deleteMN = (media_id, note_id) => {
 			status: 400,
 			data: "You must provide a valid media_id and note_id."
 		});
-	return database('media_note')
-		.returning('*')
+	return database("media_note")
+		.returning("*")
 		.where({ media_id, note_id })
 		.del()
 		.then(data => {
@@ -134,8 +136,6 @@ Media_Note.deleteMN = (media_id, note_id) => {
 		.catch(error => {
 			throw { status: 400, data: error.message, error };
 		});
-	}
-
-
+};
 
 module.exports = Media_Note;

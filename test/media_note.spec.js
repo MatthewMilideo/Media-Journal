@@ -29,17 +29,7 @@ describe("Route: '/media_user/ ", function() {
 	});
 
 	describe("getAllMN | /media_note/", function() {
-		it("getAllMN returns 404 when there are no media_notes.", function(done) {
-			chai
-				.request(server.app)
-				.get("/media_note/")
-				.end(function(err, res) {
-					res.should.have.status(404);
-					res.body.should.be.a("object");
-					res.text.should.equal("The requested media notes were not found. ");
-					done();
-				});
-		});
+		it("getAllMN returns 404 when there are no media_notes.");
 
 		it("getAllMN returns 200 when there are media_notes.", function(done) {
 			chai
@@ -279,11 +269,11 @@ describe("Route: '/media_user/ ", function() {
 					done();
 				});
 		});
-		it("postMN returns 201 when note_id can't be found.", async () => {
+		it("postMN returns 201 when inserted", async () => {
 			let requester = chai.request(server.app).keepOpen();
 
 			// Make sure elem is not inserted.
-			res = await requester.get("/media_note/media").query({ user_id: 1 });
+			res = await requester.get("/media_note/media").query({ note_id: 1 });
 			res.status.should.equal(200);
 			res.body.should.be.a("array");
 			let test = res.body.filter(elem => {
@@ -294,7 +284,7 @@ describe("Route: '/media_user/ ", function() {
 			// Insert elem.
 			res = await requester.post("/media_note/").send({
 				media_id: 3,
-				user_id: 1,
+				note_id: 1,
 				mediaObj: { type: "MOVIE", CID: "test", title: "A Movie" }
 			});
 			res.status.should.equal(201);
