@@ -44,11 +44,46 @@ Media.getMediaCID = (CID, type) => {
 		});
 };
 
-Media.postMedia = (mediaObj) => {
+// Gets all Notes by all users
+Media.getMediaCIDBulk = (CIDs, type) => {
+	if (!Array.isArray(CIDs)){
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid CIDs."
+		});
+
+	}
+		
+	if (
+		!(helpers.checkArgs([], [...CIDs, type]) && helpers.checkMediaType(type))
+	) {
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid CIDs and type."
+		});
+	}
+	return database
+		.from("media")
+		.select()
+		.where(builder => builder.whereIn("CID", CIDs))
+		.andWhere(builder => builder.where({ type }))
+		.select()
+		.then(data => {
+			if (data.length === 0) {
+				return { status: 404, data: "The requested media were not found." };
+			}
+			return { status: 200, data };
+		})
+		.catch(error => {
+			return Promise.reject({ status: 400, data: error.message, error });
+		});
+};
+
+Media.postMedia = mediaObj => {
 	if (!helpers.checkMediaObj(mediaObj)) {
 		return Promise.reject({
 			status: 400,
-			data: "You must provide a valid title, type, and CID.",
+			data: "You must provide a valid title, type, and CID."
 		});
 	}
 	return database("media")
@@ -86,7 +121,6 @@ Media.deleteMedia = (type, CID) => {
 			return { status: 200, data };
 		})
 		.catch(error => {
-
 			if (error.constraint === "user_media_media_id_foreign")
 				throw {
 					status: 403,

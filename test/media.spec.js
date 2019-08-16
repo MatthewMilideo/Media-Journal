@@ -3,6 +3,9 @@ process.env.NODE_ENV = "test";
 const environment = process.env.NODE_ENV || "development";
 const configuration = require("../knexfile")[environment];
 const database = require("knex")(configuration);
+const expect = require('chai').expect
+const mediaModel = require('../models/media_model');
+
 
 var chai = require("chai");
 var should = chai.should();
@@ -65,8 +68,15 @@ describe("getAllMedia | /media/", function() {
 		});
 	});
 
+	describe("getMediaCIDBulk | /media/", async() => {
+		it("getMediaCIDBulk returns 400 when arguments aren't provided", async () => {
+			let res = await mediaModel.getMediaCIDBulk([1,2], 'MOVIE')
+			console.log(res);
+		});
+	})
+
 	describe("getMediaCID | /media/", function() {
-		it("getMediaCID returns 400 when arguments aren't provided", function(done) {
+		it("getMediaCIDBulk returns 400 when arguments aren't provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/media/CID")
@@ -76,7 +86,7 @@ describe("getAllMedia | /media/", function() {
 					done();
 				});
 		});
-		it("getMediaCID returns 400 when arguments aren't provided", function(done) {
+		it("getMediaCIDBulk returns 400 when arguments aren't provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/media/CID")
