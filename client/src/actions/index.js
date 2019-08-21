@@ -7,6 +7,41 @@ import {
 
 import myData from "../api/myData";
 
+import axios from "axios";
+
+const server = axios.create({
+	baseURL: "http://localhost:5000/"
+});
+
+/* Real Actions */
+
+export const startSearch = (user_id, term, page) => async (
+	dispatch,
+	getState
+) => {
+	dispatch({ type: T.BEGAN_SEARCH });
+	try {
+		let test = await server.get("/test/", {
+			params: {
+				user_id,
+				term,
+				page
+			}
+		});
+		console.log(test);
+
+		dispatch({
+			type: T.FINISHED_SEARCH,
+			payload: test.data
+		});
+	} catch (error) {
+		console.log(error);
+		dispatch({
+			type: T.ERROR_SEARCH
+		});
+	}
+};
+
 /* ~~~~~~ Sync Note Actions ~~~~~~~ */
 
 export const noteEditState = note_id => {
@@ -148,18 +183,14 @@ export const postNote = (
 	dispatch({ type: T.FIN_POST_NOTE, data: response.data });
 };
 
-export const saveNote = (
-	note_id, 
-	note_title,
-	note_data,
-) => async dispatch => {
+export const saveNote = (note_id, note_title, note_data) => async dispatch => {
 	let response;
 	try {
 		dispatch({ type: T.BEG_SAVE_NOTE });
 		response = await myData.put(`/notes/`, {
 			note_id,
 			note_title,
-			note_data,
+			note_data
 		});
 	} catch (err) {
 		console.log(err);
@@ -270,7 +301,7 @@ export const logoutUser = () => {
 
 const itemObj = {};
 itemObj[T.MOVIE] = TMDBItemQuery;
-itemObj[T.TV_SEASON] = TMDBItemQuery;
+itemObj[T.TV] = TMDBItemQuery;
 itemObj[T.BOOK] = bookItemQuery;
 itemObj[T.GAME] = gameItemQuery;
 

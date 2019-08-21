@@ -71,20 +71,48 @@ Media_Note.getNoteMN = media_id => {
 		});
 };
 
+Media_Note.getNoteMNBulk = media_ids => {
+	if (!helpers.checkArgs(media_ids))
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid media_ids."
+		});
+	return database
+		.from("media_note")
+		.where(builder => builder.whereIn("media_id", media_ids))
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested media_notes were not found."
+				};
+
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			throw { status: 400, data: error.message, error };
+		});
+};
+
 Media_Note.postMN = (note_id, media_id) => {
 	if (!helpers.checkArgs([note_id, media_id]))
 		return Promise.reject({
 			status: 400,
 			data: "You must provide a valid note_id and media_id."
 		});
+
 	return database("media_note")
 		.insert(
 			{
 				note_id,
 				media_id
-			}["note_id", "media_id"]
+			},
+			["note_id", "media_id"]
 		)
+
 		.then(data => {
+			
 			return { status: 201, data };
 		})
 		.catch(error => {

@@ -9,10 +9,16 @@ arr: [576, 768, 992, 1200,10000]
 }
 
 
+/* New Types */
+
+export const BEGAN_SEARCH = 'START_SEARCH'
+export const ERROR_SEARCH = 'ERROR_SEARCH'
+export const FINISHED_SEARCH = 'FINISHED_SEARCH'
+
 
 // External Data Types 
 export const MOVIE = 'MOVIE';
-export const TV_SEASON = "TV_SEASON";
+export const TV = "TV";
 export const BOOK = 'BOOK';
 export const GAME = "GAME";
 

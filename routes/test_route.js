@@ -3,8 +3,7 @@ const TestController = require('../controllers/test_cont');
 
 const router = new Router();
 
-router.get('/', TestController.searchPage);
-
+router.get('/TMDB/', TestController.searchTMDB);
 
 module.exports = router;
 

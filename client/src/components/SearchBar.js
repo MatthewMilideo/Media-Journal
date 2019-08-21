@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Form} from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
 
-import { fetchSearchResult } from "../actions/ExtAPISearch";
+import { startSearch } from '../actions'
 
 /* Props: 
 	searchType - the redux store's current searchType, 
 	config - an object containing configuration data for
-		the different search bars, their number, type, etc
+	the different search bars, their number, type, etc
 */
 
 class SearchBar extends React.Component {
@@ -25,11 +25,14 @@ class SearchBar extends React.Component {
 
 	onSearchSubmit = e => {
 		e.preventDefault();
+		/*
 		this.props.fetchSearchResult(
 			this.props.searchType,
 			this.state.textValues[0],
 			this.state.textValues[1]
 		);
+		*/
+		this.props.startSearch( 500000, this.state.textValues[0], 1); 
 		let textLocal = this.state.textValues;
 		textLocal = textLocal.map(elem => (elem = ""));
 		this.setState({ textValues: textLocal });
@@ -73,5 +76,5 @@ class SearchBar extends React.Component {
 
 export default connect(
 	null,
-	{ fetchSearchResult}
+	{ startSearch }
 )(SearchBar);

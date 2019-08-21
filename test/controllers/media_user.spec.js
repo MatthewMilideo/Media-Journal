@@ -1,13 +1,13 @@
 process.env.NODE_ENV = "test";
 
 const environment = process.env.NODE_ENV || "development";
-const configuration = require("../knexfile")[environment];
+const configuration = require("../../knexfile")[environment];
 const database = require("knex")(configuration);
 
 var chai = require("chai");
 var should = chai.should();
 var chaiHttp = require("chai-http");
-var server = require("../server.js");
+var server = require("../../server.js");
 
 chai.use(chaiHttp);
 
@@ -212,7 +212,7 @@ describe("Route: '/media_user/ ", function() {
 			chai
 				.request(server.app)
 				.post("/media_user/")
-				.send({ mediaObj: { type: "TV_SEASON", CID: "test", title: "A Movie" } })
+				.send({ mediaObj: { type: "TV", CID: "test", title: "A Movie" } })
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(

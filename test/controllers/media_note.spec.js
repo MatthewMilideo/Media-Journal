@@ -27,6 +27,7 @@ describe("Route: '/media_user/ ", function() {
 			done();
 		});
 	});
+	
 
 	describe("getAllMN | /media_note/", function() {
 		it("getAllMN returns 404 when there are no media_notes.");
@@ -209,40 +210,11 @@ describe("Route: '/media_user/ ", function() {
 					done();
 				});
 		});
-
-		it("postMN returns 400 when mediaObj is missing.", function(done) {
-			chai
-				.request(server.app)
-				.post("/media_note/")
-				.send({ note_id: 1, media_id: 100 })
-				.end(function(err, res) {
-					res.should.have.status(400);
-					res.body.should.be.a("object");
-					res.text.should.equal(
-						"You must provide a valid title, type, and CID."
-					);
-					done();
-				});
-		});
-		it("postMN returns 400 when the mediaObj is invalid.", function(done) {
-			chai
-				.request(server.app)
-				.post("/media_note/")
-				.send({ note_id: 1, media_id: 100, mediaObj: invalidMediaObj })
-				.end(function(err, res) {
-					res.should.have.status(400);
-					res.body.should.be.a("object");
-					res.text.should.equal(
-						"You must provide a valid title, type, and CID."
-					);
-					done();
-				});
-		});
 		it("postMN returns 404 when note_id can't be found.", function(done) {
 			chai
 				.request(server.app)
 				.post("/media_note/")
-				.send({ note_id: 100, media_id: 1, mediaObj: validMediaObj })
+				.send({ note_id: 100, media_id: 1 })
 				.end(function(err, res) {
 					res.should.have.status(404);
 					res.body.should.be.a("object");
@@ -252,7 +224,7 @@ describe("Route: '/media_user/ ", function() {
 					done();
 				});
 		});
-		it("postMU returns 409 when the entry already exists", function(done) {
+		it("postMN returns 409 when the entry already exists", function(done) {
 			chai
 				.request(server.app)
 				.post("/media_note/")
@@ -273,34 +245,34 @@ describe("Route: '/media_user/ ", function() {
 			let requester = chai.request(server.app).keepOpen();
 
 			// Make sure elem is not inserted.
-			res = await requester.get("/media_note/media").query({ note_id: 1 });
+			res = await requester.get("/media_note/media").query({ note_id: 3 });
 			res.status.should.equal(200);
 			res.body.should.be.a("array");
 			let test = res.body.filter(elem => {
-				return elem.media_id === 3;
+				return elem.media_id === 1;
 			});
 			test.length.should.equal(0);
 
 			// Insert elem.
 			res = await requester.post("/media_note/").send({
-				media_id: 3,
-				note_id: 1,
+				media_id: 1,
+				note_id: 3,
 				mediaObj: { type: "MOVIE", CID: "test", title: "A Movie" }
 			});
 			res.status.should.equal(201);
 			res.body.should.be.a("array");
 			res.body.should.have.length(1);
 			res.body[0].should.have.property("media_id");
-			res.body[0].media_id.should.equal(3);
-			res.body[0].should.have.property("user_id");
-			res.body[0].user_id.should.equal(1);
+			res.body[0].media_id.should.equal(1);
+			res.body[0].should.have.property("note_id");
+			res.body[0].note_id.should.equal(3);
 
 			// Make sure Elem is inserted.
-			res = await requester.get("/media_user/media").query({ user_id: 1 });
+			res = await requester.get("/media_user/media").query({ user_id: 3 });
 			res.status.should.equal(200);
 			res.body.should.be.a("array");
 			test = res.body.filter(elem => {
-				return elem.media_id === 3;
+				return elem.media_id === 1;
 			});
 			test.length.should.equal(1);
 
@@ -358,24 +330,21 @@ describe("Route: '/media_user/ ", function() {
 			test.length.should.equal(1);
 
 			// Delete elem.
-			res = await requester.delete("/media_user/").send({
-				media_id: 2,
-				user_id: 1,
+			res = await requester.delete("/media_note/").send({
+				media_id: 3,
+				note_id: 3,
 			});
 			res.status.should.equal(200);
 			res.body.should.be.a("array");
 			res.body.should.have.length(1);
 			res.body[0].should.have.property("media_id");
-			res.body[0].media_id.should.equal(2);
-			res.body[0].should.have.property("user_id");
-			res.body[0].user_id.should.equal(1);
+			res.body[0].media_id.should.equal(3);
+			res.body[0].should.have.property("note_id");
+			res.body[0].note_id.should.equal(3);
 
 			// Make sure Elem is deleted.
-			res = await requester.get("/media_user/media").query({ user_id: 1 });
-			res.status.should.equal(200);
-            res.body.should.be.a("array");
-            res.body.should.have.length(1);
-            res.body[0].media_id.should.not.equal(2); 
+			res = await requester.get("/media_note/media").query({ note_id: 3 });
+			res.status.should.equal(404);
 
             requester.close();
 		});

@@ -146,7 +146,7 @@ class MediaPage extends React.Component {
 			returnData = this.renderMovie(this.props.itemData);
 			cast =  this.renderCast(this.props.itemData.cast);
 		} 
-		if (type === T.TV_SEASON){
+		if (type === T.TV){
 			////console.log(('type show');
 			returnData = this.renderTV(this.props.itemData);
 			cast =  this.renderCast(this.props.itemData.cast);

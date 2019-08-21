@@ -67,16 +67,8 @@ describe("getAllMedia | /media/", function() {
 				});
 		});
 	});
-
-	describe("getMediaCIDBulk | /media/", async() => {
-		it("getMediaCIDBulk returns 400 when arguments aren't provided", async () => {
-			let res = await mediaModel.getMediaCIDBulk([1,2], 'MOVIE')
-			console.log(res);
-		});
-	})
-
 	describe("getMediaCID | /media/", function() {
-		it("getMediaCIDBulk returns 400 when arguments aren't provided", function(done) {
+		it("getMediaCIDreturns 400 when arguments aren't provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/media/CID")
@@ -86,7 +78,7 @@ describe("getAllMedia | /media/", function() {
 					done();
 				});
 		});
-		it("getMediaCIDBulk returns 400 when arguments aren't provided", function(done) {
+		it("getMediaCID returns 400 when arguments aren't provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/media/CID")

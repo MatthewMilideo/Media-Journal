@@ -18,7 +18,7 @@ class SearchPage extends React.Component {
 	renderMenu = list => {
 		let menuConfig = [
 			{ const: T.MOVIE, name: "Movies" },
-			{ const: T.TV_SEASON, name: "TV Shows" },
+			{ const: T.TV, name: "TV Shows" },
 			{ const: T.BOOK, name: "Books" },
 			{ const: T.GAME, name: "Video Games", disabled: true }
 		];
@@ -46,7 +46,7 @@ class SearchPage extends React.Component {
 	renderSearchBar = searchType => {
 		let searchBarConfig = {
 			MOVIE: [{ name: T.MOVIE, label: "Movie", placeholder: "Blue Velvet" }],
-			TV_SEASON: [{ label: "Televison Show", placeholder: "The Sopranos" }],
+			TV: [{ label: "Televison Show", placeholder: "The Sopranos" }],
 			BOOK: [
 				{ label: "Book", placeholder: "The Castle Franz Kafka"  },
 			],

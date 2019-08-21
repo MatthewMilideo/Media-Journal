@@ -5,17 +5,30 @@ Given an object {ints: [], strings: []}
 This function returns true either if the arrays are empty, or 
 if the arrays contain all values of their 'type' */
 
+
+function flatten(arr) {
+	return arr.reduce(function (flat, toFlatten) {
+	  return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+	}, []);
+  }
+
 exports.checkArgs = function(ints, strings = []) {
 	if (ints instanceof Array && strings instanceof Array) {
+		ints = flatten(ints);
 		for (let i = 0; i < ints.length; i++) {
-			if (typeof ints[i] === "object") return false;
-			if (!Number.isInteger(parseInt(ints[i]))) return false;
+			if (typeof ints[i] === "object") {
+				return false;
+			}
+			if (!Number.isInteger(parseInt(ints[i]))) {
+				return false;
+			}
 		}
+		strings = flatten(strings);
+
 		for (let i = 0; i < strings.length; i++) {
 			if (!strings[i] || typeof strings[i] !== "string") {
 				return false;
 			}
-			//if (Number.isInteger(parseInt(strings[i])))  return false;
 		}
 		return true;
 	}
@@ -24,7 +37,7 @@ exports.checkArgs = function(ints, strings = []) {
 
 /* Given a media object (representation of a media database entry)
 This function returns true if valid and false if invalid. */
-const typeArr = ["MOVIE", "TV_SEASON", "BOOK", "GAME"];
+const typeArr = ["MOVIE", "TV", "BOOK", "GAME"];
 exports.checkMediaObj = function(obj) {
 	if (typeof obj === "object" && obj !== null) {
 		if (!obj.title) return false;
@@ -39,9 +52,9 @@ exports.checkMediaObj = function(obj) {
 };
 
 exports.checkMediaType = function(type) {
-    if (typeof type !== "string") return false;
-    if (!typeArr.includes(type)) return false;
-    return true;
+	if (typeof type !== "string") return false;
+	if (!typeArr.includes(type)) return false;
+	return true;
 };
 
 /* Wrapper function for checkArgs and CheckMediaObj together.  */
@@ -53,8 +66,14 @@ exports.checkArgsAndMedia = function(ints, strings, mediaObj) {
 	return true;
 };
 
-/* ~~~~~ Variables for testing ~~~~~ */
+exports.checkArgsType = function(ints, strings, type) {
+	if (!(exports.checkArgs(ints, strings) && exports.checkMediaType(type))) {
+		return false;
+	}
+	return true;
+};
 
+/* ~~~~~ Variables for testing ~~~~~ */
 
 /*
 

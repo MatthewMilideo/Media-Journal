@@ -120,7 +120,7 @@ export const showItemFormatter = data => {
 	////console.log(('date',firstDate)
 
 	const showData = {
-		type: T.TV_SEASON,
+		type: T.TV,
 		title: data.original_name,
 		overview: data.overview,
 		runtime: data.episode_run_time,

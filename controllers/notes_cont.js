@@ -37,8 +37,8 @@ NotesController.getMediaNotes = (req, res) => {
 };
 
 NotesController.getMediaUserNotes = (req, res) => {
-	const { media_id, user_id } = req.query;
-	Notes.getMediaUserNotes(media_id, user_id)
+	const { media_ids, user_id } = req.query;
+	Notes.getMediaUserNotes(media_ids, user_id)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => {
 			res.status(error.status).send(error.data);
@@ -84,8 +84,10 @@ NotesController.postNote = async (req, res) => {
 		else {
 			//check this
 			media_id = response.data[0].id;
+			
 			response = await Media_User.getMU(media_id, user_id);
 			if (response.status === 404) {
+			
 				response = await Media_User.postMU(media_id, user_id);
 				media_userFlag = true;
 			}

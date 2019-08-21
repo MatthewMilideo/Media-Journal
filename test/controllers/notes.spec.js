@@ -127,7 +127,7 @@ describe("Route: '/notes/ ", function() {
 	/* ~~~~~~~~~~~~~~~~~~~~~~~ GET MEDIA NOTES TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
 
 	describe("getMediaNotes | Route: /notes/media", function() {
-		it("getMediaNotes returns 400 when no media_id is provided", function(done) {
+		it("getMediaNotes returns 400 when no arguments are is provided", function(done) {
 			chai
 				.request(server.app)
 				.get("/notes/media")
@@ -187,7 +187,7 @@ describe("Route: '/notes/ ", function() {
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid media_id and user_id."
+						"You must provide valid media_ids and a user_id."
 					);
 					done();
 				});
@@ -200,7 +200,7 @@ describe("Route: '/notes/ ", function() {
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid media_id and user_id."
+						"You must provide valid media_ids and a user_id."
 					);
 					done();
 				});
@@ -209,11 +209,11 @@ describe("Route: '/notes/ ", function() {
 			chai
 				.request(server.app)
 				.get("/notes/mediauser")
-				.query({ media_id: 100 })
+				.query({ media_ids: 100 })
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid media_id and user_id."
+						"You must provide valid media_ids and a user_id."
 					);
 					done();
 				});
@@ -222,11 +222,11 @@ describe("Route: '/notes/ ", function() {
 			chai
 				.request(server.app)
 				.get("/notes/mediauser")
-				.query({ media_id: "test1", user_id: "test1" })
+				.query({ media_ids: "test1", user_id: "test1" })
 				.end(function(err, res) {
 					res.should.have.status(400);
 					res.text.should.equal(
-						"You must provide a valid media_id and user_id."
+						"You must provide valid media_ids and a user_id."
 					);
 					done();
 				});
@@ -235,7 +235,7 @@ describe("Route: '/notes/ ", function() {
 			chai
 				.request(server.app)
 				.get("/notes/mediauser")
-				.query({ media_id: 1, user_id: 100 })
+				.query({ media_ids: 1, user_id: 100 })
 				.end(function(err, res) {
 					res.should.have.status(404);
 					res.text.should.equal("The requested notes were not found.");
@@ -246,7 +246,7 @@ describe("Route: '/notes/ ", function() {
 			chai
 				.request(server.app)
 				.get("/notes/mediauser")
-				.query({ media_id: 100, user_id: 1 })
+				.query({ media_ids: 100, user_id: 1 })
 				.end(function(err, res) {
 					res.should.have.status(404);
 					res.text.should.equal("The requested notes were not found.");
@@ -257,7 +257,7 @@ describe("Route: '/notes/ ", function() {
 			chai
 				.request(server.app)
 				.get("/notes/mediauser")
-				.query({ media_id: 1, user_id: 2 })
+				.query({ media_ids: 1, user_id: 2 })
 				.end(function(err, res) {
 					res.should.have.status(404);
 					res.text.should.equal("The requested notes were not found.");
@@ -268,7 +268,7 @@ describe("Route: '/notes/ ", function() {
 			chai
 				.request(server.app)
 				.get("/notes/mediauser")
-				.query({ media_id: 1, user_id: 1 })
+				.query({ media_ids: 1, user_id: 1 })
 				.end(function(err, res) {
 					res.should.have.status(200);
 					res.body.should.be.a("array");
@@ -281,6 +281,112 @@ describe("Route: '/notes/ ", function() {
 				});
 		});
 	});
+
+	/* ~~~~~~~~~~~~~~~~~~~~~~~ GET MEDIAUSER NOTE TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
+
+	describe("getMediaUserNotesBulk | Route: /notes/mediauser", function() {
+		it("getMediaUserNotes returns 400 when no media_id or user_id is provided", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal(
+						"You must provide valid media_ids and a user_id."
+					);
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 400 when no media_id is provided", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ user_id: 100 })
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal(
+						"You must provide valid media_ids and a user_id."
+					);
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 400 when no user_id is provided", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ media_ids: 100 })
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal(
+						"You must provide valid media_ids and a user_id."
+					);
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 400 when non int media_id and user_id are provided", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ media_ids: "test1", user_id: "test1" })
+				.end(function(err, res) {
+					res.should.have.status(400);
+					res.text.should.equal(
+						"You must provide valid media_ids and a user_id."
+					);
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 404 when user_id does not have records", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ media_ids: 1, user_id: 100 })
+				.end(function(err, res) {
+					res.should.have.status(404);
+					res.text.should.equal("The requested notes were not found.");
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 404 when media_id does not have records", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ media_ids: 100, user_id: 1 })
+				.end(function(err, res) {
+					res.should.have.status(404);
+					res.text.should.equal("The requested notes were not found.");
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 404 when media_id has records but user_id does not", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ media_ids: 1, user_id: 2 })
+				.end(function(err, res) {
+					res.should.have.status(404);
+					res.text.should.equal("The requested notes were not found.");
+					done();
+				});
+		});
+		it("getMediaUserNotes returns 200 when media_id and user_id have records", function(done) {
+			chai
+				.request(server.app)
+				.get("/notes/mediauser")
+				.query({ media_ids: 1, user_id: 1 })
+				.end(function(err, res) {
+					res.should.have.status(200);
+					res.body.should.be.a("array");
+					res.body.length.should.equal(2);
+					res.body[0].should.have.property("id");
+					res.body[0].id.should.equal(1);
+					res.body[0].should.have.property("title");
+					res.body[0].title.should.equal("First Reformed - Note");
+					done();
+				});
+		});
+	});
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~ POST NOTE TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
 	describe("postNote | /notes/", function() {

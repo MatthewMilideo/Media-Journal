@@ -33,7 +33,7 @@ let media = [
 	},
 	{
 		title: "The Sopranos",
-		type: "TV_SEASON",
+		type: "TV",
 		CID: "2345"
 	},
 	{

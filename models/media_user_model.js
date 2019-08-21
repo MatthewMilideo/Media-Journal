@@ -23,7 +23,36 @@ Media_User.getAllMU = user_id => {
 };
 
 // Gets all Media for a given user_id
+Media_User.getMUBulk = (media_ids, user_id) => {
+	if (!Array.isArray(media_ids)) {
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid media_ids."
+		});
+	}
+	if (!helpers.checkArgs([user_id, ...media_ids]))
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid user_id and media_ids."
+		});
+	return database("user_media")
+		.select("media_id")
+		.where(builder => builder.whereIn("media_id", media_ids))
+		.andWhere(builder => builder.where({ user_id }))
+		.then(data => {
+			if (data.length === 0) {
+				return { status: 404, data: "The requested media_users were not found." };
+			}
+			return { status: 200, data };
+		})
+		.catch(error => {
+			throw { status: 400, message: error.message };
+		});
+};
+
+// Gets all Media for a given user_id
 Media_User.getMU = (media_id, user_id) => {
+	//console.log(media_id, user_id)
 	if (!helpers.checkArgs([user_id, media_id]))
 		return Promise.reject({
 			status: 400,

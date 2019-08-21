@@ -10,7 +10,7 @@ export const fetchSearchResult = (type, q1, q2) => dispatch => {
 	switch (type) {
 		case T.MOVIE:
 			return dispatch(TMDBSearchQuery(type, { query: q1, page: 1 }));
-		case T.TV_SEASON:
+		case T.TV:
 			return dispatch(TMDBSearchQuery(type, { query: q1, page: 1 }));
 		case T.BOOK:
 			return dispatch(
@@ -41,7 +41,7 @@ export const fetchNextPage = type => (dispatch, getState) => {
 	switch (type) {
 		case T.MOVIE:
 			return dispatch(TMDBSearchQuery(type, params, T._NEXT));
-		case T.TV_SEASON:
+		case T.TV:
 			return dispatch(TMDBSearchQuery(type, params, T._NEXT));
 		case T.BOOK:
 			return dispatch(bookSearchQuery(type, params, T._NEXT));
@@ -64,7 +64,7 @@ export const nextQueryBuilder = (type, curElem, totalElems, query) => {
 			}
 			return params;
 		}
-		case T.TV_SEASON: {
+		case T.TV: {
 			curElem++;
 			if (curElem <= totalElems) {
 				return { query, page: curElem };

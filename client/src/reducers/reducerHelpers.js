@@ -9,7 +9,7 @@ const defaultSearchState = {
 	totalElems: null
 };
 const emptySearchReducer = (state = defaultSearchState, action) => state;
-const searchTypes = [T.MOVIE, T.TV_SEASON, T.BOOK, T.GAME]; 
+const searchTypes = [T.MOVIE, T.TV, T.BOOK, T.GAME]; 
 
 //Generalized Reducer builder might be useful later. 
 const reducersBuilder = (types, HOR, reducer) => {

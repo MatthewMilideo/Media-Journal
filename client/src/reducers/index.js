@@ -7,8 +7,9 @@ import itemReducer, * as item from "./itemReducer";
 import * as ents from "./journalReducer";
 import userReducer, * as user from "./userReducer";
 import { searchHOR, journalHOR } from "./higherOrderReducers";
+import MovieSearchReducer from './MovieSearchReducer'
 
-const types = [T.MOVIE, T.TV_SEASON, T.BOOK, T.GAME];
+const types = [T.MOVIE, T.TV, T.BOOK, T.GAME];
 
 const defaultState = {
 	status: T.UNLOADED,
@@ -36,7 +37,8 @@ export default combineReducers({
 	...combineReducerObj,
 	item: itemReducer,
 	user: userReducer,
-	notes: notesReducer
+	notes: notesReducer,
+	test: MovieSearchReducer, 
 });
 
 // ~~~~ Public Selectors ~~~~

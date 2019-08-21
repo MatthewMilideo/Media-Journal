@@ -13,11 +13,11 @@ const notes_tag = require('./notes_tag_route')
 module.exports = (app) => {
   app.use('/users', users)
   app.use('/media', media)
-  app.use('/media_user', media_user)
-  app.use('/media_note', media_note)
+  app.use('/media_user/', media_user)
+  app.use('/media_note/', media_note)
   app.use('/tags', tags)
   app.use('/test', test)
   app.use('/notes', notes)
-  app.use('/note_tag', notes_tag)
+  app.use('/note_tag/', notes_tag)
 
 }
