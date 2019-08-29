@@ -3,7 +3,7 @@ import Note from "./Note";
 import { Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 
-import { getAllNotes, postNote } from "../../actions";
+//import { getAllNotes, postNote } from "../../actions";
 import { getItemNotes, getNotesState } from "../../reducers";
 import "../../styles/style.css";
 
@@ -20,7 +20,7 @@ class NoteManager extends React.Component {
 
 	componentDidMount() {
 		//console.log(this.props);
-		this.props.getAllNotes();
+		//this.props.getAllNotes();
 		//this.props.postNote( 'Test Note', 'The test note has this data', 61, 70 )
 	}
 	//70
@@ -122,5 +122,5 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ getAllNotes, postNote }
+	null //{ getAllNotes, postNote }
 )(NoteManager);

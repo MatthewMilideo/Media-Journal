@@ -8,7 +8,7 @@ router.get('/', Media_UserController.getAllMU);
 router.get('/media/', Media_UserController.getMedia);
 router.get('/user/', Media_UserController.getUsers);
 router.get('/media_user/', Media_UserController.getMU);
-router.post('/', Media_UserController.postMU);
+router.post('/', Media_UserController.postMediaUser);
 router.delete('/', Media_UserController.deleteMU);
 
 module.exports = router;

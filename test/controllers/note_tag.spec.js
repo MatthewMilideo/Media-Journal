@@ -1,13 +1,16 @@
 process.env.NODE_ENV = "test";
 const environment = process.env.NODE_ENV || "development";
-const configuration = require("../knexfile")[environment];
+const configuration = require("../../knexfile")[environment];
 const database = require("knex")(configuration);
+const expect = require("chai").expect;
 
 var chai = require("chai");
 var should = chai.should();
 var chaiHttp = require("chai-http");
-var server = require("../server.js");
+var server = require("../../server.js");
+chai.use(require("chai-as-promised"));
 
+const noteTag = require("../../models/notes_tag_model");
 chai.use(chaiHttp);
 
 describe("Route: '/note_tag/ ", function() {
@@ -26,6 +29,8 @@ describe("Route: '/note_tag/ ", function() {
 			done();
 		});
 	});
+
+	
 
 	describe("getAllNT | /note_tag/", function() {
 		it("getAllNT returns 404 when the user_id isn't in the list ", async() => {
@@ -377,5 +382,37 @@ describe("Route: '/note_tag/ ", function() {
 			requester.close();
 		});
 	});
-});
+	describe("getTagNTBulk", function() {
+		it("getTagNTBulk returns 400 when no note_ids are provided", async () => {
+			let res = await expect(noteTag.getTagNTBulk()).to.be.rejected;
+			expect(res.status).to.equal(400);
+		});
 
+		it("getTagNTBulk returns 400 when no note_ids are provided", async () => {
+			let res = await expect(noteTag.getTagNTBulk("test")).to.be.rejected;
+			expect(res.status).to.equal(400);
+		});
+
+		it("getTagNTBulk returns 400 when no note_ids are provided", async () => {
+			let res = await expect(noteTag.getTagNTBulk(["1test", 1, 2, 3, 4, 5])).to
+				.be.rejected;
+			expect(res.status).to.equal(400);
+		});
+
+		it("getTagNTBulk returns 200 when no note_ids are provided", async () => {
+			let res = await noteTag.getTagNTBulk(1);
+			expect(res.status).to.equal(200);
+		});
+
+		it("getTagNTBulk returns 200 when no note_ids are provided", async () => {
+			let res = await noteTag.getTagNTBulk([1, 2]);
+			expect(res.status).to.equal(200);
+		});
+
+		it("getTagNTBulk returns 404 when no note_ids are provided", async () => {
+			let res = await noteTag.getTagNTBulk([122222222, 2000000]);
+			expect(res.status).to.equal(404);
+	
+		});
+	});
+});

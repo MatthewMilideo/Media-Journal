@@ -1,47 +1,41 @@
 import { combineReducers } from "redux";
-
-import notesReducer, * as noteFuncs from "./notesReducer";
+import userReducer, * as user from "./userReducer";
+import searchBarReducer, * as search from './searchBarReducer'
+import { searchHOR } from "./higherOrderReducers";
 
 import * as T from "../actions/types";
+
+
+import notesReducer, * as noteFuncs from "./notesReducer";
 import itemReducer, * as item from "./itemReducer";
 import * as ents from "./journalReducer";
-import userReducer, * as user from "./userReducer";
-import { searchHOR, journalHOR } from "./higherOrderReducers";
-import MovieSearchReducer from './MovieSearchReducer'
 
-const types = [T.MOVIE, T.TV, T.BOOK, T.GAME];
 
-const defaultState = {
-	status: T.UNLOADED,
-	type: null,
-	query: null,
-	data: [],
-	curElem: null,
-	totalElems: null
-};
-
-const defaultJournalState = {
-	data: [],
-	Status: null
-};
-
-const empty = (state = defaultState, action) => state;
-const empty2 = (state = defaultJournalState, action) => state;
-
-let combineReducerObj = {};
-types.map(t => (combineReducerObj[t] = searchHOR(t, empty)));
-combineReducerObj[T.NOTE] = journalHOR(T.NOTE, empty2);
-combineReducerObj[T.TAG] = journalHOR(T.TAG, empty2);
+let reducerObject = {}
+reducerObject[T.MOVIE] = searchHOR(T.MOVIE);
+reducerObject[T.TV] = searchHOR(T.TV);
+reducerObject[T.BOOK] = searchHOR(T.BOOK);
 
 export default combineReducers({
-	...combineReducerObj,
-	item: itemReducer,
+	...reducerObject, 
 	user: userReducer,
+	search: searchBarReducer,
+
+	// Legacy
+	item: itemReducer,
 	notes: notesReducer,
-	test: MovieSearchReducer, 
 });
 
 // ~~~~ Public Selectors ~~~~
+
+
+export function getSearchState(store) {
+	return store['search'];
+}
+
+export function getMediaState(store, type) {
+	return store[type];
+}
 
 // ~~~~~~ Notes Selector ~~~~~~~~~~
 
@@ -62,6 +56,8 @@ export function getUserErr(store) {
 export function getUser(store) {
 	return user._getUser(store["user"]);
 }
+
+
 
 // ~~~~~~~~ Other Selectors ~~~~~~
 

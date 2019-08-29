@@ -1,80 +1,116 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Form } from "semantic-ui-react";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Nav from "react-bootstrap/Nav";
+import Button from "react-bootstrap/Button";
 
-import { startSearch } from '../actions'
+import {
+	TMDBSearch,
+	BookSearch,
+	searchBarActiveElem,
+	searchBarText
+} from "../actions";
 
-/* Props: 
-	searchType - the redux store's current searchType, 
-	config - an object containing configuration data for
-	the different search bars, their number, type, etc
-*/
+import { getUser, getSearchState } from "../reducers";
+import * as T from "../actions/types";
 
 class SearchBar extends React.Component {
-	state = {
-		textValues: null
-	};
-
-	componentWillMount(props) {
-		this.setState({ textValues: this.props.config.textValues });
-	}
 
 	componentDidMount(){
-		console.log('in mount function');
+		const { user_id } = this.props.User;
+		this.props.TMDBSearch(user_id, 'Star Wars', T.MOVIE, 1);
 	}
-
-	onSearchSubmit = e => {
-		e.preventDefault();
-		/*
-		this.props.fetchSearchResult(
-			this.props.searchType,
-			this.state.textValues[0],
-			this.state.textValues[1]
-		);
-		*/
-		this.props.startSearch( 500000, this.state.textValues[0], 1); 
-		let textLocal = this.state.textValues;
-		textLocal = textLocal.map(elem => (elem = ""));
-		this.setState({ textValues: textLocal });
+	
+	renderType = type => {
+		let convObj = {};
+		convObj[T.MOVIE] = "Movies";
+		convObj[T.TV] = "Television";
+		convObj[T.BOOK] = "Books";
+		convObj[T.GAME] = "Games";
+		return convObj[type];
 	};
 
-	configureSearch = (type, config) => {
-		return config[type].map((elem, index) => {
-			return (
-				<Form.Input
-					label={elem.label}
-					width={15}
-					placeholder={elem.placeholder}
-					value={this.state.textValues[index]}
-					key={index}
-					onChange={e => {
-						let tempValues = this.state.textValues;
-						tempValues[index] = e.target.value;
-						this.setState({ textValues: tempValues });
-					}}
-				/>
-			);
-		});
+	renderNav = navList => {
+		const { activeElem } = this.props.Search;
+		return (
+			<Nav
+				fill
+				variant="pills"
+				defaultActiveKey={activeElem}
+				className="pl-0 pr-0 mt-3 mb-3"
+				onSelect={e => this.props.searchBarActiveElem(e)}
+			>
+				{navList.map(navElem => {
+					let disabled;
+					navElem === T.GAME ? (disabled = true) : (disabled = false);
+					return (
+						<Nav.Item key={navElem}>
+							<Nav.Link disabled={disabled} eventKey={navElem}>
+								{" "}
+								{this.renderType(navElem)}{" "}
+							</Nav.Link>
+						</Nav.Item>
+					);
+				})}
+			</Nav>
+		);
+	};
+
+	renderForm = () => {
+		const { activeElem, searchText } = this.props.Search;
+		return (
+			<Form onSubmit={this.onSubmit}>
+				<InputGroup>
+						<Form.Label> {this.renderType(activeElem)} </Form.Label>
+						<Form.Control
+							type="text"
+							placeholder="Enter Text"
+							value={searchText}
+							onChange={e => this.props.searchBarText(e.target.value)}
+						/>
+						<InputGroup.Append>
+							<Button variant="primary" type="submit" className="pt-0">
+								Submit
+							</Button>
+						</InputGroup.Append>
+	
+				</InputGroup>
+			</Form>
+		);
+	};
+
+	onSubmit = e => {
+		e.preventDefault();
+		const { activeElem, searchText } = this.props.Search;
+		const { user_id } = this.props.User;
+		if (activeElem === T.BOOK) {
+			this.props.BookSearch(user_id, searchText, 0);
+		} else {
+			this.props.TMDBSearch(user_id, searchText, activeElem, 1);
+		}
+		this.props.searchBarText("");
 	};
 
 	render() {
-		let { searchType, config } = this.props;
+		const navList = [T.MOVIE, T.TV, T.BOOK, T.GAME];
 		return (
-			<div className = 'search-form-div'> 
-			<Form onSubmit={this.onSearchSubmit}>
-				<Form.Group width={15}>
-					{this.configureSearch(searchType, config)}
-					<div className="search-bar-button-div">
-						<Form.Button width = {1} color="blue"> Submit </Form.Button>
-					</div>
-				</Form.Group>
-			</Form>
+			<div>
+				{this.renderNav(navList)}
+				{this.renderForm()}
 			</div>
 		);
 	}
 }
 
+const mapStateToProps = state => {
+	return {
+		User: getUser(state),
+		Search: getSearchState(state)
+	};
+};
+
 export default connect(
-	null,
-	{ startSearch }
+	mapStateToProps,
+	{ TMDBSearch, BookSearch, searchBarActiveElem, searchBarText }
 )(SearchBar);

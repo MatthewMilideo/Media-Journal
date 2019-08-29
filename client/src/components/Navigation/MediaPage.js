@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchItem } from "../../actions";
+//import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
 import MovieData from "./MediaPageHelpers/MovieData";
 import TVData from "./MediaPageHelpers/TVData";
@@ -23,7 +23,7 @@ class MediaPage extends React.Component {
 		window.addEventListener("resize", this.debounceOnResize, false);
 
 		const { id, type } = this.props.match.params;
-		this.props.fetchItem(type, id);
+		//this.props.fetchItem(type, id);
 		this.setState({ type, id });
 	}
 
@@ -127,6 +127,7 @@ class MediaPage extends React.Component {
 
 
 	render() {
+		console.log(this.props);
 	
 		if (
 			Object.keys(this.props.itemData).length === 0 &&
@@ -162,6 +163,7 @@ class MediaPage extends React.Component {
 				
 					{returnData}
 					{cast}
+					HELLO HELLO HELLO WE ARE HERE
 					<NoteManager title = {title} cID={id} type={type} />
 			
 			</div>
@@ -178,6 +180,6 @@ const mapStateToProps = state => {
 export default connect(
 	mapStateToProps, //mapDispatchToProps
 	{
-		fetchItem
+		//fetchItem
 	}
 )(MediaPage);

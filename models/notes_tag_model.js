@@ -49,6 +49,33 @@ Note_Tags.getNoteNT = tag_id => {
 		});
 };
 
+Note_Tags.getTagNTBulk = note_ids => {
+	if ( ! Array.isArray(note_ids)) note_ids = [note_ids];
+	if (!helpers.checkArgs([note_ids])){
+		console.log('rejected')
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid note_ids."
+		});
+	}
+	return database
+		.from("note_tag")
+		.where(builder => builder.whereIn("note_id", note_ids))
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested note_tags were not found."
+				};
+
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			throw { status: 400, data: error.message, error };
+		});
+};
+
 Note_Tags.getTagNT = note_id => {
 	if (!helpers.checkArgs([note_id]))
 		return Promise.reject({

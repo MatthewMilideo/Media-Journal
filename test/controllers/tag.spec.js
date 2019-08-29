@@ -1,12 +1,15 @@
 process.env.NODE_ENV = "test";
 const environment = process.env.NODE_ENV || "development";
-const configuration = require("../knexfile")[environment];
+const configuration = require("../../knexfile")[environment];
 const database = require("knex")(configuration);
+const expect = require("chai").expect;
+const tag = require("../../models/tags_model")
 
 var chai = require("chai");
 var should = chai.should();
 var chaiHttp = require("chai-http");
-var server = require("../server.js");
+var server = require("../../server.js");
+chai.use(require("chai-as-promised"));
 
 chai.use(chaiHttp);
 
@@ -29,6 +32,7 @@ describe("Route: '/tags/ ", function() {
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~ GET ALL TAGS TESTS ~~~~~~~~~~~~~~~~~~~~~~~ */
 
+	/*
 	describe("getAllTags | /tags/", function() {
 		it("getAllTags returns 404 when no tags are found", async() => {
 			let requester = chai.request(server.app).keepOpen();
@@ -235,6 +239,41 @@ describe("Route: '/tags/ ", function() {
 			res.body[0].title.should.equal("Good");
 
 			requester.close();
+		});
+	});
+	*/
+
+	describe("getTagIDBulk", function() {
+		it("getTagIDBulk returns 400 when no note_ids are provided", async () => {
+			let res = await expect(tag.getTagIDBulk()).to.be.rejected;
+			expect(res.status).to.equal(400);
+		});
+
+		it("getTagIDBulk returns 400 when no note_ids are provided", async () => {
+			let res = await expect(tag.getTagIDBulk("test")).to.be.rejected;
+			expect(res.status).to.equal(400);
+		});
+
+		it("getTagIDBulk returns 400 when no note_ids are provided", async () => {
+			let res = await expect(tag.getTagIDBulk(["1test", 1, 2, 3, 4, 5])).to
+				.be.rejected;
+			expect(res.status).to.equal(400);
+		});
+
+		it("getTagIDBulk returns 400 when no note_ids are provided", async () => {
+			let res = await tag.getTagIDBulk(1);
+			expect(res.status).to.equal(200);
+		});
+
+		it("getTagIDBulk returns 404 when no note_ids are provided", async () => {
+			let res = await tag.getTagIDBulk(1000);
+			expect(res.status).to.equal(404);
+	
+		});
+
+		it("getTagIDBulk returns 400 when no note_ids are provided", async () => {
+			let res = await tag.getTagIDBulk([1, 2]);
+			expect(res.status).to.equal(200);
 		});
 	});
 });

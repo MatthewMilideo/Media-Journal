@@ -74,7 +74,7 @@ Notes.getMediaUserNotes = (media_ids, user_id) => {
 	}
 	return database("notes")
 		.join("media_note", "notes.id", "=", "media_note.note_id")
-		.select("*")
+		.select(["media_note.note_id", "notes.title", "notes.data", "notes.user_id", "media_note.media_id"])
 		.where(builder => builder.whereIn("media_note.media_id", media_ids))
 		.andWhere(builder => builder.where({ user_id }))
 		.then(data => {
@@ -155,5 +155,26 @@ Notes.deleteNote = async note_id => {
 			throw { status: 400, data: error.message, error };
 		});
 };
+
+/*
+Notes.get = (note_ids) => {
+	// Gets all Notes by all users
+	return database("notes").join('note_tag', 'notes.id', 'note_tag.note_id' )
+		.select()
+		.where(builder => builder.whereIn("media.CID", CIDs))
+		.andWhere(builder => builder.where({ type }))
+		.andWhere(builder => builder.where({ 'user_media.user_id': user_id }))
+		.then(data => {
+			if (data.length === 0) {
+				return { status: 404, data: "The requested media were not found." };
+			}
+			return { status: 200, data };
+		})
+		.catch(error => {
+			return Promise.reject({ status: 400, data: error.message, error });
+		});
+};
+}
+*/
 
 module.exports = Notes;

@@ -7,11 +7,11 @@ import Button from "react-bootstrap/Button";
 import FormControl from "react-bootstrap/FormControl";
 
 import {
-	editNoteTitle,
-	editNoteData,
-	discardNoteChanges,
-	noteEditState,
-	saveNote
+//	editNoteTitle,
+//	editNoteData,
+//	discardNoteChanges,
+//	noteEditState,
+//	saveNote
 } from "../../actions";
 import * as T from "../../actions/types";
 
@@ -25,25 +25,25 @@ const StyledCard = styled(Card)`
 
 class Note extends React.Component {
 	onTitleChange = e => {
-		this.props.editNoteTitle(this.props.data.id, e.target.value);
+	//	this.props.editNoteTitle(this.props.data.id, e.target.value);
 	};
 
 	onDataChange = e => {
-		this.props.editNoteData(this.props.data.id, e.target.value);
+	//	this.props.editNoteData(this.props.data.id, e.target.value);
 	};
 
 	onCardClick = () => {
 		const { data } = this.props;
 
-		if (data.editState === false) this.props.noteEditState(data.id);
+	//	if (data.editState === false) this.props.noteEditState(data.id);
 	};
 
 	onDiscardClick = () => {
-		this.props.discardNoteChanges(this.props.data.id);
+	//	this.props.discardNoteChanges(this.props.data.id);
 	};
 
 	onSaveClick = () => {
-		this.props.saveNote(this.props.data.id);
+	//	this.props.saveNote(this.props.data.id);
 	};
 
 	renderActive = () => {
@@ -116,5 +116,5 @@ class Note extends React.Component {
 
 export default connect(
 	null,
-	{ editNoteTitle, editNoteData, discardNoteChanges, noteEditState, saveNote }
+	null//{ editNoteTitle, editNoteData, discardNoteChanges, noteEditState, saveNote }
 )(Note);

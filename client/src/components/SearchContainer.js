@@ -1,49 +1,123 @@
 import React from "react";
-import * as T from "../actions/types";
-import MediaGrid from "./smallComponents/MediaGrid";
 
 import { connect } from "react-redux";
+import debounce from "lodash/debounce";
+import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
-// Converts the Redux Object into an array. 
-// Hopefully this function becomes uncessary as I optimize the code. 
-function makeGrid (media){
-	let arr = [];
-	for (let i = 0; i < media.keysArr.length; i++) {
-		let key = media.keysArr[i];
-		arr.push({
-			...media[key],
-			largeImage: `https://image.tmdb.org/t/p/w500${media[key].poster_path}`
-		});
-	}
-	return <MediaGrid media = {arr}/>;
+import MediaGrid from "./smallComponents/MediaGrid";
+import { TMDBSearch } from "../actions/index";
+import { getUser, getSearchState, getMediaState } from "../reducers";
+import * as T from "../actions/types";
+
+const getHeight = () => {
+	return Math.max(
+		document.body.scrollHeight,
+		document.documentElement.scrollHeight,
+		document.body.offsetHeight,
+		document.documentElement.offsetHeight,
+		document.body.clientHeight,
+		document.documentElement.clientHeight
+	);
 };
 
-const SearchContainer = props => {
-	const { type } = props;
-	const data = props[type];
-    console.log(data);
-	switch (data.status) {
-		default:
-			return <div> Please search for some content. </div>;
-		case T.BEGAN_SEARCH:
-			return <div> Please search for some content. </div>;
-		case T.ERROR_SEARCH:
-			return <div> There was an error in the search.</div>;
-		case T.FINISHED_SEARCH: {
-			return makeGrid(data.data);
+class SearchContainer extends React.Component {
+	state = {
+		width: window.innerWidth,
+		height: window.innerHeight,
+		totalHeight: null
+	};
+
+	componentDidMount(){
+		window.addEventListener("scroll", this.debounceHandleScroll);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener("scroll", this.debounceHandleScroll);
+	}
+
+	handleScroll = e => {
+		const totalHeight = getHeight(); 
+		console.log('totalHeight:', totalHeight, 'winPageYOffset + window.Inner Height:', window.pageYOffset + window.innerHeight)
+
+		if (totalHeight - 100 <= window.pageYOffset + window.innerHeight) {
+			const type = this.props.search.activeElem;
+			const data = this.props[type];
+			const { user_id } = this.props.User;
+
+			if (data.totalElems > data.prevElem) {
+				let newElem = data.prevElem + 1;
+				this.props.TMDBSearch(user_id, data.prevQuery, type, newElem);
+			}
+		}
+	};
+
+	debounceHandleScroll = debounce(e => this.handleScroll(e), 200);
+
+	// Converts the Redux Object into an array.
+	// Hopefully this function becomes uncessary as I optimize the code.
+	makeGrid = (media, type) => {
+		let arr = [];
+		for (let i = 0; i < media.keysArr.length; i++) {
+			let key = media.keysArr[i];
+			arr.push({
+				...media.data[key]
+			});
+		}
+		return <MediaGrid media={arr} type={type} />;
+	};
+
+	emptyGrid = () => {
+		let arr = [];
+		for (let i = 0; i < 5; i++) {
+			arr.push({
+				id: i,
+				smallImage: null,
+				largeImage: null,
+				title: null,
+				loaded: false
+			});
+		}
+		return <MediaGrid media={arr} type={"MOVIE"} />;
+	};
+
+	render() {
+		console.log(this.state);
+		const type = this.props.search.activeElem;
+		const data = this.props[type];
+		switch (data.status) {
+			default:
+				return this.emptyGrid();
+			case `${type}${T._BEGAN_SEARCH_NEXT}`:
+				return this.makeGrid(data, type)
+			case `${type}${T._ERRORED_SEARCH}`:
+				return (
+					<Alert variant="danger">
+						<Alert.Heading>Uh Oh!</Alert.Heading>
+						<p>There was an error with that search! Please try another term.</p>
+					</Alert>
+				);
+			case `${type}${T._FINISHED_SEARCH}`: {
+				return this.makeGrid(data, type);
+			}
+			case `${type}${T._FINISHED_SEARCH_NEXT}`: {
+				return this.makeGrid(data, type);
+			}
 		}
 	}
-};
+}
 
 const mapStateToProps = state => {
 	return {
-        MOVIE: state.test,
-        TV: state.test,
-        BOOK: state.test,
-        GAME: state.test
+		MOVIE: getMediaState(state, T.MOVIE),
+		TV: getMediaState(state, T.TV),
+		BOOK: getMediaState(state, T.BOOK),
+		search: getSearchState(state),
+		User: getUser(state)
 	};
 };
 
 export default connect(
-	mapStateToProps, {}
+	mapStateToProps,
+	{ TMDBSearch }
 )(SearchContainer);

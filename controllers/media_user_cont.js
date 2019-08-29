@@ -1,5 +1,8 @@
-const Media_User = require("../models/media_user_model");
 const Media = require("../models/media_model");
+const Media_User = require("../models/media_user_model");
+const MediaService = require('../services/MediaService');
+
+
 
 // Instantiate the controller object
 const Media_UserController = {};
@@ -49,7 +52,17 @@ Media_UserController.getUsers = (req, res) => {
 		});
 };
 
-// Have to finish Media Controller to finish this.
+Media_UserController.postMediaUser = (req, res) => {
+	const {user_id, mediaObj} = req.body;
+	MediaService.postMU(user_id, mediaObj)
+	.then(data => {
+		res.status(data.status).send(data.data);
+	})
+	.catch(error => {
+		res.status(error.status).send(error.data);
+	});
+}
+
 Media_UserController.postMU = (req, res) => {
 	const { media_id, user_id, mediaObj } = req.body;
 	Media_User.postMU(media_id, user_id)

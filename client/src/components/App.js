@@ -7,8 +7,8 @@ import Container from "react-bootstrap/Container";
 import HomePage from "./Navigation/HomePage";
 import SearchPage from "./Navigation/SearchPage";
 import JournalHome from "./Navigation/JournalHome";
-import MediaPage from "./Navigation/MediaPage";
-import LoginPage from "./Navigation/LoginPage";
+import NewMediaPage from "./Navigation/NewMediaPage";
+
 
 
 import history from "../history";
@@ -19,12 +19,11 @@ class App extends React.Component {
 	render() {
 		//console.log(history);
 		return (
-			<Container fluid>
-				<Container>
+			<Container fluid className = 'pl-0 pr-0'>
 					<Router basename={"client/build/"} history={history}>
-						<div>
-							<NavBar />
-
+						<div >
+							<NavBar/>
+							<Container className = 'mt-3'>
 							<Switch>
 								<Route
 									path={`${process.env.PUBLIC_URL}/Home`}
@@ -40,17 +39,13 @@ class App extends React.Component {
 								<Route
 									path={`${process.env.PUBLIC_URL}/media/:type?/:id?`}
 									exact
-									component={MediaPage}
-								/>
-								<Route
-									path={`${process.env.PUBLIC_URL}/login`}
-									exact
-									component={LoginPage}
+									component={NewMediaPage}
 								/>
 							</Switch>
+							</Container>
 						</div>
 					</Router>
-				</Container>
+		
 			</Container>
 		);
 	}

@@ -1,52 +1,55 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-
-import Card from 'react-bootstrap/Card'
+import debounce from "lodash/debounce";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const StyledCard = styled(Card)`
-	width: 100%;
-	height: 100%;
+import MediaCard from "./MediaCard";
 
-	img{
-			width: 100%;
-			height: 30vw;
-			object-fit: cover;
-		}
+class MediaGrid extends React.Component {
+	state = { width: window.innerWidth, height: window.innerHeight };
+
+	componentDidMount() {
+		this.updateWindow();
+		window.addEventListener("resize", this.debounceUpdateWindow);
 	}
-	
-	
-    
-  :hover {
-        box-shadow: 5px 10px;
-	  }
+	componentWillUnmount() {
+		window.removeEventListener("resize", this.debounceUpdateWindow);
+	}
 
-`;
+	updateWindow = () => {
+		this.setState({ width: window.innerWidth, height: window.innerHeight });
+	};
 
-const MediaGrid = props => {
-	return (
+	debounceUpdateWindow = debounce(this.updateWindow, 200);
 
-			<Row>
-				{props.media.map(elem => {
-					console.log(elem);
+	render() {
+		const { media, type } = this.props;
+		const mediaLength = media.length;
+		let returnObj;
+
+		media
+			? (returnObj = media.map(elem => {
 					return (
-						<Col xs={12} sm={6} md={4} lg={3} key={elem.id} className='mb-3'>
-							<Link  to={`/media/${props.type}/${elem.id}`}>
-								<StyledCard className='d-flex align-items-stretch' bg = 'light'>
-                                    <Card.Img variant = 'top' src = {elem.largeImage} />
-                                    <Card.Title> {elem.title} </Card.Title>
-								</StyledCard>
-							</Link>
+						<Col xs={12} sm={6} md={4} lg={3} key={elem.id} className="mb-3">
+							<MediaCard
+								key={elem.id}
+								data={elem}
+								type={type}
+								width={this.state.width}
+								len = {mediaLength}
+							/>
 						</Col>
 					);
-				})}
-				;
-			</Row>
-	
-	);
-};
+			  }))
+			: (returnObj = <div> </div>);
+
+		return (
+			<div className="pt-3 pb-3 pr-3 pl-3">
+				<Row>{returnObj}</Row>
+			</div>
+		);
+	}
+}
 
 export default MediaGrid;

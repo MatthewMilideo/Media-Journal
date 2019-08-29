@@ -25,6 +25,31 @@ Tags.getAllTags = () => {
 		});
 };
 
+Tags.getTagIDBulk = ids => {
+	if (!Array.isArray(ids)) ids = [ids];
+	if (!helpers.checkArgs([ids]))
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid ids."
+		});
+	return database
+		.from("tags")
+		.where(builder => builder.whereIn("id", ids))
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return { status: 404, data: "The requested tags were not found." };
+			return { status: 200, data };
+		})
+		.catch(error => {
+			throw {
+				status: 400,
+				data: error.message,
+				error
+			};
+		});
+};
+
 Tags.getTagID = id => {
 	if (!helpers.checkArgs([id]))
 		return Promise.reject({
