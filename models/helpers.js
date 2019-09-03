@@ -5,12 +5,13 @@ Given an object {ints: [], strings: []}
 This function returns true either if the arrays are empty, or 
 if the arrays contain all values of their 'type' */
 
-
 function flatten(arr) {
-	return arr.reduce(function (flat, toFlatten) {
-	  return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+	return arr.reduce(function(flat, toFlatten) {
+		return flat.concat(
+			Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten
+		);
 	}, []);
-  }
+}
 
 exports.checkArgs = function(ints, strings = []) {
 	if (ints instanceof Array && strings instanceof Array) {
@@ -54,6 +55,30 @@ exports.checkMediaObj = function(obj) {
 exports.checkMediaType = function(type) {
 	if (typeof type !== "string") return false;
 	if (!typeArr.includes(type)) return false;
+	return true;
+};
+
+exports.checkMediaNoteMU = function(arr) {
+	if (!Array.isArray(arr)) return false;
+	if (arr.length === 0) return false;
+	for (let i = 0; i < arr.length; i++) {
+		if (!arr[i].media_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].media_id))) return false;
+		if (!arr[i].user_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
+	}
+	return true;
+};
+
+exports.checkMediaNoteNU = function(arr) {
+	if (!Array.isArray(arr)) return false;
+	if (arr.length === 0) return false;
+	for (let i = 0; i < arr.length; i++) {
+		if (!arr[i].note_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
+		if (!arr[i].user_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
+	}
 	return true;
 };
 

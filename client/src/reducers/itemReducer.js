@@ -17,7 +17,8 @@ export default (state = defaultState, action) => {
         case T.FINISHED_ITEM:
 			return {
 				...state, 
-				data: action.payload
+				status: action.type,
+				data: action.payload.data
 			};
         case T.ERRORED_ITEM:
 			return {
@@ -34,5 +35,5 @@ export function _getItemStatus(store) {
 }
 
 export function _getItemData(store) {
-	return store.data;
+	return store;
 }

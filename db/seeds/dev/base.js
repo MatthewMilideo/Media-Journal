@@ -228,19 +228,23 @@ exports.seed = function(knex) {
 					knex("media_note").insert([
 						{
 							media_id: mediaIDs[0],
-							note_id: noteIDs[0]
+							note_id: noteIDs[0],
+							user_id: userIDs[0]
 						},
 						{
 							media_id: mediaIDs[0],
-							note_id: noteIDs[1]
+							note_id: noteIDs[1],
+							user_id: userIDs[0]
 						},
 						{
 							media_id: mediaIDs[1],
-							note_id: noteIDs[1]
+							note_id: noteIDs[1],
+							user_id: userIDs[0]
 						},
 						{
 							media_id: mediaIDs[2],
-							note_id: noteIDs[2]
+							note_id: noteIDs[2],
+							user_id: userIDs[1]
 						}
 					]),
 					knex("note_tag").insert([

@@ -47,36 +47,7 @@ Media_Note.getMediaMN = note_id => {
 		});
 };
 
-Media_Note.getNoteMN = media_id => {
-	if (!helpers.checkArgs([media_id]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid media_id."
-		});
-	return database
-		.from("media_note")
-		.where({ media_id })
-		.select()
-		.then(data => {
-			if (data.length === 0)
-				return {
-					status: 404,
-					data: "The requested media_note was not found."
-				};
-
-			return { status: 200, data: data };
-		})
-		.catch(error => {
-			throw { status: 400, data: error.message, error };
-		});
-};
-
-Media_Note.getNoteMNBulk = media_ids => {
-	if (!helpers.checkArgs(media_ids))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid media_ids."
-		});
+Media_Note.getByMediaID = media_ids => {
 	return database
 		.from("media_note")
 		.where(builder => builder.whereIn("media_id", media_ids))
@@ -87,32 +58,89 @@ Media_Note.getNoteMNBulk = media_ids => {
 					status: 404,
 					data: "The requested media_notes were not found."
 				};
-
 			return { status: 200, data: data };
 		})
 		.catch(error => {
-			throw { status: 400, data: error.message, error };
+			return { status: 400, data: error.message, error };
 		});
 };
 
-Media_Note.postMN = (note_id, media_id) => {
-	if (!helpers.checkArgs([note_id, media_id]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid note_id and media_id."
+Media_Note.getByUserID = user_ids => {
+	return database
+		.from("media_note")
+		.where(builder => builder.whereIn("user_id", user_ids))
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested media_notes were not found."
+				};
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			return { status: 400, data: error.message, error };
 		});
+};
 
+Media_Note.getByMediaAndUserID = ids => {
+	return database
+		.from("media_note")
+		.where(builder =>
+			builder.whereIn(
+				["media_note.media_id", "media_note.user_id"],
+				ids.map(id => [id.media_id, id.user_id])
+			)
+		)
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested media_notes were not found."
+				};
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			return { status: 400, data: error.message, error };
+		});
+};
+
+Media_Note.getByNoteAndUserID = ids => {
+	return database
+		.from("media_note")
+		.where(builder =>
+			builder.whereIn(
+				["media_note.note_id", "media_note.user_id"],
+				ids.map(id => [id.note_id, id.user_id])
+			)
+		)
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested media_notes were not found."
+				};
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			return { status: 400, data: error.message, error };
+		});
+};
+
+Media_Note.postMN = (media_id, note_id, user_id) => {
 	return database("media_note")
 		.insert(
 			{
 				note_id,
-				media_id
+				media_id,
+				user_id
 			},
-			["note_id", "media_id"]
+			["note_id", "media_id", "user_id"]
 		)
 
 		.then(data => {
-			
 			return { status: 201, data };
 		})
 		.catch(error => {
@@ -129,6 +157,12 @@ Media_Note.postMN = (note_id, media_id) => {
 						data: "The note required for this operation could not be found.",
 						error
 					};
+				case "media_note_user_id_foreign":
+					throw {
+						status: 404,
+						data: "The user required for this operation could not be found.",
+						error
+					};
 				case "media_note_pkey":
 					throw {
 						status: 409,
@@ -137,20 +171,20 @@ Media_Note.postMN = (note_id, media_id) => {
 						error
 					};
 				default:
-					throw { status: 500, data: "Error", error };
+					throw { status: 400, data: "Error", error };
 			}
 		});
 };
 
-Media_Note.deleteMN = (media_id, note_id) => {
+Media_Note.deleteMN = (media_id, note_id, user_id) => {
 	if (!helpers.checkArgs([media_id, note_id]))
 		return Promise.reject({
 			status: 400,
-			data: "You must provide a valid media_id and note_id."
+			data: "You must provide a valid media_id and note_id, and user_id."
 		});
 	return database("media_note")
 		.returning("*")
-		.where({ media_id, note_id })
+		.where({ media_id, note_id, user_id })
 		.del()
 		.then(data => {
 			if (data.length === 0)
@@ -164,6 +198,14 @@ Media_Note.deleteMN = (media_id, note_id) => {
 		.catch(error => {
 			throw { status: 400, data: error.message, error };
 		});
+};
+
+Media_Note.keyValue = (data, key = "note_id") => {
+	let returnObj = {};
+	data.forEach(elem => {
+		returnObj[elem[key]] = elem;
+	});
+	return noteObj;
 };
 
 module.exports = Media_Note;

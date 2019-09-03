@@ -40,7 +40,8 @@ ItemService.get = async function(user_id, CID, type) {
 	try {
 		notes = await MediaService.getMedia(user_id,{CID, type, title: itemData.data.title})
 		if (notes.status === 200){
-			return itemData.data.notes = notes; 
+			itemData.data.notes = notes.data; 
+			return itemData;
 		}
 	} catch (error) {
 		return Promise.reject(error)

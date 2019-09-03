@@ -2,14 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { getItem } from "../../actions";
 import { getItemData, getUser } from "../../reducers";
-import MovieData from "./MediaPageHelpers/MovieData";
-import TVData from "./MediaPageHelpers/TVData";
-import BookData from "./MediaPageHelpers/BookData";
-import NoteManager from "../smallComponents/NoteManager";
-import ActorCarousel from "../smallComponents/ActorCarousel";
 
 import * as T from "../../actions/types";
-import { sizeArr } from "../../setupGlobals";
+
 import _ from "lodash";
 import "../../styles/style.css";
 
@@ -19,31 +14,77 @@ class MediaPage extends React.Component {
 	state = { size: -1, type: T.MOVIE, tag: null };
 
 	componentDidMount() {
-		window.addEventListener("resize", this.debounceOnResize, false);
 		const { id, type } = this.props.match.params;
 		this.props.getItem(this.props.User.user_id, id, type);
 	}
 
-	componentWillUnmount() {
-		window.removeEventListener("resize", this.debounceOnResize, false);
+	componentWillUnmount() {}
+
+	renderMovie() {
+		const { data } = this.props.Item;
+		console.log(data);
+		return (
+			<div>
+				<img src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`} />
+				<h1> Title: {data.title} </h1>
+				<h2> Tagline: {data.tagline} </h2>
+				<p> {data.overview} </p>
+				Genres:
+				<ul>
+					{data.genres.map(genre => {
+						return <li key={genre.id}> {genre.name} </li>;
+					})}
+				</ul>
+				{data.budget !== 0 ? <p> Budget: {data.budget}</p> : <p></p>}
+				{data.revenue !== 0 ? <p> Revenue: {data.revenue}</p> : <p></p>}
+				Prod Comps
+				<ul>
+					{data.production_companies.map(comp => {
+						return (
+							<li key={comp.id}>
+								{" "}
+								{comp.name}
+								{comp.logo_path !== null ? (
+									<img
+										src={`https://image.tmdb.org/t/p/w500/${comp.logo_path}`}
+									/>
+								) : (
+									<div></div>
+								)}
+							</li>
+						);
+					})}
+				</ul>
+				<ul>
+					{data.credits.crew.map(crew => {
+						if (
+							crew.department === "Writing" ||
+							crew.job === "Director of Photography" ||
+							crew.job === "Director"
+						)
+							return (
+								<li key={`${crew.id}${crew.job}`}>
+									{" "}
+									{crew.job} {crew.name}
+								</li>
+							);
+					})}
+				</ul>
+			</div>
+		);
 	}
 
-	// Finds the container size by comparing window size to max breakpoints from Semantic UI.
-	// Sets container size and uses it to determine the number of elemnts that can fit in the
-	// Swipe Row component. Size is currently predetermined.
-	onResize = e => {};
-
-	debounceOnResize = _.debounce(() => this.onResize(), 200);
-
 	render() {
-		return <div> Hallo </div>;
+		const { status } = this.props.Item;
+		if (status !== T.FINISHED_ITEM) return <div> hello </div>;
+		return this.renderMovie();
 	}
 }
 
 const mapStateToProps = state => {
 	return {
 		User: getUser(state),
-		itemData: getItemData(state)
+		Item: getItemData(state)
 	};
 };
 
