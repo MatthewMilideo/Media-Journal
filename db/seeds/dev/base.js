@@ -70,90 +70,7 @@ let tags = [
 	}
 ];
 
-let mediaNote = [
-	{
-		media_id: "0",
-		note_id: "0"
-	},
-	{
-		media_id: "1",
-		note_id: "1"
-	},
-	{
-		media_id: "2",
-		note_id: "2"
-	}
-];
 
-let noteTag = [
-	{
-		note_id: 0,
-		tag_id: 0
-	},
-	{
-		note_id: 0,
-		tag_id: 1
-	},
-	{
-		note_id: 1,
-		tag_id: 0
-	},
-	{
-		note_id: 1,
-		tag_id: 1
-	},
-	{
-		note_id: 2,
-		tag_id: 0
-	},
-	{
-		note_id: 2,
-		tag_id: 1
-	},
-	{
-		note_id: 2,
-		tag_id: 2
-	}
-];
-
-let userMedia = [
-	{
-		user_id: 0,
-		meda_id: 0
-	},
-	{
-		user_id: 0,
-		media_id: 1
-	},
-	{
-		user_id: 1,
-		media_id: 0
-	},
-	{
-		user_id: 1,
-		media_id: 2
-	},
-	{
-		user_id: 2,
-		media_id: 0
-	},
-	{
-		user_id: 2,
-		media_id: 1
-	},
-	{
-		user_id: 2,
-		media_id: 2
-	}
-];
-
-const createUsers = (knex, arr) => {
-	return knex("templates")
-		.insert(arr, "id")
-		.then(userIDs => {
-			console.log(userIDs);
-		});
-};
 
 exports.seed = function(knex) {
 	// We must return a Promise from within our seed function
@@ -250,31 +167,38 @@ exports.seed = function(knex) {
 					knex("note_tag").insert([
 						{
 							note_id: noteIDs[0],
-							tag_id: tagIDs[0]
+							tag_id: tagIDs[0],
+							user_id: userIDs[1]
 						},
 						{
 							note_id: noteIDs[0],
-							tag_id: tagIDs[1]
+							tag_id: tagIDs[1],
+							user_id: userIDs[1]
 						},
 						{
 							note_id: noteIDs[1],
-							tag_id: tagIDs[0]
+							tag_id: tagIDs[0],
+							user_id: userIDs[1]
 						},
 						{
 							note_id: noteIDs[1],
-							tag_id: tagIDs[1]
+							tag_id: tagIDs[1],
+							user_id: userIDs[1]
 						},
 						{
 							note_id: noteIDs[2],
-							tag_id: tagIDs[0]
+							tag_id: tagIDs[0],
+							user_id: userIDs[1]
 						},
 						{
 							note_id: noteIDs[2],
-							tag_id: tagIDs[1]
+							tag_id: tagIDs[1],
+							user_id: userIDs[1]
 						},
 						{
 							note_id: noteIDs[2],
-							tag_id: tagIDs[2]
+							tag_id: tagIDs[2],
+							user_id: userIDs[2]
 						}
 					]),
 					knex("user_media").insert([
@@ -312,14 +236,3 @@ exports.seed = function(knex) {
 			.catch(error => console.log(`Error seeding data: ${error}`))
 	);
 };
-
-/*
-  knex('media_note').insert(mediaNote)
-						.then(() => {
-							return knex("note_tag")
-								.insert(noteTag)
-								.then(() => {
-									return knex("user_media").insert(userMedia);
-								});
-            })
-*/

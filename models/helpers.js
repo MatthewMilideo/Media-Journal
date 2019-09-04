@@ -52,16 +52,31 @@ exports.checkMediaObj = function(obj) {
 	return false;
 };
 
+/* Checks that the type is valid */
 exports.checkMediaType = function(type) {
 	if (typeof type !== "string") return false;
 	if (!typeArr.includes(type)) return false;
 	return true;
 };
 
-exports.checkMediaNoteMU = function(arr) {
+/* Checks that an array of objects containg CID Type pairs is valid */
+exports.checkCIDType = function(arr) {
 	if (!Array.isArray(arr)) return false;
 	if (arr.length === 0) return false;
 	for (let i = 0; i < arr.length; i++) {
+		if(!arr[i]) return false; 
+		if (!arr[i].CID) return false;
+		if (!arr[i].type) return false;
+		if (!exports.checkMediaType(arr[i].type)) return false;
+	}
+	return true;
+};
+
+exports.checkMediaIDUserID = function(arr) {
+	if (!Array.isArray(arr)) return false;
+	if (arr.length === 0) return false;
+	for (let i = 0; i < arr.length; i++) {
+		if(!arr[i]) return false; 
 		if (!arr[i].media_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].media_id))) return false;
 		if (!arr[i].user_id) return false;
@@ -70,10 +85,23 @@ exports.checkMediaNoteMU = function(arr) {
 	return true;
 };
 
-exports.checkMediaNoteNU = function(arr) {
+exports.checkTagIDUserID = function(arr) {
 	if (!Array.isArray(arr)) return false;
 	if (arr.length === 0) return false;
 	for (let i = 0; i < arr.length; i++) {
+		if (!arr[i].tag_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].tag_id))) return false;
+		if (!arr[i].user_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
+	}
+	return true;
+};
+
+exports.checkNoteIDUserID = function(arr) {
+	if (!Array.isArray(arr)) return false;
+	if (arr.length === 0) return false;
+	for (let i = 0; i < arr.length; i++) {
+		if(!arr[i]) return false; 
 		if (!arr[i].note_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
 		if (!arr[i].user_id) return false;

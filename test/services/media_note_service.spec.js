@@ -413,7 +413,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.status).to.equal(200);
 			expect(res).to.have.property("data");
 			expect(res.data).to.be.a("Array");
-			expect(res.data).to.have.length(2);
+			expect(res.data).to.have.length(5);
 		});
 	});
 });

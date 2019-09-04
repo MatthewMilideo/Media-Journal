@@ -6,7 +6,38 @@ const mediaUser = require("../models/media_user_model");
 const helpers = require("../models/helpers");
 const types = require("../types");
 
+const MediaNoteService = require("../services/MediaNoteService");
+
 const MediaService = {};
+
+MediaService.getByCID = async function(IDs) {
+	if (!Array.isArray(IDs)) IDs = [IDs];
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkCIDType(IDs)) {
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid CID type pair(s)."
+		});
+	}
+	let results = await media.getByCID(IDs);
+
+	if (results.status !== 200) return Promise.reject(results);
+	return results;
+};
+
+/* This function verifies that the given media is in the database,
+and that the given user has viewed it. */
+
+MediaService.verifyMedia = async function(user_id, mediaObj) {
+	if (!Array.isArray(IDs)) IDs = [IDs];
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkMediaIDUserID(IDs)) {
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid ID(s)."
+		});
+	}
+};
 
 // Service to walk through the step of posting a Media User Relation.
 MediaService.postMU = async function(user_id, mediaObj) {
@@ -59,19 +90,14 @@ MediaService.postMU = async function(user_id, mediaObj) {
 };
 
 MediaService.getMedia = async function(user_id, mediaObj) {
-
-    console.log(user_id, mediaObj)
-
-    let returnObject = {}; 
-    returnObject.keysArr = []; 
+	let returnObject = {};
+	returnObject.keysArr = [];
 
 	/* Check the incoming arguments */
 	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
 		return Promise.reject({
 			status: 400,
-			data: "You must provide a valid user_id, and mediaObj.",
-			user_note:
-				"The user_id or media provided were invalid. Make sure that you are properly logged in and then try adding the media again."
+			data: "You must provide a valid user_id, and mediaObj."
 		});
 
 	const { CID, type } = mediaObj;
@@ -80,6 +106,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 	/* Check if the media object exists. 
        If not return 404 if it does continue
     */
+
 	try {
 		res = await media.getMediaCID(CID, type);
 		if (res.status !== 200) {
@@ -120,7 +147,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 		/* If no notes were found we return 200 with the media ID*/
 		if (res.status === 404) {
 			res.status = 200;
-			res.data = {media_id: mediaID};
+			res.data = { media_id: mediaID };
 			return res;
 		}
 
@@ -139,14 +166,14 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 		res = await noteTags.getTagNTBulk(noteIDs);
 		console.log("tags", res);
 		if (res.status === 404) {
-            res.status = 200;
-            
-            noteList.forEach( note =>{
-                const id = note.note_id;
-                returnObject[id] = note; 
-                returnObject.keysArr.push(id);
-            })
-            returnObject.media_id = mediaID
+			res.status = 200;
+
+			noteList.forEach(note => {
+				const id = note.note_id;
+				returnObject[id] = note;
+				returnObject.keysArr.push(id);
+			});
+			returnObject.media_id = mediaID;
 
 			res.data = returnObject;
 			return res;
@@ -163,7 +190,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 		res = await tags.getTagIDBulk(tagIDs);
 		if (res.status === 404) {
 			res.status = 200;
-			res.data = { notes: noteList, media_id:mediaID };
+			res.data = { notes: noteList, media_id: mediaID };
 			return res;
 		}
 	} catch (error) {
@@ -174,8 +201,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 
 	let tagNames = res.data;
 	let tagObj = {};
-    let noteObject = {};
-
+	let noteObject = {};
 
 	// Convert Tags into Key Value Pairs
 	tagNames = tagNames.forEach(tag => (tagObj[tag.id] = tag.title));
@@ -188,16 +214,16 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 		tag.title = tagObj[tag.tag_id];
 		if (!noteObject[tag.note_id]) noteObject[tag.note_id] = [];
 		noteObject[tag.note_id].push({ tag_id: tag.tag_id, title: tag.title });
-    });
-    
-   noteList.forEach( note =>{
-       const id = note.note_id;
-       returnObject[id] = {...note, tags: noteObject[id]}; 
-       returnObject.keysArr.push(id);
-   })
-   returnObject.media_id = mediaID
+	});
 
-    console.log(returnObject);
+	noteList.forEach(note => {
+		const id = note.note_id;
+		returnObject[id] = { ...note, tags: noteObject[id] };
+		returnObject.keysArr.push(id);
+	});
+	returnObject.media_id = mediaID;
+
+	console.log(returnObject);
 
 	return { status: 200, data: returnObject };
 };

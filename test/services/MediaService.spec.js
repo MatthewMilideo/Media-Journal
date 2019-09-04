@@ -11,16 +11,16 @@ var chaiHttp = require("chai-http");
 var server = require("../../server.js");
 chai.use(require("chai-as-promised"));
 
-const MediaService = require("../../services/MediaService");
+const mediaService = require("../../services/MediaService");
 const media = require("../../models/media_model");
 const mediaUser = require("../../models/media_user_model");
-const note = require ("../../models/notes_model")
-const mediaNote = require ("../../models/media_note_model")
+const note = require("../../models/notes_model");
+const mediaNote = require("../../models/media_note_model");
 const T = require("../../types");
 
 chai.use(chaiHttp);
 
-describe("Item Services Tests", function() {
+describe("MediaService Tests", function() {
 	beforeEach(function(done) {
 		database.migrate.rollback().then(function() {
 			database.migrate.latest().then(function() {
@@ -36,8 +36,88 @@ describe("Item Services Tests", function() {
 			done();
 		});
 	});
+
+	describe("Get by CID Tests", async () => {
+		it("It returns 400 when no CID type pairs are provided.", async () => {
+			let res = await expect(mediaService.getByCID()).to.be.rejected;
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(400);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal("You must provide a valid CID type pair(s).");
+		});
+		it("It returns 400 when invalid CID type pairs are provided.", async () => {
+			let res = await expect(
+				mediaService.getByCID({ CID: "test", type: "test" })
+			).to.be.rejected;
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(400);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal("You must provide a valid CID type pair(s).");
+		});
+		it("It returns 404 when no media is found.", async () => {
+			let res = await expect(
+				mediaService.getByCID({ CID: "12345678910", type: "MOVIE" })
+			).to.be.rejected;
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(404);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal("The requested media were not found.");
+		});
+		it("It returns 404 when no media is found for multipule arguments.", async () => {
+			let res = await expect(
+				mediaService.getByCID(
+					{ CID: "12345678910", type: "MOVIE" },
+					{ CID: "12345678910", type: "BOOK" }
+				)
+			).to.be.rejected;
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(404);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal("The requested media were not found.");
+		});
+		it("It returns 200 when mediaIDs are found for a single media ID.", async () => {
+			let res = await mediaService.getByCID([{ CID: "1234", type: "MOVIE" }]);
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(200);
+			expect(res).to.have.property("data");
+			expect(res.data).to.be.a("Array");
+			expect(res.data).to.have.length(1);
+		});
+		it("It returns 200 when mediaIDs are found for an array of media IDs.", async () => {
+			let res = await mediaService.getByCID([
+				{ CID: "1234", type: "MOVIE" },
+				{ CID: "2345", type: "TV" }
+			]);
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(200);
+			expect(res).to.have.property("data");
+			expect(res.data).to.be.a("Array");
+			expect(res.data).to.have.length(2);
+		});
+		it("It returns 200 when mediaIDs are found for an array of media IDs including a non-existent id", async () => {
+			let res = await mediaService.getByCID([
+				{ CID: "1234", type: "MOVIE" },
+				{ CID: "2345", type: "TV" },
+				{ CID: "2345678910", type: "TV" }
+			]);
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(200);
+			expect(res).to.have.property("data");
+			expect(res.data).to.be.a("Array");
+			expect(res.data).to.have.length(2);
+		});
+	});
+
+	/*
 	describe("Media Service Post MU Test", async () => {
-		/*
+		
 		it("Media Service returns 400 if the user_id, and mediaObject are not provided.", async () => {
 			let res = await expect(MediaService.postMU()).to.be.rejected;
 			expect(res).to.be.a("object");
@@ -124,7 +204,7 @@ describe("Item Services Tests", function() {
 			expect(res.data).to.be.a("array");
             expect(res.data).to.have.length(8);
 		});
-		*/
+		
 	});
 	describe("Media Service getMedia Test", async () => {
 		
@@ -235,4 +315,5 @@ describe("Item Services Tests", function() {
 
 		
 	});
+	*/
 });

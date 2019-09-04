@@ -42,7 +42,7 @@ MediaNoteService.getByMediaAndUserID = async function(IDs) {
 	// If there is only a single ID we wrap it in an array so the DB query functions properly.
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkMediaNoteMU(IDs)) {
+	if (!helpers.checkMediaIDUserID(IDs)) {
 		return Promise.reject({
 			status: 400,
 			data: "You must provide valid ID(s)."
@@ -59,7 +59,7 @@ MediaNoteService.getByNoteAndUserID = async function(IDs) {
 	// If there is only a single ID we wrap it in an array so the DB query functions properly.
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkMediaNoteNU(IDs)) {
+	if (!helpers.checkNoteIDUserID(IDs)) {
 		return Promise.reject({
 			status: 400,
 			data: "You must provide valid ID(s)."

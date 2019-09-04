@@ -114,53 +114,98 @@ describe("Helpers Tests", function() {
 		});
 	});
 
-	describe("CheckMediaNote Tests", function() {
-		it("CheckMediaNote returns false if no arguments are provided", function() {
-			let test = helpers.checkMediaNote();
+	describe("checkMediaIDUserID Tests", function() {
+		it("checkMediaIDUserID returns false if no arguments are provided", function() {
+			let test = helpers.checkMediaIDUserID();
 			expect(test).to.equal(false);
 		});
 
-		it("CheckMediaNote returns false if no arguments are provided", function() {
-			let test = helpers.checkMediaNote([]);
-			expect(test).to.equal(false);
-        });
-        
-        it("CheckMediaNote returns false if no media id is provided", function() {
-			let test = helpers.checkMediaNote([{ user_id: 1}]);
+		it("checkMediaIDUserID returns false if no arguments are provided", function() {
+			let test = helpers.checkMediaIDUserID([]);
 			expect(test).to.equal(false);
 		});
 
-		it("CheckMediaNote returns false if invalid media id is provided", function() {
-			let test = helpers.checkMediaNote([{ media_id: "test", user_id: 1 }]);
+		it("checkMediaIDUserID returns false if no media id is provided", function() {
+			let test = helpers.checkMediaIDUserID([{ user_id: 1 }]);
 			expect(test).to.equal(false);
-        });
-        
-        it("CheckMediaNote returns false if no user_id", function() {
-			let test = helpers.checkMediaNote([{ media_id: 1}]);
-			expect(test).to.equal(false);
-        });
-        
-        it("CheckMediaNote returns false if invalid userid", function() {
-			let test = helpers.checkMediaNote([{ media_id: 1, user_id: 'test'}]);
-			expect(test).to.equal(false);
-        });
-        it("CheckMediaNote returns false if invalid userid", function() {
-			let test = helpers.checkMediaNote([{ media_id: 1, user_id: 1}]);
-			expect(test).to.equal(true);
-        });
+		});
 
-        it("CheckMediaNote returns false if invalid second arg", function() {
-			let test = helpers.checkMediaNote([{ media_id: 1, user_id: 1},{ media_id: 1, user_id: 1}]);
+		it("checkMediaIDUserID returns false if invalid media id is provided", function() {
+			let test = helpers.checkMediaIDUserID([{ media_id: "test", user_id: 1 }]);
+			expect(test).to.equal(false);
+		});
+
+		it("checkMediaIDUserID returns false if no user_id", function() {
+			let test = helpers.checkMediaIDUserID([{ media_id: 1 }]);
+			expect(test).to.equal(false);
+		});
+
+		it("checkMediaIDUserID returns false if invalid userid", function() {
+			let test = helpers.checkMediaIDUserID([{ media_id: 1, user_id: "test" }]);
+			expect(test).to.equal(false);
+		});
+		it("checkMediaIDUserID returns false if invalid userid", function() {
+			let test = helpers.checkMediaIDUserID([{ media_id: 1, user_id: 1 }]);
 			expect(test).to.equal(true);
 		});
-        
-        it("CheckMediaNote returns false if invalid second arg", function() {
-			let test = helpers.checkMediaNote([{ media_id: 1, user_id: 1},{ media_id: 1, user_id: 'test'}]);
+
+		it("checkMediaIDUserID returns false if invalid second arg", function() {
+			let test = helpers.checkMediaIDUserID([
+				{ media_id: 1, user_id: 1 },
+				{ media_id: 1, user_id: 1 }
+			]);
+			expect(test).to.equal(true);
+		});
+
+		it("checkMediaIDUserID returns false if invalid second arg", function() {
+			let test = helpers.checkMediaIDUserID([
+				{ media_id: 1, user_id: 1 },
+				{ media_id: 1, user_id: "test" }
+			]);
 			expect(test).to.equal(false);
-        });
-        
-      
+		});
+	});
 
+	describe("CheckCIDType Tests", function() {
+		it("CheckCIDType returns false if no arguments are provided", function() {
+			let test = helpers.checkCIDType();
+			expect(test).to.equal(false);
+		});
 
+		it("CheckCIDType returns false if no arguments are provided", function() {
+			let test = helpers.checkCIDType([]);
+			expect(test).to.equal(false);
+		});
+
+		it("CheckCIDType returns false if no CID is provided", function() {
+			let test = helpers.checkCIDType([{ type: "MOVIE" }]);
+			expect(test).to.equal(false);
+		});
+
+		it("CheckCIDType returns false if no type is provided", function() {
+			let test = helpers.checkCIDType([{ CID: "123456" }]);
+			expect(test).to.equal(false);
+		});
+
+		it("CheckCIDType returns false if invalid type", function() {
+			let test = helpers.checkCIDType([{ CID: "hello", type: "TEST" }]);
+			expect(test).to.equal(false);
+		});
+
+		it("CheckCIDType returns false if invalid second arg", function() {
+			let test = helpers.checkCIDType([
+				{ CID: "hallo", type: "MOVIE" },
+				{ CID: "hallo2", type: "TEST" }
+			]);
+			expect(test).to.equal(false);
+		});
+
+		it("CheckCIDType returns true", function() {
+			let test = helpers.checkCIDType([
+				{ CID: "hallo", type: "MOVIE" },
+				{ CID: "hallo2", type: "BOOK" }
+			]);
+			expect(test).to.equal(true);
+		});
 	});
 });
