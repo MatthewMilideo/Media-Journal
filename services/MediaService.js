@@ -1,15 +1,20 @@
-const tags = require("../models/tags_model");
 const media = require("../models/media_model");
-const notes = require("../models/notes_model");
-const noteTags = require("../models/notes_tag_model");
 const mediaUser = require("../models/media_user_model");
+
 const helpers = require("../models/helpers");
 const types = require("../types");
 
+/*
+const notes = require("../models/notes_model");
+const noteTags = require("../models/notes_tag_model");
+const tags = require("../models/tags_model");
 const MediaNoteService = require("../services/MediaNoteService");
+*/
 
 const MediaService = {};
 
+/* Input: [{CID, Type}]
+   Output: [{Media}] from DB */
 MediaService.getByCID = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
@@ -25,75 +30,93 @@ MediaService.getByCID = async function(IDs) {
 	return results;
 };
 
-/* This function verifies that the given media is in the database,
-and that the given user has viewed it. */
+/* Input: [{CID, type, user_id}]
+   Output: [{Media JOIN Media User}] from DB */
+MediaService.getByCIDUser = async function(IDs) {
+	if (!Array.isArray(IDs)) IDs = [IDs];
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkCIDTypeUser(IDs)) {
+		return {
+			status: 400,
+			data: "You must provide a valid CID, type, and user object(s)."
+		};
+	}
+	return await media.getByCIDUser(IDs);
+};
 
-MediaService.verifyMedia = async function(user_id, mediaObj) {
+/* Input: [{media_id, user_id}]
+   Output: [{Media JOIN Media User}] from DB */
+MediaService.getByMediaIDUser = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkMediaIDUserID(IDs)) {
 		return Promise.reject({
 			status: 400,
-			data: "You must provide valid ID(s)."
+			data: "You must provide a valid media_id and user object(s)."
 		});
 	}
+	let results = await media.getByMediaIDUser(IDs);
+
+	if (results.status !== 200) return Promise.reject(results);
+	return results;
 };
 
-// Service to walk through the step of posting a Media User Relation.
-MediaService.postMU = async function(user_id, mediaObj) {
-	// Check the incoming arguments.
-
-	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
-		return Promise.reject({
+/* Inserts Media Obj */
+MediaService.postMedia = async function(mediaObj) {
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkMediaObj(mediaObj)) {
+		return {
 			status: 400,
-			data: "You must provide a valid user_id, and mediaObj.",
-			user_note:
-				"The user_id or media provided were invalid. Make sure that you are properly logged in and then try adding the media again."
-		});
-
-	const { CID, type } = mediaObj;
-	let mediaID, itemData;
-	try {
-		itemData = await media.getMediaCID(CID, type);
-		if (itemData.status !== 200) {
-			itemData = await media.postMedia(mediaObj);
-		}
-		mediaID = itemData.data[0].id;
-	} catch (error) {
-		error.data.user_note =
-			"There was an error either retrieving the media or inserting it into the database.";
-		return Promise.reject(error);
+			data: "You must provide a valid mediaObj."
+		};
 	}
-
-	try {
-		itemData = await mediaUser.getMU(mediaID, user_id);
-		if (itemData.status === 200) {
-			return itemData;
-		}
-	} catch (error) {
-		error.data.user_note =
-			"There was an error checking if the media was already marked as viewed.";
-		return Promise.reject(error);
-	}
-
-	try {
-		console.log(mediaID, user_id);
-		itemData = await mediaUser.postMU(mediaID, user_id);
-	} catch (error) {
-		console.log(error);
-		error.data.user_note =
-			"There was an error adding the relation to the database. Please try again later.";
-		return Promise.reject(error);
-	}
-	console.log("final itemData ", itemData);
-	return itemData;
+	return await media.postMedia(mediaObj);
 };
 
+/* Inserts Media Obj */
+MediaService.postMU = async function(media_id, user_id) {
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkArgs([media_id, user_id])) {
+		return {
+			status: 400,
+			data: "You must provide a valid media and user pair."
+		};
+	}
+	return await mediaUser.postMU(media_id, user_id);
+};
+
+/* Inserts Media Obj and Media User */
+MediaService.postMediaAndMU = async function(mediaObj, user_id) {
+	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
+		return {
+			status: 400,
+			data: "You must provide a valid user_id mediaObj pair."
+		};
+	let results = await MediaService.postMedia(mediaObj);
+
+	let media_id = results.data[0].id;
+	if (results.status === 409) {
+		let tempResults = await MediaService.getByCID({
+			type: mediaObj.type,
+			CID: mediaObj.CID
+		});
+		media_id = tempResults.data[0].id;
+	}
+
+	// If the element wasn't inserted or already present.
+	if (results.status !== 201 && results.status !== 409) {
+		return results;
+	}
+
+	return await MediaService.postMU(media_id, user_id);
+};
+
+/*
 MediaService.getMedia = async function(user_id, mediaObj) {
 	let returnObject = {};
 	returnObject.keysArr = [];
 
-	/* Check the incoming arguments */
+	/* Check the incoming arguments 
 	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
 		return Promise.reject({
 			status: 400,
@@ -105,7 +128,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 
 	/* Check if the media object exists. 
        If not return 404 if it does continue
-    */
+    
 
 	try {
 		res = await media.getMediaCID(CID, type);
@@ -123,7 +146,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 	/* Check if the media has a relation to the user 
        if they do not, then the code returns 404 as 
        above
-    */
+ 
 	try {
 		res = await mediaUser.getMU(mediaID, user_id);
 		if (res.status !== 200) {
@@ -138,13 +161,13 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 
 	let noteList, noteIDs;
 
-	/* Check if the media has notes for this user */
+	/* Check if the media has notes for this user 
 	try {
 		console.log(mediaID, user_id);
 
 		res = await notes.getMediaUserNotes(mediaID, user_id);
 		console.log("media user notes", res);
-		/* If no notes were found we return 200 with the media ID*/
+		/* If no notes were found we return 200 with the media ID
 		if (res.status === 404) {
 			res.status = 200;
 			res.data = { media_id: mediaID };
@@ -161,7 +184,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 	}
 
 	let curTags, tagIDs;
-	/* Check if there are tags for found notes */
+	/* Check if there are tags for found notes 
 	try {
 		res = await noteTags.getTagNTBulk(noteIDs);
 		console.log("tags", res);
@@ -197,7 +220,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 		return Promise.reject(error);
 	}
 
-	/*  Reconfigure existing data into return data */
+	/*  Reconfigure existing data into return data 
 
 	let tagNames = res.data;
 	let tagObj = {};
@@ -209,7 +232,7 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 	/* 
        Input: Tags for the notes found above | Tag key value pairs
        Output: Object Note_ID => Tags
-    */
+    
 	curTags.forEach(tag => {
 		tag.title = tagObj[tag.tag_id];
 		if (!noteObject[tag.note_id]) noteObject[tag.note_id] = [];
@@ -227,5 +250,6 @@ MediaService.getMedia = async function(user_id, mediaObj) {
 
 	return { status: 200, data: returnObject };
 };
+   */
 
 module.exports = MediaService;

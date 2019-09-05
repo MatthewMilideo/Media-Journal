@@ -1,57 +1,59 @@
-const Media = require("../models/media_model");
 const Notes = require("../models/notes_model");
+const MediaNoteService = require("../services/MediaNoteService");
+const MediaService = require("../services/MediaService");
 
 const helpers = require("../models/helpers");
 
 const NoteService = {};
 
-// Given a list of media, this function counts the number of notes the user has written
-// about each of them.
-
-NoteService.Count = async function(CIDs, type, user_id) {
-	// Check the arguments.
-	if (!helpers.checkArgsType([user_id], [CIDs, type], type)) {
-		return Promise.reject({
+/* Input: [{CID, Type}]
+   Output: [{Media}] from DB */
+NoteService.getByID = async function(IDs) {
+	if (!Array.isArray(IDs)) IDs = [IDs];
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkArgs([IDs])) {
+		return {
 			status: 400,
-			data: "You must provide valid CIDs, type, and user_id."
-		});
+			data: "You must provide a valid note_id."
+		};
 	}
-
-	let mediaMap = {};
-	let CIDMap = {};
-
-	try {
-		// Get All Media associated with a given user.
-		let userMedia = await Media.getMediaCIDBulkUser(CIDs, type, user_id);
-		if (userMedia.status !== 200)
-			return Promise.reject({
-				status: 404,
-				data: "The requested media_users were not found."
-			});
-
-		// Makes Key Value Arrays:
-		// 1. media_ids -> CIDs
-		// CIDs -> Notes.
-		userMedia.data.forEach(elem => {
-			mediaMap[elem.media_id] = {};
-			mediaMap[elem.media_id].CID = elem.CID;
-			CIDMap[elem.CID] = {};
-			CIDMap[elem.CID].media_id = elem.media_id;
-			CIDMap[elem.CID].notes = [];
-		});
-
-		// Get all of the user's notes for the media objects found above.
-		let notes = await Notes.getMediaUserNotes(Object.keys(mediaMap), user_id);
-		if (notes.status === 200) {
-			notes.data.forEach(note => {
-				let key = mediaMap[note.media_id].CID;
-				CIDMap[key].notes.push(note);
-			});
-		}
-		return CIDMap;
-	} catch (error) {
-		return error;
-	}
+	return await Notes.getByID(IDs);
 };
+
+// Inserts Note //
+NoteService.postNote = async function(title, data, user_id) {
+	if (!helpers.checkArgs([user_id], [title, data]))
+		return {
+			status: 400,
+			data: "You must provide a valid user_id, title, and data."
+		};
+	return await Notes.postNote(title, data, user_id);
+};
+
+// Inserts Note and Media Note //
+NoteService.postNoteAndMN = async function(title, data, user_id, media_id) {
+	let results = await NoteService.postNote(title, data, user_id);
+	if (results.status !== 201) return results;
+	let note_id = results.data[0].id;
+	return await MediaNoteService.postMN(media_id, note_id, user_id);
+};
+
+// Inserts Note and Media Note //
+NoteService.postNoteAll = async function(title, data, user_id, mediaObj) {
+	let results = await MediaService.postMediaAndMU(mediaObj, user_id);
+
+	let media_id = results.data[0].media_id;
+	if (results.status === 409) {
+		let tempResults = await MediaService.getByCID({
+			type: mediaObj.type,
+			CID: mediaObj.CID
+		});
+		media_id = tempResults.data[0].id;
+	}
+	if (results.status !== 201 && results.status !== 409) return results;
+	return await NoteService.postNoteAndMN(title, data, user_id, media_id);
+};
+
+
 
 module.exports = NoteService;

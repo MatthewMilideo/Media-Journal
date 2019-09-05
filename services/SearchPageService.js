@@ -1,123 +1,108 @@
 const TMDB = require("../models/TMDB_model");
-const gBooks = require("../models/gBooks_model")
-const NoteService = require("./NoteService");
+const gBooks = require("../models/gBooks_model");
+const MediaService = require("./MediaService");
+const MediaNoteService = require("./MediaNoteService");
+
 const helpers = require("../models/helpers");
 const types = require("../types");
 
 const SearchPageService = {};
 
-SearchPageService.searchTMDB = async function(user_id, term, type, page = 1) {
-	// Check the incoming arguments.
-	if (!helpers.checkArgsType([user_id, page], [term, type], type))
-		return Promise.reject({
+SearchPageService.searchExt = async function(term, type, page = 0) {
+	if (!helpers.checkArgsType([], [term, type], type))
+		return {
 			status: 400,
-			data: "You must provide a valid user_id, search term and type."
-		});
-
-	let queryFunc, errorString, res;
-
-	if (type === types.MOVIE) {
-		queryFunc = TMDB.searchMovie;
-		errorString = "The requested movies were not found.";
-	} else {
-		queryFunc = TMDB.searchTV;
-		errorString = "The requested televison shows were not found.";
-	}
-
-	// Query the external database.
-	try {
-		res = await queryFunc(term, page);
-	} catch (error) {
-		console.log(error);
-		return Promise.reject(error)
-	}
-
-	
-	let returnObj = {};
-	returnObj.queryData = {}; 
-
-	returnObj.queryData.page = res.data.page; 
-	returnObj.queryData.total_results = res.data.total_results;
-	returnObj.queryData.total_pages = res.data.total_pages;
-
-	returnObj.keysArr = [];
-
-
-	// Format the return object.
-	res.data.results.forEach(elem => {
-		elem.id = elem.id.toString(10);
-		elem.type = types.MOVIE;
-		elem["viewed"] = false;
-		returnObj[elem.id] = elem;
-		returnObj.keysArr.push(elem.id);
-	});
-
-	
-
-	// Run the Notecount Service.
-	// If it fails just return the data from the successful TMDB query.
-	try {
-		res = await NoteService.Count(returnObj.keysArr, type, user_id);
-	} catch (error) {
-		return { status: 200, data: returnObj };
-	}
-
-	// Combine the results of the NoteService call and the TMDB call.
-	let keys = Object.keys(res);
-	for (let i = 0; i < keys.length; i++) {
-		returnObj[keys[i]].viewed = true;
-		returnObj[keys[i]].notes = res[keys[i]].notes;
-	}
-
-	return { status: 200, data: returnObj };
+			data: "You must provide a valid term, type, and page."
+		};
+	if (type === types.BOOK) return await gBooks.search(term, page);
+	if (page === 0) page = 1;
+	return await TMDB.search(term, type, page);
 };
 
-SearchPageService.searchGBooks = async function(user_id, term, index = 0 ) {
+SearchPageService.search = async function(user_id, term, type, page = 0) {
 	// Check the incoming arguments.
-	if (!helpers.checkArgs([user_id, index], [term]))
-		return Promise.reject({
+	if (!helpers.checkArgsType([user_id], [term, type], type))
+		return {
 			status: 400,
-			data: "You must provide a valid user_id, search term and index."
-		});
+			data: "You must provide a valid user_id, search term and type."
+		};
 
-	let res;
-
-	// Query the external database.
-	try {
-		res = await gBooks.searchBooks(term, index);
-	} catch (error) {
-		return Promise.reject(error)
+	// Query External Database. 
+	let results = await SearchPageService.searchExt(term, type, page);
+	if (results.status !== 200) return results;
+	// Create the return objects 
+	if (type === types.BOOK) {
+		results = SearchPageService.processGBooks(results.data, user_id);
+	} else {
+		results = SearchPageService.processTMDB(results.data, user_id, type);
 	}
-	
+
+	//Get a list of all viewed media. 
+	let results2 = await MediaService.getByCIDUser(results.searchArr);
+
+	if (results2.status !== 200) return { status: 200, data: results };
+
+	let IDtoCID = {};
+
+	results2.data.forEach(elem => {
+		results[elem.CID].viewed = true;
+		IDtoCID[elem.media_id] = elem.CID;
+	});
+
+	let ids = Object.keys(IDtoCID);
+
+	// Get a count of all notes for viewed media. 
+	results2 = await MediaNoteService.getByMediaID(ids);
+	console.log(ids);
+	console.log(results2);
+
+	if (results2.status !== 200) return { status: 200, data: results };
+
+	results2.data.forEach(elem => {
+		let theCID = IDtoCID[elem.media_id];
+		results[theCID].noteCount += 1;
+	});
+
+	return { status: 200, data: results };
+};
+
+SearchPageService.processTMDB = function(data, user_id, type) {
 	let returnObj = {};
-	returnObj.queryData = res.data.queryData;
+	returnObj.queryData = {};
+	returnObj.queryData.page = data.page;
+	returnObj.queryData.total_results = data.total_results;
+	returnObj.queryData.total_pages = data.total_pages;
+	returnObj.keysArr = [];
+	returnObj.searchArr = [];
+
+	data.results.forEach(elem => {
+		elem.CID = elem.id.toString(10);
+		elem.type = type;
+		elem["viewed"] = false;
+		elem.noteCount = 0;
+		returnObj[elem.id] = elem;
+		returnObj.keysArr.push(elem.id);
+		returnObj.searchArr.push({ CID: elem.id, user_id, type });
+	});
+	return returnObj;
+};
+
+SearchPageService.processGBooks = function(data, user_id) {
+	let returnObj = {};
+	returnObj.queryData = data.queryData;
 	returnObj.keysArr = [];
 
 	// Format the return object.
-	res.data.results.forEach(elem => {
+	data.results.forEach(elem => {
+		elem.CID = elem.id;
 		elem.type = types.BOOK;
 		elem["viewed"] = false;
+		elem.noteCount = 0;
 		returnObj[elem.id] = elem;
 		returnObj.keysArr.push(elem.id);
+		returnObj.searchArr.push({ CID: elem.id, type });
 	});
-
-	// Run the Notecount Service.
-	// If it fails just return the data from the successful TMDB query.
-	try {
-		res = await NoteService.Count(returnObj.keysArr, types.BOOK, user_id);
-	} catch (error) {
-		return { status: 200, data: returnObj };
-	}
-
-	// Combine the results of the NoteService call and the TMDB call.
-	let keys = Object.keys(res);
-	for (let i = 0; i < keys.length; i++) {
-		returnObj[keys[i]].viewed = true;
-		returnObj[keys[i]].notes = res[keys[i]].notes;
-	}
-	
-
-	return { status: 200, data: returnObj };
+	return returnObj;
 };
 
 module.exports = SearchPageService;

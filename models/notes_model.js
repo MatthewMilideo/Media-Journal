@@ -5,6 +5,52 @@ const helpers = require("./helpers");
 
 const Notes = {};
 
+// Get Media by [ {ID} ]
+Notes.getByID = IDs => {
+	return database
+		.from("notes")
+		.where(builder => builder.whereIn("notes.id", IDs))
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested notes were not found."
+				};
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			return { status: 400, data: error.message, error };
+		});
+};
+
+Notes.postNote = (title, data, user_id) => {
+	return database("notes")
+		.insert(
+			{
+				title,
+				data,
+				user_id
+			},
+			["id", "title", "data", "user_id"]
+		)
+		.then(data => {
+			return { status: 201, data };
+		})
+		.catch(error => {
+			if (error.constraint === "notes_user_id_foreign")
+				return {
+					status: 404,
+					data: "The required user for this operation was not found.",
+					error
+				};
+			return { status: 400, data: error.message, error };
+		});
+};
+
+// OLD BELOW THIS LINE
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 // Gets all Notes by all users
 Notes.getAllNotes = () => {
 	return database
@@ -65,7 +111,7 @@ Notes.getMediaNotes = media_id => {
 
 // Media_IDs must be an array.
 Notes.getMediaUserNotes = (media_ids, user_id) => {
-	if ( ! Array.isArray(media_ids)) media_ids = [media_ids];
+	if (!Array.isArray(media_ids)) media_ids = [media_ids];
 	if (!helpers.checkArgs([media_ids, user_id])) {
 		return Promise.reject({
 			status: 400,
@@ -74,7 +120,13 @@ Notes.getMediaUserNotes = (media_ids, user_id) => {
 	}
 	return database("notes")
 		.join("media_note", "notes.id", "=", "media_note.note_id")
-		.select(["media_note.note_id", "notes.title", "notes.data", "notes.user_id", "media_note.media_id"])
+		.select([
+			"media_note.note_id",
+			"notes.title",
+			"notes.data",
+			"notes.user_id",
+			"media_note.media_id"
+		])
 		.where(builder => builder.whereIn("media_note.media_id", media_ids))
 		.andWhere(builder => builder.where({ user_id }))
 		.then(data => {
@@ -83,30 +135,6 @@ Notes.getMediaUserNotes = (media_ids, user_id) => {
 				: { status: 200, data };
 		})
 		.catch(error => {
-			throw { status: 400, data: error.message, error };
-		});
-};
-
-Notes.postNote = (title, data, user_id) => {
-	if (!helpers.checkArgs([user_id], [title, data]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid user_id, title, and data."
-		});
-	return database("notes")
-		.insert(
-			{
-				title,
-				data,
-				user_id
-			},
-			["id", "title", "data", "user_id"]
-		)
-		.then(data => {
-			return { status: 201, data };
-		})
-		.catch(error => {
-			console.log(error);
 			throw { status: 400, data: error.message, error };
 		});
 };
@@ -155,26 +183,5 @@ Notes.deleteNote = async note_id => {
 			throw { status: 400, data: error.message, error };
 		});
 };
-
-/*
-Notes.get = (note_ids) => {
-	// Gets all Notes by all users
-	return database("notes").join('note_tag', 'notes.id', 'note_tag.note_id' )
-		.select()
-		.where(builder => builder.whereIn("media.CID", CIDs))
-		.andWhere(builder => builder.where({ type }))
-		.andWhere(builder => builder.where({ 'user_media.user_id': user_id }))
-		.then(data => {
-			if (data.length === 0) {
-				return { status: 404, data: "The requested media were not found." };
-			}
-			return { status: 200, data };
-		})
-		.catch(error => {
-			return Promise.reject({ status: 400, data: error.message, error });
-		});
-};
-}
-*/
 
 module.exports = Notes;

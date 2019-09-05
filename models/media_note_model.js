@@ -146,32 +146,32 @@ Media_Note.postMN = (media_id, note_id, user_id) => {
 		.catch(error => {
 			switch (error.constraint) {
 				case "media_note_media_id_foreign":
-					throw {
+					return {
 						status: 403,
 						data: "The media required for this operation could not be found.",
 						error
 					};
 				case "media_note_note_id_foreign":
-					throw {
+					return {
 						status: 404,
 						data: "The note required for this operation could not be found.",
 						error
 					};
 				case "media_note_user_id_foreign":
-					throw {
+					return {
 						status: 404,
 						data: "The user required for this operation could not be found.",
 						error
 					};
 				case "media_note_pkey":
-					throw {
+					return {
 						status: 409,
 						data:
 							"There was a conflict during insertion. You must provide a unique relation.",
 						error
 					};
 				default:
-					throw { status: 400, data: "Error", error };
+					return { status: 400, data: "Error", error };
 			}
 		});
 };

@@ -21,13 +21,14 @@ Media.getAllMedia = () => {
 		});
 };
 
-Media.getByCID = ids => {
+// Get Media by [ {CID and Type} ]
+Media.getByCID = IDs => {
 	return database
 		.from("media")
 		.where(builder =>
 			builder.whereIn(
 				["media.CID", "media.type"],
-				ids.map(id => [id.CID, id.type])
+				IDs.map(id => [id.CID, id.type])
 			)
 		)
 		.select()
@@ -44,85 +45,23 @@ Media.getByCID = ids => {
 		});
 };
 
-// Gets all Notes by all users
-Media.getMediaCID = (CID, type) => {
-	if (!(helpers.checkArgs([], [CID, type]) && helpers.checkMediaType(type))) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid CID and type."
-		});
-	}
-	return database
-		.from("media")
-		.select()
-		.where({ CID, type })
-		.then(data => {
-			if (data.length === 0) {
-				return { status: 404, data: "The requested media was not found." };
-			}
-			return { status: 200, data };
-		})
-		.catch(error => {
-			throw { status: 400, data: error.message, error };
-		});
-};
-
-// Gets all Notes by all users
-Media.getMediaCIDBulk = (CIDs, type) => {
-	if (!Array.isArray(CIDs)) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid CIDs."
-		});
-	}
-	if (
-		!(helpers.checkArgs([], [...CIDs, type]) && helpers.checkMediaType(type))
-	) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid CIDs and type."
-		});
-	}
+// Get Media from Media User by [ {CID, TYPE, USER}]
+Media.getByCIDUser = IDs => {
 	return database("media")
-		.where(builder => builder.whereIn("CID", CIDs))
-		.andWhere(builder => builder.where({ type }))
-		.then(data => {
-			if (data.length === 0) {
-				return { status: 404, data: "The requested media were not found." };
-			}
-			return { status: 200, data };
-		})
-		.catch(error => {
-			return Promise.reject({ status: 400, data: error.message, error });
-		});
-};
-
-// Gets all Notes by all users
-Media.getMediaCIDBulkUser = (CIDs, type, user_id) => {
-	if (!Array.isArray(CIDs)) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid CIDs."
-		});
-	}
-	if (
-		!(
-			helpers.checkArgs([user_id], [...CIDs, type]) &&
-			helpers.checkMediaType(type)
+		.join("user_media", "media.id", "user_media.media_id")
+		.select([
+			"user_media.media_id",
+			"media.title",
+			"media.CID",
+			"media.type",
+			"user_media.user_id"
+		])
+		.where(builder =>
+			builder.whereIn(
+				["media.CID", "media.type", "user_media.user_id"],
+				IDs.map(id => [id.CID, id.type, id.user_id])
+			)
 		)
-	) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid CIDs, type, and user_id."
-		});
-	}
-
-	return database("media")
-		.join("user_media", "media.id", "user_media.media_id")
-		.select(["user_media.media_id", "media.title", "media.CID"])
-		.where(builder => builder.whereIn("media.CID", CIDs))
-		.andWhere(builder => builder.where({ type }))
-		.andWhere(builder => builder.where({ "user_media.user_id": user_id }))
 		.then(data => {
 			if (data.length === 0) {
 				return { status: 404, data: "The requested media were not found." };
@@ -134,29 +73,23 @@ Media.getMediaCIDBulkUser = (CIDs, type, user_id) => {
 		});
 };
 
-// Gets all Notes by all users
-Media.getCIDBulk = (ids, type) => {
-	if (!Array.isArray(ids)) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid ids."
-		});
-	}
-	if (
-		!(helpers.checkArgs([user_id, ids], [type]) && helpers.checkMediaType(type))
-	) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid ids and type."
-		});
-	}
-
+// Get Media X Media_User from Media User by [ {media_ID, user_id }]
+Media.getByMediaIDUser = IDs => {
 	return database("media")
 		.join("user_media", "media.id", "user_media.media_id")
-		.select(["user_media.media_id", "media.title", "media.CID"])
-		.where(builder => builder.whereIn("media.CID", CIDs))
-		.andWhere(builder => builder.where({ type }))
-		.andWhere(builder => builder.where({ "user_media.user_id": user_id }))
+		.select([
+			"user_media.media_id",
+			"media.title",
+			"media.CID",
+			"media.type",
+			"user_media.user_id"
+		])
+		.where(builder =>
+			builder.whereIn(
+				["user_media.media_id", "user_media.user_id"],
+				IDs.map(id => [id.media_id, id.user_id])
+			)
+		)
 		.then(data => {
 			if (data.length === 0) {
 				return { status: 404, data: "The requested media were not found." };
@@ -169,12 +102,6 @@ Media.getCIDBulk = (ids, type) => {
 };
 
 Media.postMedia = mediaObj => {
-	if (!helpers.checkMediaObj(mediaObj)) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid title, type, and CID."
-		});
-	}
 	return database("media")
 		.insert(mediaObj, ["id", "title", "type", "CID"])
 		.then(data => {
@@ -182,13 +109,13 @@ Media.postMedia = mediaObj => {
 		})
 		.catch(error => {
 			if (error.constraint === "media_cid_type_unique")
-				return Promise.reject({
+				return {
 					status: 409,
 					data:
 						"There was a conflict during insertion. You must provide a unique piece of media.",
 					error
-				});
-			return Promise.reject({ status: 400, data: error.message, error });
+				};
+			return { status: 400, data: error.message, error };
 		});
 };
 

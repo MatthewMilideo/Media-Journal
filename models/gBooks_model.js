@@ -8,30 +8,25 @@ const GBooks = axios.create({
 
 const GBooksModel = {};
 
-GBooksModel.searchBooks = async function(term, index = 0) {
-	if (!helpers.checkArgs([index], [term]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid term and index."
-		});
+GBooksModel.search = async function(term, index = 0) {
 	return GBooks.get("", {
 		params: { q: term, startIndex: index, maxResults: 20, key: KEY }
 	})
 		.then(response => {
 			let returnData = GBooksModel.formatResponse(response.data);
 			if (returnData.results === 0) {
-				return Promise.reject({
+				return {
 					status: 404,
 					data: "The requested books were not found."
-				});
+				};
 			}
 			return { status: 200, data: returnData };
 		})
 		.catch(error => {
 			if (!error.status) {
-				throw { status: error.response.status, data: error.message, error };
+				return { status: error.response.status, data: error.message, error };
 			} else {
-				throw { status: error.status, data: error.data };
+				return { status: error.status, data: error.data };
 			}
 		});
 };
@@ -48,7 +43,7 @@ GBooksModel.formatResponse = response => {
 		if (elem.volumeInfo.imageLinks) {
 			if (elem.volumeInfo.imageLinks.thumbnail)
 				elem.image = elem.volumeInfo.imageLinks.thumbnail;
-			}
+		}
 		return elem;
 	});
 	return returnData;

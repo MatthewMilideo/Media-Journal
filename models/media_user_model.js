@@ -116,13 +116,8 @@ Media_User.getUsers = media_id => {
 		});
 };
 
-// Gets all Users for a given media_id
+// Post Media User
 Media_User.postMU = (media_id, user_id) => {
-	if (helpers.checkArgs([media_id, user_id]) === false)
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid media_id and user_id."
-		});
 	return database("user_media")
 		.insert(
 			{
@@ -137,21 +132,21 @@ Media_User.postMU = (media_id, user_id) => {
 		.catch(error => {
 			switch (error.constraint) {
 				case "user_media_media_id_foreign":
-					throw {
-						status: 403,
+					return {
+						status: 404,
 						data: "The media required for this operation could not be found.",
 						error
 					};
 				case "user_media_user_id_foreign":
-					throw {
+					return {
 						status: 404,
 						data: "The user required for this operation could not be found.",
 						error
 					};
 				case "user_media_pkey":
-					throw { status: 409, data: "There was a conflict during insertion. You must provide a unique relation.", error };
+					return { status: 409, data: "There was a conflict during insertion. You must provide a unique relation.", error };
 				default:
-					throw { status: 500, data: "Error", error };
+					return { status: 400, data: "Error", error };
 			}
 		});
 };

@@ -110,7 +110,6 @@ NoteTagService.getByTagAndUserID = async function(IDs) {
 	// If there is only a single ID we wrap it in an array so the DB query functions properly.
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
-	console.log(helpers.checkTagIDUserID(IDs))
 	if (!helpers.checkTagIDUserID(IDs)) {
 		return Promise.reject({
 			status: 400,
