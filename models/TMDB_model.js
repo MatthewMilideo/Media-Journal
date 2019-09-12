@@ -99,4 +99,132 @@ TMDBModel.formatResponse = response => {
 	return response;
 };
 
+/*
+
+import { formatDate, formatMoney } from "../helpers";
+import * as T from "../actions/types";
+
+
+/*
+
+Movie Formatter 
+
+release_date: formatDate(
+	data.release_dates.results[0].release_dates[0].release_date
+),
+budget: formatMoney(data.budget),
+revenue: formatMoney(data.revenue),
+crew: crewFormatter(data.credits.crew, null),
+
+TV Formatter 
+
+	let firstDate = formatDate(new Date(data.first_air_date));
+	let lastDate = formatDate(new Date(data.last_air_date));
+	////console.log(('date',firstDate)
+
+			crew: crewFormatter(data.credits.crew, data.created_by),
+
+
+
+	/* This object defines the standard crew rolls that I use in the fromatter below. 
+const standardRoles = [
+	"Director",
+	"Executive Producer",
+	"Producer",
+	"Director of Photography",
+	"Writer"
+];
+/* Formats the crew from a TMDB item query and returns roles listed above 
+const crewFormatter = (input, creator = null, output = standardRoles) => {
+	let returnObj = {};
+	output.forEach(role => (returnObj[role] = []));
+
+	returnObj["Creator"] = [];
+	if (creator != null) {
+		creator.forEach(crew => {
+			returnObj["Creator"].push(crew);
+		});
+	}
+
+	input.forEach(crew => {
+		if (returnObj[crew.job]) returnObj[crew.job].push(crew);
+	});
+
+	return returnObj;
+};
+
+		overview: removeBR(data.description),
+
+
+/* Removes line breaks from the overview section of a google books item request 
+const removeBR = text => {
+	if (text === undefined) return text;
+	let value = text.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g, "");
+	//console.log(value);
+	return value;
+};
+
+const monthObj = {
+    0: 'January',
+    1: 'Febuary',
+    2: 'March',
+    3: 'April',
+    4: 'May',
+    5: 'June',
+    6: 'July',
+    7: 'August',
+    8: 'September',
+    9: 'October',
+    10: 'November',
+    11: 'December'
+}
+
+const dayObj = {
+    0: 'Sunday',
+    1: 'Monday',
+    2: 'Tuesday',
+    3: 'Wednesday',
+    4: 'Thursday',
+    5: 'Friday',
+    6: 'Saturday',
+    7: 'Sunday',
+}
+
+
+export const formatDate = (date) => {
+    let d = new Date(date);
+    let dayName = dayObj[d.getDay()];
+    let day = d.getDate();
+    let month = monthObj[d.getMonth()];
+    let year = d.getFullYear();
+
+    return  (dayName + ', ' + month + ' ' + day +', ' + year); 
+} 
+
+export const formatMoney = (num) => {
+    ////console.log(('num', num);
+    if (num === 0) return null; 
+
+    let returnStr = '$'
+    num = num.toString();
+    let numLen = num.length -1; 
+    let counter = 0; 
+
+    for(let i = numLen; i >= 0; i-- ){
+        counter++; 
+        if (counter === 3 && i != 0){
+            counter = 0; 
+            let str1 = num.slice(0, i);
+            let str2 = num.slice(i, num.length); 
+            num = str1.concat(',', str2);  
+        }
+    }
+    returnStr = returnStr.concat(num);
+    return returnStr;
+} 
+
+
+*/
+
+
 module.exports = TMDBModel;

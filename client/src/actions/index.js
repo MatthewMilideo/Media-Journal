@@ -1,11 +1,5 @@
 import * as T from "../actions/types";
-import {
-	TMDBItemQuery,
-	bookItemQuery,
-	gameItemQuery
-} from "./itemQueryHelpers";
 
-import myData from "../api/myData";
 
 import axios from "axios";
 
@@ -279,20 +273,20 @@ export const addNote = () => {
 export const deleteNote = note => async dispatch => {
 	dispatch({ type: `${T.BEGAN_DELETE_NOTE}` });
 	try {
-		if (!note.new)
-			console.log(note.media_id);
-			await server.delete("/notes/", { data: {
+		if (!note.new) console.log(note.media_id);
+		await server.delete("/notes/", {
+			data: {
 				media_id: note.media_id,
 				note_id: note.note_id,
 				user_id: note.user_id
 			}
-			});
+		});
 		dispatch({
 			type: `${T.FINISHED_DELETE_NOTE}`,
 			payload: { note_id: note.note_id }
 		});
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 		// Catch if my server is down.
 		if (!error.response) {
 			dispatch({
