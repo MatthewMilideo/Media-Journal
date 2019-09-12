@@ -35,11 +35,9 @@ GBooksModel.formatResponse = response => {
 	let returnData = {};
 	returnData.queryData = {};
 	returnData.queryData.totalItems = response.totalItems;
-	//console.log(returnData);
 	returnData.results = response.totalItems;
 	if (returnData.results === 0) return returnData;
 	returnData.results = response.items.map(elem => {
-		console.log(elem);
 		if (elem.volumeInfo.imageLinks) {
 			if (elem.volumeInfo.imageLinks.thumbnail)
 				elem.image = elem.volumeInfo.imageLinks.thumbnail;
@@ -57,11 +55,9 @@ GBooksModel.getBook = async function(id) {
 		});
 	return GBooks.get(id, { params: { key: KEY } })
 		.then(response => {
-			console.log(response.data);
 			return { status: 200, data: response.data };
 		})
 		.catch(error => {
-			console.log(error);
 			if (!error.status) {
 				throw { status: error.response.status, data: error.message, error };
 			} else {

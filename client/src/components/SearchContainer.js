@@ -6,7 +6,7 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 import MediaGrid from "./smallComponents/MediaGrid";
-import { TMDBSearch } from "../actions/index";
+import { extSearch } from "../actions/index";
 import { getUser, getSearchState, getMediaState } from "../reducers";
 import * as T from "../actions/types";
 
@@ -28,7 +28,7 @@ class SearchContainer extends React.Component {
 		totalHeight: null
 	};
 
-	componentDidMount(){
+	componentDidMount() {
 		window.addEventListener("scroll", this.debounceHandleScroll);
 	}
 
@@ -37,8 +37,13 @@ class SearchContainer extends React.Component {
 	}
 
 	handleScroll = e => {
-		const totalHeight = getHeight(); 
-		console.log('totalHeight:', totalHeight, 'winPageYOffset + window.Inner Height:', window.pageYOffset + window.innerHeight)
+		const totalHeight = getHeight();
+		console.log(
+			"totalHeight:",
+			totalHeight,
+			"winPageYOffset + window.Inner Height:",
+			window.pageYOffset + window.innerHeight
+		);
 
 		if (totalHeight - 100 <= window.pageYOffset + window.innerHeight) {
 			const type = this.props.search.activeElem;
@@ -47,7 +52,7 @@ class SearchContainer extends React.Component {
 
 			if (data.totalElems > data.prevElem) {
 				let newElem = data.prevElem + 1;
-				this.props.TMDBSearch(user_id, data.prevQuery, type, newElem);
+				this.props.extSearch(user_id, data.prevQuery, type, newElem);
 			}
 		}
 	};
@@ -89,7 +94,7 @@ class SearchContainer extends React.Component {
 			default:
 				return this.emptyGrid();
 			case `${type}${T._BEGAN_SEARCH_NEXT}`:
-				return this.makeGrid(data, type)
+				return this.makeGrid(data, type);
 			case `${type}${T._ERRORED_SEARCH}`:
 				return (
 					<Alert variant="danger">
@@ -119,5 +124,5 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ TMDBSearch }
+	{ extSearch }
 )(SearchContainer);

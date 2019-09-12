@@ -2,174 +2,145 @@ import * as T from "../actions/types";
 
 const defaultState = {
 	status: null,
-	error: null,
-	currNotes: [],
-	allNotes: {}
+	error: {
+		status: null,
+		data: null,
+		error: null
+	},
+	notes: { keysArr: [] }
 };
 
-const newNoteState = (state, note_id) => {
+function getRandomInt(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
+const addNote = state => {
 	let newState = { ...state };
-	newState.allNotes = { ...newState.allNotes };
-	newState.allNotes[note_id] = { ...newState.allNotes[note_id] };
+	newState.status = T.ADD_NOTE;
+	newState.notes = { ...newState.notes };
+	newState.notes.keysArr = [...newState.notes.keysArr];
+	let newID = getRandomInt(10000);
+	while (newState.notes.keysArr.includes(newID)) newID = getRandomInt(1000);
+	newState.notes[newID] = {
+		note_id: newID,
+		title: "",
+		data: "",
+		tags: [],
+		new: true
+	};
+	newState.notes.keysArr.push(newID);
 	return newState;
 };
 
-const noteEditState = (state, action) => {
+const editNote = (state, payload) => {
+	const { id, title, data } = payload;
+	let newState = { ...state };
+	newState.status = T.FINISHED_EDIT_NOTE;
+	newState.notes = { ...newState.notes };
+	newState.notes[id] = { ...newState.notes[id] };
+	newState.notes[id].title = title;
+	newState.notes[id].data = data;
+	newState.notes[id].note = false;
+	return newState;
+};
+
+const copyObj = function(obj, rmKey) {
+	let returnObj = {};
+	let keys = Object.keys(obj);
+	keys.forEach(key => {
+		if (parseInt(key) !== rmKey) returnObj[key] = obj[key];
+	});
+	return returnObj;
+};
+
+const copyArr = function(arr, rmElem) {
+	let returnArr = [];
+	arr.forEach(elem => {
+		if (elem !== rmElem) returnArr.push(elem);
+	});
+	return returnArr;
+};
+
+const postNote = (state, action) => {
+	const { noteObj, old_id } = action.payload;
+	let newState = { ...state };
+	newState.status = action.type;
+	newState.notes = copyObj(newState.notes, old_id);
+	newState.notes[noteObj.note_id] = noteObj;
+	newState.notes.keysArr = newState.notes.keysArr.map(elem => {
+		if (elem === old_id) return noteObj.note_id;
+		return elem;
+	});
+	return newState;
+};
+
+const deleteNote = (state, action) => {
 	const { note_id } = action.payload;
-	let newState = newNoteState(state, note_id);
-	newState.allNotes[note_id].editState = !newState.allNotes[note_id].editState;
-	return newState;
-};
-
-const editNoteTitle = (state, action) => {
-	const { title, note_id } = action.payload;
-	let newState = newNoteState(state, note_id);
-	newState.allNotes[note_id].newTitle = title;
-	return newState;
-};
-
-const editNoteData = (state, action) => {
-	const { data, note_id } = action.payload;
-	let newState = newNoteState(state, note_id);
-	newState.allNotes[note_id].newData = data;
-	return newState;
-};
-
-const discardNoteChanges = (state, action) => {
-	const { note_id } = action.payload;
-	let newState = newNoteState(state, note_id);
-	newState.allNotes[note_id].newTitle = newState.allNotes[note_id].title;
-	newState.allNotes[note_id].newData = newState.allNotes[note_id].data;
-	newState.allNotes[note_id].editState = false;
-	return newState;
-};
-
-const saveNoteChanges = (state, action) => {
-	const { note_id, newTitle, newData } = action.payload;
-	let newState = newNoteState(state, note_id);
-	newState.allNotes[note_id].title = newTitle;
-	newState.allNotes[note_id].data = newData;
-	newState.allNotes[note_id].newTitle = newTitle;
-	newState.allNotes[note_id].newData = newData;
+	let newState = { ...state };
+	newState.status = action.type;
+	newState.notes = copyObj(newState.notes, note_id);
+	newState.notes.keysArr = copyArr(newState.notes.keysArr, note_id);
 	return newState;
 };
 
 export default (state = defaultState, action) => {
 	switch (action.type) {
-		case T.EDIT_NOTE_TITLE:
-			return editNoteTitle(state, action);
-		case T.EDIT_NOTE_DATA:
-			return editNoteData(state, action);
-		case T.DISCARD_NOTE_CHANGES:
-			return discardNoteChanges(state, action);
-		case T.NOTE_EDIT_STATE:
-			return noteEditState(state, action);
-        case T.BEG_SAVE_NOTE:
-            return{
-                ...state,
-                status: action.type,
-                error: null,
-            }
-        case T.FIN_SAVE_NOTE:
-            return saveNoteChanges(state, action);
-        case T.ERR_SAVE_NOTE:
-            return{
-                ...state,
-                status: action.type,
-                error: action.payload,
-            }
-		/* Get All Notes */
-		case T.BEG_GET_ALL_NOTES:
+		case T.BEGAN_GET_NOTES:
 			return {
 				...state,
 				status: action.type,
-				error: null,
-				currNotes: []
+				notes: {}
 			};
-		case T.FIN_GET_ALL_NOTES:
+
+		case T.FINISHED_GET_NOTES:
 			return {
 				...state,
 				status: action.type,
-				error: null,
-				currNotes: action.payload.currNotes,
-				allNotes: action.payload.allNotes
+				notes: action.payload.notes,
+				error: null
 			};
-		case T.ERR_GET_ALL_NOTES:
+		case T.ERRORED_GET_NOTES:
 			return {
 				...state,
 				status: action.type,
-				error: action.payload,
-				currNotes: []
+				notes: {},
+				error: {
+					status: action.payload.status,
+					data: action.payload.data,
+					error: action.payload.error
+				}
 			};
-		/* Get All Notes for Given User */
-		case T.BEG_GET_USER_NOTES:
+		case T.ADD_NOTE:
+			return addNote(state);
+
+		case T.BEGAN_EDIT_NOTE:
+			return {
+				...state,
+				status: action.type
+			};
+		case T.FINISHED_EDIT_NOTE:
+			return editNote(state, action.payload);
+		case T.ERRORED_EDIT_NOTE:
 			return {
 				...state,
 				status: action.type,
-				error: null,
-				currNotes: []
+				data: action.payload.data,
+				error: action.payload.error
 			};
-		case T.FIN_GET_USER_NOTES:
+		case T.BEG_POST_NOTE:
+			return { ...state, status: action.type };
+		case T.FINISHED_POST_NOTE:
+			return postNote(state, action);
+		case T.ERRORED_POST_NOTE:
 			return {
-				...state,
-				status: action.type,
-				error: null,
-				currNotes: action.payload.currNotes,
-				allNotes: action.payload.allNotes
+				...state
 			};
-		case T.ERR_GET_USER_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: action.payload,
-				currNotes: []
-			};
-		/* Get All Notes for a Given piece of Media */
-		case T.BEG_GET_MEDIA_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: null,
-				currNotes: []
-			};
-		case T.FIN_GET_MEDIA_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: null,
-				currNotes: action.payload.currNotes,
-				allNotes: action.payload.allNotes
-			};
-		case T.ERR_GET_MEDIA_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: action.payload,
-				currNotes: []
-			};
-		/* Get All Notes for a Given piece of Media */
-		case T.BEG_GET_MEDIAUSER_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: null,
-				currNotes: []
-			};
-		case T.FIN_GET_MEDIAUSER_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: null,
-				currNotes: action.payload.currNotes,
-				allNotes: action.payload.allNotes
-			};
-		case T.ERR_GET_MEDIAUSER_NOTES:
-			return {
-				...state,
-				status: action.type,
-				error: action.payload,
-				currNotes: []
-			};
+		case T.BEGAN_DELETE_NOTE:
+			return { ...state, status: action.type };
+		case T.FINISHED_DELETE_NOTE:
+			return deleteNote(state, action);
+		case T.ERRORED_DELETE_NOTE:
+			return { ...state, status: action.type };
 		default:
 			return state;
 	}
@@ -177,4 +148,14 @@ export default (state = defaultState, action) => {
 
 export function _getNotesState(store) {
 	return store;
+}
+
+export function _getNote(store, key) {
+	if (!store.notes) return null;
+	if (!store.notes[key]) return null;
+	return store.notes[key];
+}
+
+export function _getNotesKeysArr(store) {
+	return store === null ? store : store.keysArr;
 }

@@ -25,40 +25,10 @@ Tags.getAllTags = () => {
 		});
 };
 
-Tags.getTagIDBulk = ids => {
-	if (!Array.isArray(ids)) ids = [ids];
-	if (!helpers.checkArgs([ids]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide valid ids."
-		});
+Tags.getByID = id => {
 	return database
 		.from("tags")
-		.where(builder => builder.whereIn("id", ids))
-		.select()
-		.then(data => {
-			if (data.length === 0)
-				return { status: 404, data: "The requested tags were not found." };
-			return { status: 200, data };
-		})
-		.catch(error => {
-			throw {
-				status: 400,
-				data: error.message,
-				error
-			};
-		});
-};
-
-Tags.getTagID = id => {
-	if (!helpers.checkArgs([id]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid id."
-		});
-	return database
-		.from("tags")
-		.where({ id })
+		.whereIn("tags.id", id)
 		.select()
 		.then(data => {
 			if (data.length === 0)
@@ -74,27 +44,57 @@ Tags.getTagID = id => {
 		});
 };
 
-Tags.postTag = title => {
-	if (!helpers.checkArgs([], [title])) {
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid title."
-		});
-	}
+Tags.getByTitle = title => {
 	return database("tags")
-		.insert({ title }, ["id", "title"])
+		.where(builder => builder.whereIn("tags.title", title))
+		.select()
+		.then(data => {
+			if (data.length === 0)
+				return { status: 404, data: "The requested tag was not found." };
+			return { status: 200, data };
+		})
+		.catch(error => {
+			return {
+				status: 400,
+				data: error.message,
+				error
+			};
+		});
+};
+
+Tags.searchByTitle = title => {
+	return database("tags")
+		.where("title", "like", `%${title}%`)
+		.then(data => {
+			if (data.length === 0)
+				return { status: 404, data: "The requested tag was not found." };
+			return { status: 200, data };
+		})
+		.catch(error => {
+			return {
+				status: 400,
+				data: error.message,
+				error
+			};
+		});
+};
+
+Tags.postTag = tags => {
+	return database("tags")
+		.returning("*")
+		.insert(tags)
 		.then(data => {
 			return { status: 201, data };
 		})
 		.catch(error => {
 			if (error.constraint === "tags_title_unique")
-				throw {
+				return {
 					status: 409,
 					data:
 						"There was a conflict during insertion. You must provide a unique title.",
 					error
 				};
-			throw {
+			return {
 				status: 400,
 				data: error.message,
 				error

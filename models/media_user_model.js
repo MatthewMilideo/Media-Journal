@@ -52,7 +52,6 @@ Media_User.getMUBulk = (media_ids, user_id) => {
 
 // Gets all Media for a given user_id
 Media_User.getMU = (media_id, user_id) => {
-	//console.log(media_id, user_id)
 	if (!helpers.checkArgs([user_id, media_id]))
 		return Promise.reject({
 			status: 400,

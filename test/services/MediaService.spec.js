@@ -446,7 +446,7 @@ describe("MediaService Tests", function() {
 	*/
 	describe("Media Service postMediaUser Test", async () => {
 		it("It returns 400 when no arguments are provided.", async () => {
-			let res = await expect(
+			let res = await 
 				mediaService.postMediaAndMU(
 					{
 						title: "Hello",
@@ -455,7 +455,7 @@ describe("MediaService Tests", function() {
 					},
 					1
 				)
-			).to.be.rejected;
+		
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -466,7 +466,7 @@ describe("MediaService Tests", function() {
 		});
 
 		it("It returns 400 when the mediaObj is invalid", async () => {
-			let res = await expect(
+			let res = await 
 				mediaService.postMediaAndMU(
 					{
 						title: "Hello",
@@ -475,7 +475,6 @@ describe("MediaService Tests", function() {
 					},
 					1
 				)
-			).to.be.rejected;
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);

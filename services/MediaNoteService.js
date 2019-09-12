@@ -23,15 +23,12 @@ MediaNoteService.getByUserID = async function(userIDs) {
 	if (!Array.isArray(userIDs)) userIDs = [userIDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs(userIDs))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid mediaID(s)."
-		});
+		};
 
-	let results = await media_notes.getByUserID(userIDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return (results = await media_notes.getByUserID(userIDs));
 };
 
 MediaNoteService.getByMediaAndUserID = async function(IDs) {
@@ -39,16 +36,13 @@ MediaNoteService.getByMediaAndUserID = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkMediaIDUserID(IDs)) {
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid ID(s)."
-		});
+		};
 	}
 
-	let results = await media_notes.getByMediaAndUserID(IDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await media_notes.getByMediaAndUserID(IDs);
 };
 
 MediaNoteService.getByNoteAndUserID = async function(IDs) {
@@ -56,16 +50,13 @@ MediaNoteService.getByNoteAndUserID = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkNoteIDUserID(IDs)) {
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid ID(s)."
-		});
+		};
 	}
 
-	let results = await media_notes.getByNoteAndUserID(IDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await media_notes.getByNoteAndUserID(IDs);
 };
 
 MediaNoteService.postMN = async function(mediaID, noteID, userID) {
@@ -82,15 +73,12 @@ MediaNoteService.postMN = async function(mediaID, noteID, userID) {
 MediaNoteService.deleteMN = async function(mediaID, noteID, userID) {
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs([mediaID, noteID, userID]))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide a valid mediaID, noteID, and userID."
-		});
+		};
 
-	let results = await media_notes.deleteMN(mediaID, noteID, userID);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await media_notes.deleteMN(mediaID, noteID, userID);
 };
 
 module.exports = MediaNoteService;

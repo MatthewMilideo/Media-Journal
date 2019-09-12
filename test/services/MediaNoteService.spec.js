@@ -9,7 +9,7 @@ var chaiHttp = require("chai-http");
 var server = require("../../server.js");
 chai.use(require("chai-as-promised"));
 chai.use(chaiHttp);
-const mediaNoteService = require("../../services/media_note_service");
+const mediaNoteService = require("../../services/MediaNoteService");
 
 describe("Route: '/media_user/ ", function() {
 	beforeEach(function(done) {
@@ -27,10 +27,10 @@ describe("Route: '/media_user/ ", function() {
 			done();
 		});
 	});
-
+	/*
 	describe("Media_Note_Model get by MediaID Tests", async () => {
 		it("It returns 400 when no mediaIDs are provided.", async () => {
-			let res = await expect(mediaNoteService.getByMediaID()).to.be.rejected;
+			let res = await mediaNoteService.getByMediaID();
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -38,8 +38,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("You must provide valid mediaID(s).");
 		});
 		it("It returns 400 when an invalid mediaID is provided.", async () => {
-			let res = await expect(mediaNoteService.getByMediaID("poop")).to.be
-				.rejected;
+			let res = await mediaNoteService.getByMediaID("poop");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -47,8 +46,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("You must provide valid mediaID(s).");
 		});
 		it("It returns 404 when mediaIDs are not found.", async () => {
-			let res = await expect(mediaNoteService.getByMediaID([100, 101])).to.be
-				.rejected;
+			let res = await mediaNoteService.getByMediaID([100, 101]);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -63,7 +61,6 @@ describe("Route: '/media_user/ ", function() {
 			expect(res).to.have.property("data");
 			expect(res.data).to.be.a("Array");
 			expect(res.data).to.have.length(2);
-		
 		});
 		it("It returns 200 when mediaIDs are found for an array of media IDs.", async () => {
 			let res = await mediaNoteService.getByMediaID([1, 2]);
@@ -73,7 +70,6 @@ describe("Route: '/media_user/ ", function() {
 			expect(res).to.have.property("data");
 			expect(res.data).to.be.a("Array");
 			expect(res.data).to.have.length(3);
-
 		});
 		it("It returns 200 when mediaIDs are found for an array of media IDs including a non-existent id", async () => {
 			let res = await mediaNoteService.getByMediaID([1, 2, -100]);
@@ -83,12 +79,11 @@ describe("Route: '/media_user/ ", function() {
 			expect(res).to.have.property("data");
 			expect(res.data).to.be.a("Array");
 			expect(res.data).to.have.length(3);
-			
 		});
 	});
 	describe("Media_Note_Model get by MediaID Tests", async () => {
 		it("It returns 400 when no mediaIDs are provided.", async () => {
-			let res = await expect(mediaNoteService.getByUserID()).to.be.rejected;
+			let res = await mediaNoteService.getByUserID();
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -96,8 +91,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("You must provide valid mediaID(s).");
 		});
 		it("It returns 400 when an invalid mediaID is provided.", async () => {
-			let res = await expect(mediaNoteService.getByUserID("test")).to.be
-				.rejected;
+			let res = await mediaNoteService.getByUserID("test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -105,8 +99,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("You must provide valid mediaID(s).");
 		});
 		it("It returns 404 when mediaIDs are not found.", async () => {
-			let res = await expect(mediaNoteService.getByUserID([100, 101])).to.be
-				.rejected;
+			let res = await mediaNoteService.getByUserID([100, 101]);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -134,12 +127,11 @@ describe("Route: '/media_user/ ", function() {
 	});
 	describe("Media_Note_Model get by Note And UserID Tests", async () => {
 		it("It returns 400 when IDs are invalid", async () => {
-			let res = await expect(
-				mediaNoteService.getByNoteAndUserID([
-					{ note_id: "test", user_id: 1 },
-					{ note_id: 3, user_id: 2 }
-				])
-			).to.be.rejected;
+			let res = await mediaNoteService.getByNoteAndUserID([
+				{ note_id: "test", user_id: 1 },
+				{ note_id: 3, user_id: 2 }
+			]);
+
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -147,12 +139,10 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("You must provide valid ID(s).");
 		});
 		it("It returns 404 when IDs are not found", async () => {
-			let res = await expect(
-				mediaNoteService.getByNoteAndUserID([
-					{ note_id: 5, user_id: 1 },
-					{ note_id: 2, user_id: 3 }
-				])
-			).to.be.rejected;
+			let res = await mediaNoteService.getByNoteAndUserID([
+				{ note_id: 5, user_id: 1 },
+				{ note_id: 2, user_id: 3 }
+			]);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -174,12 +164,10 @@ describe("Route: '/media_user/ ", function() {
 
 	describe("Media_Note_Model get by Media And UserID Tests", async () => {
 		it("It returns 400 when IDs are invalid", async () => {
-			let res = await expect(
-				mediaNoteService.getByMediaAndUserID([
-					{ media_id: "test", user_id: 1 },
-					{ media_id: 3, user_id: 2 }
-				])
-			).to.be.rejected;
+			let res = await mediaNoteService.getByMediaAndUserID([
+				{ media_id: "test", user_id: 1 },
+				{ media_id: 3, user_id: 2 }
+			]);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -187,12 +175,11 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("You must provide valid ID(s).");
 		});
 		it("It returns 404 when IDs are not found", async () => {
-			let res = await expect(
-				mediaNoteService.getByMediaAndUserID([
-					{ media_id: 5, user_id: 1 },
-					{ media_id: 2, user_id: 3 }
-				])
-			).to.be.rejected;
+			let res = await mediaNoteService.getByMediaAndUserID([
+				{ media_id: 5, user_id: 1 },
+				{ media_id: 2, user_id: 3 }
+			]);
+
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -214,7 +201,7 @@ describe("Route: '/media_user/ ", function() {
 
 	describe("Media_Note_Model post Tests", async () => {
 		it("It returns 400 when no arguments are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN()).to.be.rejected;
+			let res = await mediaNoteService.postMN()
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -224,8 +211,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect media ID", async () => {
-			let res = await expect(mediaNoteService.postMN("test", "test", "test")).to
-				.be.rejected;
+			let res = await mediaNoteService.postMN("test", "test", "test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -235,8 +221,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN(1, "test", "test")).to.be
-				.rejected;
+			let res = await mediaNoteService.postMN(1, "test", "test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -246,8 +231,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect user id are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN(1, 1, "test")).to.be
-				.rejected;
+			let res = await mediaNoteService.postMN(1, 1, "test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -257,7 +241,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN(100, 1, 1)).to.be.rejected;
+			let res = await mediaNoteService.postMN(100, 1, 1);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(403);
@@ -267,7 +251,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN(1, 100, 1)).to.be.rejected;
+			let res = await mediaNoteService.postMN(1, 100, 1);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -277,7 +261,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN(1, 1, 100)).to.be.rejected;
+			let res = await mediaNoteService.postMN(1, 1, 100);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -287,7 +271,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.postMN(1, 1, 1)).to.be.rejected;
+			let res = await mediaNoteService.postMN(1, 1, 1);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(409);
@@ -322,7 +306,7 @@ describe("Route: '/media_user/ ", function() {
 	});
 	describe("Media_Note_Model delete Tests", async () => {
 		it("It returns 400 when no arguments are provided.", async () => {
-			let res = await expect(mediaNoteService.deleteMN()).to.be.rejected;
+			let res = await mediaNoteService.deleteMN();
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -332,8 +316,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect media ID", async () => {
-			let res = await expect(mediaNoteService.deleteMN("test", "test", "test"))
-				.to.be.rejected;
+			let res = await mediaNoteService.deleteMN("test", "test", "test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -343,8 +326,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.deleteMN(1, "test", "test")).to.be
-				.rejected;
+			let res = await mediaNoteService.deleteMN(1, "test", "test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -354,8 +336,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect user id are provided.", async () => {
-			let res = await expect(mediaNoteService.deleteMN(1, 1, "test")).to.be
-				.rejected;
+			let res = await mediaNoteService.deleteMN(1, 1, "test");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
@@ -365,8 +346,7 @@ describe("Route: '/media_user/ ", function() {
 			);
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.deleteMN(100, 1, 1)).to.be
-				.rejected;
+			let res = await mediaNoteService.deleteMN(100, 1, 1);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -374,8 +354,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("The requested media_note was not found.");
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.deleteMN(1, 100, 1)).to.be
-				.rejected;
+			let res = await mediaNoteService.deleteMN(1, 100, 1);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -383,8 +362,7 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.equal("The requested media_note was not found.");
 		});
 		it("It returns 400 when incorrect note id are provided.", async () => {
-			let res = await expect(mediaNoteService.deleteMN(1, 1, 100)).to.be
-				.rejected;
+			let res = await mediaNoteService.deleteMN(1, 1, 100);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);
@@ -415,5 +393,19 @@ describe("Route: '/media_user/ ", function() {
 			expect(res.data).to.be.a("Array");
 			expect(res.data).to.have.length(5);
 		});
+
 	});
+	*/
+	describe("Media_Note_Model delete Tests", async () => {
+		it("It returns 400 when no arguments are provided.", async () => {
+			let res = await mediaNoteService.deleteMN();
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(400);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal(
+				"You must provide a valid mediaID, noteID, and userID."
+			);
+		});
+	}); 
 });

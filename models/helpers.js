@@ -25,6 +25,7 @@ exports.checkArgs = function(ints, strings = []) {
 			}
 		}
 		strings = flatten(strings);
+		
 
 		for (let i = 0; i < strings.length; i++) {
 			if (!strings[i] || typeof strings[i] !== "string") {
@@ -77,7 +78,9 @@ exports.checkCIDTypeUser = function(arr) {
 	if (!Array.isArray(arr)) return false;
 	if (arr.length === 0) return false;
 	for (let i = 0; i < arr.length; i++) {
+
 		if (!arr[i]) return false;
+
 		if (!arr[i].CID) return false;
 		if (!arr[i].type) return false;
 		if (!exports.checkMediaType(arr[i].type)) return false;

@@ -100,7 +100,6 @@ User.editUser = async (id, email, name) => {
 			return { status: 200, data: data };
 		})
 		.catch(error => {
-			console.log(error);
 			if (error.constraint === "users_email_unique")
 				throw {
 					status: 409,
@@ -113,7 +112,6 @@ User.editUser = async (id, email, name) => {
 };
 
 User.deleteUser = id => {
-	console.log(id);
 	if (!helpers.checkArgs([id]))
 		return Promise.reject({
 			status: 400,

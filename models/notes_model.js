@@ -48,6 +48,27 @@ Notes.postNote = (title, data, user_id) => {
 		});
 };
 
+Notes.editNote = (id, title, data) => {
+
+	return database("notes")
+		.where({ id })
+		.update(
+			{
+				title,
+				data
+			},
+			["id", "title", "data"]
+		)
+		.then(data => {
+			if (data.length === 0)
+				return { status: 404, data: "The requested note was not found." };
+			return { status: 201, data };
+		})
+		.catch(error => {
+			throw { status: 400, data: error.message, error };
+		});
+};
+
 // OLD BELOW THIS LINE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -135,30 +156,6 @@ Notes.getMediaUserNotes = (media_ids, user_id) => {
 				: { status: 200, data };
 		})
 		.catch(error => {
-			throw { status: 400, data: error.message, error };
-		});
-};
-
-Notes.editNote = (note_id, note_title, note_data) => {
-	if (!helpers.checkArgs([user_id], [title, data]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid user_id, title, and data."
-		});
-	return database("notes")
-		.where({ note_id })
-		.update(
-			{
-				title: note_title,
-				data: note_data
-			},
-			["id", "title", "data"]
-		)
-		.then(data => {
-			return { status: 201, data };
-		})
-		.catch(error => {
-			console.log(error);
 			throw { status: 400, data: error.message, error };
 		});
 };

@@ -1,11 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-//import { fetchItem } from "../../actions";
 import { getItemData } from "../../reducers";
 import MovieData from "./MediaPageHelpers/MovieData";
 import TVData from "./MediaPageHelpers/TVData";
 import BookData from './MediaPageHelpers/BookData';
-import NoteManager from "../smallComponents/NoteManager";
+import NoteManager from "../NoteManager"
 import ActorCarousel from '../smallComponents/ActorCarousel';
 
 

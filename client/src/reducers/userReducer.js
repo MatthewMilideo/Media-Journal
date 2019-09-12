@@ -2,7 +2,7 @@ import * as T from "../actions/types";
 
 const defaultState = {
 	status: null,
-	user_id: 7, 
+	user_id: 61, 
 };
 
 export default (state = defaultState, action) => {

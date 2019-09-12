@@ -125,6 +125,18 @@ exports.seed = function(knex) {
 											data:
 												"The Trial is a very good book and I like it a lot. ",
 											user_id: userIDs[2]
+										},
+										{
+											title: "The Trial - Note 2",
+											data:
+												"Franz Kafka be doing it.",
+											user_id: userIDs[3]
+										},
+										{
+											title: "The Trial - Note 3",
+											data:
+												"I love court room drama!",
+											user_id: userIDs[3]
 										}
 									],
 									"id"
@@ -162,9 +174,20 @@ exports.seed = function(knex) {
 							media_id: mediaIDs[2],
 							note_id: noteIDs[2],
 							user_id: userIDs[1]
+						},
+						{
+							media_id: mediaIDs[2],
+							note_id: noteIDs[4],
+							user_id: userIDs[2]
+						},
+						{
+							media_id: mediaIDs[2],
+							note_id: noteIDs[5],
+							user_id: userIDs[2]
 						}
 					]),
 					knex("note_tag").insert([
+
 						{
 							note_id: noteIDs[0],
 							tag_id: tagIDs[0],
@@ -199,6 +222,21 @@ exports.seed = function(knex) {
 							note_id: noteIDs[2],
 							tag_id: tagIDs[2],
 							user_id: userIDs[2]
+						},
+						{
+							note_id: noteIDs[4],
+							tag_id: tagIDs[0],
+							user_id: userIDs[2]
+						},
+						{
+							note_id: noteIDs[4],
+							tag_id: tagIDs[1],
+							user_id: userIDs[2]
+						},
+						{
+							note_id: noteIDs[5],
+							tag_id: tagIDs[0],
+							user_id: userIDs[2]
 						}
 					]),
 					knex("user_media").insert([
@@ -209,6 +247,10 @@ exports.seed = function(knex) {
 						{
 							user_id: userIDs[0],
 							media_id: mediaIDs[1]
+						},
+						{
+							user_id: userIDs[0],
+							media_id: mediaIDs[2]
 						},
 						{
 							user_id: userIDs[1],

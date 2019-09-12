@@ -15,7 +15,7 @@ const server = axios.create({
 
 /*  Real Actions  */
 
-export const TMDBSearch = (user_id, term, type, page) => async dispatch => {
+export const extSearch = (user_id, term, type, page) => async dispatch => {
 	console.log("in search");
 	let next;
 	page === 1 ? (next = "") : (next = T._NEXT);
@@ -23,7 +23,7 @@ export const TMDBSearch = (user_id, term, type, page) => async dispatch => {
 
 	console.log(user_id, term, type, page);
 	try {
-		let res = await server.get("/search/TMDB", {
+		let res = await server.get("/search/", {
 			params: {
 				user_id,
 				term,
@@ -41,40 +41,23 @@ export const TMDBSearch = (user_id, term, type, page) => async dispatch => {
 			}
 		});
 	} catch (error) {
+		// Catch if my server is down.
+		if (!error.response) {
+			dispatch({
+				type: `${T._ERRORED_SEARCH}${next}}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
 		console.log(error);
 		console.log(error.message);
 		dispatch({
 			type: `${type}${T._ERRORED_SEARCH}${next}`,
 			payload: error
-		});
-	}
-};
-
-export const BookSearch = (user_id, term, index) => async dispatch => {
-	dispatch({ type: `${T.BOOK}${T._BEGAN_SEARCH}` });
-	try {
-		let res = await server.get("/search/books", {
-			params: {
-				user_id,
-				term,
-				index
-			}
-		});
-
-		dispatch({
-			type: `${T.BOOK}${T._FINISHED_SEARCH}`,
-
-			payload: {
-				data: res.data,
-				prevQuery: term,
-				prevElem: index,
-				totalElems: res.data.queryData.totalItems
-			}
-		});
-	} catch (error) {
-		console.log(error);
-		dispatch({
-			type: `${T.BOOK}${T._ERRORED_SEARCH}`
 		});
 	}
 };
@@ -124,10 +107,211 @@ export const getItem = (user_id, CID, type) => async dispatch => {
 			}
 		});
 	} catch (error) {
-		console.log(error);
+		// Catch if my server is down.
+
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_ITEM}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
 		dispatch({
 			type: `${T.ERRORED_ITEM}`,
 			payload: error
+		});
+	}
+};
+
+export const getNotes = IDs => async dispatch => {
+	dispatch({ type: `${T.BEGAN_GET_NOTES}` });
+	try {
+		let res = await server.get("/search/notes/", {
+			params: {
+				IDs
+			}
+		});
+		dispatch({
+			type: `${T.FINISHED_GET_NOTES}`,
+			payload: {
+				notes: res.data,
+				keysArr: res.data.keysArr
+			}
+		});
+	} catch (error) {
+		// Catch if my server is down.
+		console.log(error.response);
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_GET_NOTES}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
+		// If responding to a server defined error.
+		dispatch({
+			type: `${T.ERRORED_GET_NOTES}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
+		});
+	}
+};
+
+export const editNote = (id, title, data) => async dispatch => {
+	dispatch({ type: `${T.BEGAN_EDIT_NOTE}` });
+	try {
+		let res = await server.put("/notes/", {
+			id,
+			title,
+			data
+		});
+		console.log(res);
+		dispatch({
+			type: `${T.FINISHED_EDIT_NOTE}`,
+			payload: {
+				id,
+				title,
+				data
+			}
+		});
+	} catch (error) {
+		// Catch if my server is down.
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_EDIT_NOTE}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
+		dispatch({
+			type: `${T.ERRORED_EDIT_NOTE}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
+		});
+	}
+};
+
+/*
+title, data, user_id, mediaObj
+*/
+
+export const postNote = (
+	title,
+	data,
+	user_id,
+	mediaObj,
+	old_id
+) => async dispatch => {
+	dispatch({ type: `${T.BEGAN_POST_NOTE}` });
+	try {
+		let res = await server.post("/notes/", {
+			title,
+			data,
+			user_id,
+			mediaObj,
+			id: old_id
+		});
+		console.log(res);
+
+		//note_id: 28, media_id: 31, user_id: 61
+		let noteObj = {
+			note_id: res.data[0].note_id,
+			media_id: res.data[0].media_id,
+			user_id: res.data[0].user_id,
+			title,
+			data,
+			media: mediaObj
+		};
+
+		dispatch({
+			type: `${T.FINISHED_POST_NOTE}`,
+			payload: {
+				noteObj,
+				old_id
+			}
+		});
+	} catch (error) {
+		// Catch if my server is down.
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_POST_NOTE}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
+		dispatch({
+			type: `${T.ERRORED_POST_NOTE}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
+		});
+	}
+};
+
+export const addNote = () => {
+	return { type: `${T.ADD_NOTE}` };
+};
+
+export const deleteNote = note => async dispatch => {
+	dispatch({ type: `${T.BEGAN_DELETE_NOTE}` });
+	try {
+		if (!note.new)
+			console.log(note.media_id);
+			await server.delete("/notes/", { data: {
+				media_id: note.media_id,
+				note_id: note.note_id,
+				user_id: note.user_id
+			}
+			});
+		dispatch({
+			type: `${T.FINISHED_DELETE_NOTE}`,
+			payload: { note_id: note.note_id }
+		});
+	} catch (error) {
+		console.log(error)
+		// Catch if my server is down.
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_DELETE_NOTE}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
+		dispatch({
+			type: `${T.ERRORED_DELETE_NOTE}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
 		});
 	}
 };

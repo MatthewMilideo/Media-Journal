@@ -1,3 +1,4 @@
+const TagService = require("../services/TagService");
 const NoteTag = require("../models/notes_tag_model");
 const helpers = require("../models/helpers");
 const types = require("../types");
@@ -11,15 +12,12 @@ NoteTagService.getByNoteID = async function(noteIDs) {
 	if (!Array.isArray(noteIDs)) noteIDs = [noteIDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs(noteIDs))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid noteID(s)."
-		});
+		};
 
-	let results = await NoteTag.getByNoteID(noteIDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await NoteTag.getByNoteID(noteIDs);
 };
 
 NoteTagService.getByTagID = async function(tagIDs) {
@@ -27,15 +25,12 @@ NoteTagService.getByTagID = async function(tagIDs) {
 	if (!Array.isArray(tagIDs)) tagIDs = [tagIDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs(tagIDs))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid tagID(s)."
-		});
+		};
 
-	let results = await NoteTag.getByTagID(tagIDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await NoteTag.getByTagID(tagIDs);
 };
 
 NoteTagService.getByUserID = async function(userIDs) {
@@ -43,15 +38,12 @@ NoteTagService.getByUserID = async function(userIDs) {
 	if (!Array.isArray(userIDs)) userIDs = [userIDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs(userIDs))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid userID(s)."
-		});
+		};
 
-	let results = await NoteTag.getByUserID(userIDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await NoteTag.getByUserID(userIDs);
 };
 
 NoteTagService.getByMediaAndUserID = async function(IDs) {
@@ -59,16 +51,12 @@ NoteTagService.getByMediaAndUserID = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkNoteTagMU(IDs)) {
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid ID(s)."
-		});
+		};
 	}
-
-	let results = await media_notes.getByMediaAndUserID(IDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await media_notes.getByMediaAndUserID(IDs);
 };
 
 NoteTagService.getByNoteAndUserID = async function(IDs) {
@@ -76,34 +64,27 @@ NoteTagService.getByNoteAndUserID = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkNoteTagNU(IDs)) {
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid ID(s)."
-		});
+		};
 	}
 
-	let results = await media_notes.getByNoteAndUserID(IDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await media_notes.getByNoteAndUserID(IDs);
 };
-
 
 NoteTagService.getByNoteAndUserID = async function(IDs) {
 	// If there is only a single ID we wrap it in an array so the DB query functions properly.
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkNoteIDUserID(IDs)) {
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid ID(s)."
-		});
+		};
 	}
 
-	let results = await NoteTag.getByNoteAndUserID(IDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await NoteTag.getByNoteAndUserID(IDs);
 };
 
 NoteTagService.getByTagAndUserID = async function(IDs) {
@@ -111,44 +92,76 @@ NoteTagService.getByTagAndUserID = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkTagIDUserID(IDs)) {
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide valid ID(s)."
-		});
+		};
 	}
 
-	let results = await NoteTag.getByTagAndUserID(IDs);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await NoteTag.getByTagAndUserID(IDs);
 };
 
 NoteTagService.postNT = async function(noteID, tagID, userID) {
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs([noteID, tagID, userID]))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide a valid noteID, tagID, and userID."
-		});
+		};
 
-	let results = await NoteTag.postNT(noteID, tagID, userID);
+	return await NoteTag.postNT(noteID, tagID, userID);
+};
 
-	if (results.status !== 201) return Promise.reject(results);
-	return results;
+NoteTagService.postTagAndNT = async function(noteID, title, userID) {
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkArgs([noteID, userID], [title]))
+		return {
+			status: 400,
+			data: "You must provide a valid noteID, userID, and title."
+		};
+	let res = await TagService.postTag(title);
+
+	let tag_id = res.data[0].id;
+
+	if (res.status === 409) {
+		res = await TagService.getByTitle(title);
+		tag_id = res.data[0].id;
+	}
+
+	if (res.status !== 201 && res.status !== 409 && res.status !== 200)
+		return res;
+
+	return await NoteTag.postNT(noteID, tag_id, userID);
+};
+
+NoteTagService.postTagAndNT2 = async function(noteID, title, userID) {
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkArgs([noteID, userID], [title]))
+		return {
+			status: 400,
+			data: "You must provide a valid noteID, userID, and title."
+		};
+	let res = await TagService.postTag(title);
+
+	if (res.status !== 201 && res.status !== 409 && res.status !== 200)
+		return res;
+
+	let noteTags = [];
+	for (let i = 0; i < res.data.length; i++) {
+		let tag_id = res.data[i].id;
+		noteTags.push(await NoteTag.postNT(noteID, tag_id, userID));
+	}
 };
 
 NoteTagService.deleteNT = async function(mediaID, noteID, userID) {
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs([mediaID, noteID, userID]))
-		return Promise.reject({
+		return {
 			status: 400,
 			data: "You must provide a valid noteID, tagID, and userID."
-		});
+		};
 
-	let results = await NoteTag.deleteNT(mediaID, noteID, userID);
-
-	if (results.status !== 200) return Promise.reject(results);
-	return results;
+	return await NoteTag.deleteNT(mediaID, noteID, userID);
 };
 
 module.exports = NoteTagService;

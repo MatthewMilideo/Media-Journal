@@ -27,17 +27,17 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 			data: "You must provide a valid user_id, search term and type."
 		};
 
-	// Query External Database. 
+	// Query External Database.
 	let results = await SearchPageService.searchExt(term, type, page);
 	if (results.status !== 200) return results;
-	// Create the return objects 
+	// Create the return objects
 	if (type === types.BOOK) {
 		results = SearchPageService.processGBooks(results.data, user_id);
 	} else {
 		results = SearchPageService.processTMDB(results.data, user_id, type);
 	}
 
-	//Get a list of all viewed media. 
+	//Get a list of all viewed media.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
 
 	if (results2.status !== 200) return { status: 200, data: results };
@@ -51,10 +51,8 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 
 	let ids = Object.keys(IDtoCID);
 
-	// Get a count of all notes for viewed media. 
+	// Get a count of all notes for viewed media.
 	results2 = await MediaNoteService.getByMediaID(ids);
-	console.log(ids);
-	console.log(results2);
 
 	if (results2.status !== 200) return { status: 200, data: results };
 

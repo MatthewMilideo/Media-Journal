@@ -5,23 +5,17 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 
-import {
-	TMDBSearch,
-	BookSearch,
-	searchBarActiveElem,
-	searchBarText
-} from "../actions";
+import { extSearch, searchBarActiveElem, searchBarText } from "../actions";
 
 import { getUser, getSearchState } from "../reducers";
 import * as T from "../actions/types";
 
 class SearchBar extends React.Component {
-
-	componentDidMount(){
+	componentDidMount() {
 		const { user_id } = this.props.User;
-		this.props.TMDBSearch(user_id, 'Star Wars', T.MOVIE, 1);
+		this.props.extSearch(user_id, "Star Wars", T.MOVIE, 1);
 	}
-	
+
 	renderType = type => {
 		let convObj = {};
 		convObj[T.MOVIE] = "Movies";
@@ -62,19 +56,18 @@ class SearchBar extends React.Component {
 		return (
 			<Form onSubmit={this.onSubmit}>
 				<InputGroup>
-						<Form.Label> {this.renderType(activeElem)} </Form.Label>
-						<Form.Control
-							type="text"
-							placeholder="Enter Text"
-							value={searchText}
-							onChange={e => this.props.searchBarText(e.target.value)}
-						/>
-						<InputGroup.Append>
-							<Button variant="primary" type="submit" className="pt-0">
-								Submit
-							</Button>
-						</InputGroup.Append>
-	
+					<Form.Label> {this.renderType(activeElem)} </Form.Label>
+					<Form.Control
+						type="text"
+						placeholder="Enter Text"
+						value={searchText}
+						onChange={e => this.props.searchBarText(e.target.value)}
+					/>
+					<InputGroup.Append>
+						<Button variant="primary" type="submit" className="pt-0">
+							Submit
+						</Button>
+					</InputGroup.Append>
 				</InputGroup>
 			</Form>
 		);
@@ -84,11 +77,7 @@ class SearchBar extends React.Component {
 		e.preventDefault();
 		const { activeElem, searchText } = this.props.Search;
 		const { user_id } = this.props.User;
-		if (activeElem === T.BOOK) {
-			this.props.BookSearch(user_id, searchText, 0);
-		} else {
-			this.props.TMDBSearch(user_id, searchText, activeElem, 1);
-		}
+		this.props.extSearch(user_id, searchText, activeElem, 1);
 		this.props.searchBarText("");
 	};
 
@@ -112,5 +101,5 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ TMDBSearch, BookSearch, searchBarActiveElem, searchBarText }
+	{ extSearch, searchBarActiveElem, searchBarText }
 )(SearchBar);

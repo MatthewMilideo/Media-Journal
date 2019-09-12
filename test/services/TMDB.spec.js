@@ -3,15 +3,15 @@ process.env.NODE_ENV = "test";
 
 
 const environment = process.env.NODE_ENV || "development";
-const configuration = require("../knexfile")[environment];
+const configuration = require("../../knexfile")[environment];
 const database = require("knex")(configuration);
 const expect = require("chai").expect;
-const mediaModel = require("../models/media_model");
+const mediaModel = require("../../models/media_model");
 
 var chai = require("chai");
 var should = chai.should();
 var chaiHttp = require("chai-http");
-var server = require("../server.js");
+var server = require("../../server.js");
 
 chai.use(chaiHttp);
 
