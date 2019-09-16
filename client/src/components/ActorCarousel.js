@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { breakpoints } from "../../actions/types";
+import { breakpoints } from "../actions/types";
 
 /* Props: 
 Media: All of the media that is past to the carousel. 

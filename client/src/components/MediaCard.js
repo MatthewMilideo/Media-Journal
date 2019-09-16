@@ -8,8 +8,8 @@ import CSSTransition from "react-transition-group";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
-import { postMediaUser } from "../../actions";
-import { getUser } from "../../reducers";
+import { postMediaUser } from "../actions";
+import { getUser } from "../reducers";
 
 const CardTitle = styled(Card.Title)`
 	font-size: 15px;

@@ -706,9 +706,10 @@ describe("Note Services Tests", function() {
 				CID: "12345678910",
 				type: "MOVIE",
 				title: "First Reformed 2"
-			}
+			},
+			['Sad', 'New Tag'],
 		);
-		console.log(res);
+		console.log(' res is', res);
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
 		expect(res.status).to.equal(201);
@@ -729,7 +730,7 @@ describe("Note Services Tests", function() {
 		expect(res.data[0]).to.have.property("user_id");
 		expect(res.data[0].user_id).to.equal(1);
 
-		res = await NoteService.getByID(5);
+		res = await NoteService.getByID(7);
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
 		expect(res.status).to.equal(200);
@@ -740,7 +741,7 @@ describe("Note Services Tests", function() {
 		expect(res.data[0].title).to.equal("Another First Reformed Note");
 
 		res = await MediaNoteService.getByNoteAndUserID({
-			note_id: 5,
+			note_id: 7,
 			user_id: 1
 		});
 		expect(res).to.be.a("object");

@@ -32,7 +32,7 @@ class SearchBar extends React.Component {
 				fill
 				variant="pills"
 				defaultActiveKey={activeElem}
-				className="pl-0 pr-0 mt-3 mb-3"
+				className="pl-0 pr-0 mt-3 mb-3 bg-white"
 				onSelect={e => this.props.searchBarActiveElem(e)}
 			>
 				{navList.map(navElem => {

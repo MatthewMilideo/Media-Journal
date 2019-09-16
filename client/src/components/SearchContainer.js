@@ -3,9 +3,8 @@ import React from "react";
 import { connect } from "react-redux";
 import debounce from "lodash/debounce";
 import Alert from "react-bootstrap/Alert";
-import Spinner from "react-bootstrap/Spinner";
 
-import MediaGrid from "./smallComponents/MediaGrid";
+import MediaGrid from "./MediaGrid";
 import { extSearch } from "../actions/index";
 import { getUser, getSearchState, getMediaState } from "../reducers";
 import * as T from "../actions/types";

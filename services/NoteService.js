@@ -58,6 +58,9 @@ NoteService.postNoteAll = async function(title, data, user_id, mediaObj) {
 		user_id,
 		media_id
 	);
+
+	if (results2.status !== 201) return results2;
+	return results2;
 };
 
 // Inserts Note //
@@ -117,20 +120,47 @@ NoteService.clientGetNotesMedia = async function(IDs) {
 	return { status: 200, data: mediaNotes };
 };
 
-// Inserts Note and Media Note //
-NoteService.ClientPostNoteAll = async function(title, data, user_id, mediaObj) {
+// Input { title: string, data: string, user_id int,
+// 		 mediaObj: { CID: string, type: type (specific string), title: string },
+// 		 Tags: [ strings ] }
+//  ~~~~~~~~~~
+// Output: TBD
+NoteService.ClientPostNoteAll = async function(
+	title,
+	data,
+	user_id,
+	mediaObj,
+	tags
+) {
 	let returnData = {};
-	let results = await MediaService.postMediaAndMU(mediaObj, user_id);
-	let media_id = results.data[0].media_id;
-	if (results.status === 409) {
+	let media = await MediaService.postMediaAndMU(mediaObj, user_id);
+	let media_id = media.data[0].media_id;
+	if (media.status === 409) {
 		let tempResults = await MediaService.getByCID({
 			type: mediaObj.type,
 			CID: mediaObj.CID
 		});
 		media_id = tempResults.data[0].id;
 	}
-	if (results.status !== 201 && results.status !== 409) return results;
-	return await NoteService.postNoteAndMN(title, data, user_id, media_id);
+	if (media.status !== 201 && media.status !== 409) return results;
+	media = { ...mediaObj, ...media.data[0] };
+	console.log("media", media);
+	let note = await NoteService.postNoteAndMN(title, data, user_id, media_id);
+	if (note.status !== 201) return note;
+	let note_id = note.data[0].note_id;
+	note = { ...note.data[0], media, title, data, user_id };
+
+	tags = tags.map(tag => {
+		return { note_id, user_id, title: tag };
+	});
+
+
+	let tagResult = await NoteTagService.postTagAndNT(tags);
+	if (tagResult.status !== 200) return { status: 200, note };
+	console.log('result', tagResult);
+	note.tags = tagResult.data.added;
+	note.errorTags = tagResult.data.error;
+	return { status: 201, data: note };
 };
 
 module.exports = NoteService;

@@ -16,7 +16,7 @@ exports.down = function(knex, Promise) {
 		knex.schema.alterTable("note_tag", function(table) {
 			table.dropPrimary();
 			table.dropColumn("user_id");
-			table.primary(["tag_id", "note_id"]);
+		
 		})
 	]);
 };

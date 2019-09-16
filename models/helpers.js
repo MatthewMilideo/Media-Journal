@@ -25,8 +25,6 @@ exports.checkArgs = function(ints, strings = []) {
 			}
 		}
 		strings = flatten(strings);
-		
-
 		for (let i = 0; i < strings.length; i++) {
 			if (!strings[i] || typeof strings[i] !== "string") {
 				return false;
@@ -78,7 +76,6 @@ exports.checkCIDTypeUser = function(arr) {
 	if (!Array.isArray(arr)) return false;
 	if (arr.length === 0) return false;
 	for (let i = 0; i < arr.length; i++) {
-
 		if (!arr[i]) return false;
 
 		if (!arr[i].CID) return false;
@@ -124,6 +121,35 @@ exports.checkNoteIDUserID = function(arr) {
 		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
 		if (!arr[i].user_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
+	}
+	return true;
+};
+
+exports.checkNoteTag = function(arr) {
+	if (!Array.isArray(arr)) return false;
+	if (arr.length === 0) return false;
+	for (let i = 0; i < arr.length; i++) {
+		if (!arr[i]) return false;
+		if (!arr[i].note_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
+		if (!arr[i].user_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
+		if (!arr[i].title) return false;
+	}
+	return true;
+};
+
+exports.checkNTAll = function(arr) {
+	if (!Array.isArray(arr)) return false;
+	if (arr.length === 0) return false;
+	for (let i = 0; i < arr.length; i++) {
+		if (!arr[i]) return false;
+		if (!arr[i].note_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
+		if (!arr[i].user_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
+		if (!arr[i].tag_id) return false;
+		if (!Number.isInteger(parseInt(arr[i].tag_id))) return false;
 	}
 	return true;
 };

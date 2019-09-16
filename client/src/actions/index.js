@@ -1,6 +1,5 @@
 import * as T from "../actions/types";
 
-
 import axios from "axios";
 
 const server = axios.create({
@@ -203,25 +202,23 @@ export const editNote = (id, title, data) => async dispatch => {
 	}
 };
 
-/*
-title, data, user_id, mediaObj
-*/
-
 export const postNote = (
 	title,
 	data,
 	user_id,
 	mediaObj,
-	old_id
+	old_id, 
+	tags
 ) => async dispatch => {
 	dispatch({ type: `${T.BEGAN_POST_NOTE}` });
+	console.log(tags);
 	try {
 		let res = await server.post("/notes/", {
 			title,
 			data,
 			user_id,
 			mediaObj,
-			id: old_id
+			tags
 		});
 		console.log(res);
 
@@ -270,6 +267,14 @@ export const addNote = () => {
 	return { type: `${T.ADD_NOTE}` };
 };
 
+export const addNoteTag = (tag, note_id) => {
+	return { type: `${T.ADD_NOTE_TAG}`, payload: { tag, note_id } };
+};
+
+export const removeNoteTag = (tag, note_id) => {
+	return { type: `${T.REMOVE_NOTE_TAG}`, payload: { tag, note_id } };
+};
+
 export const deleteNote = note => async dispatch => {
 	dispatch({ type: `${T.BEGAN_DELETE_NOTE}` });
 	try {
@@ -310,7 +315,48 @@ export const deleteNote = note => async dispatch => {
 	}
 };
 
-/*  ~~~~~ Search Page Actions ~~~~~ */
+// ~~~~~ Tag Actions ~~~~~
+
+export const searchTag = string => async dispatch => {
+	dispatch({ type: `${T.BEGAN_SEARCH_TAGS}` });
+	try {
+		let res = await server.get("/search/tags/", {
+			params: {
+				string
+			}
+		});
+		dispatch({
+			type: `${T.FINISHED_SEARCH_TAGS}`,
+			payload: {
+				tags: res.data
+			}
+		});
+	} catch (error) {
+		// Catch if my server is down.
+		console.log(error.response);
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_SEARCH_TAGS}`,
+				payload: {
+					status: 503,
+					data: "The server is down."
+				}
+			});
+			return;
+		}
+		// If responding to a server defined error.
+		dispatch({
+			type: `${T.ERRORED_SEARCH_TAGS}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
+		});
+	}
+};
+
+//  ~~~~~ Search Page Actions ~~~~~
 
 export const searchBarActiveElem = active => {
 	return {
@@ -323,35 +369,5 @@ export const searchBarText = text => {
 	return {
 		type: T.SEARCH_BAR_TEXT,
 		payload: text
-	};
-};
-
-/* ~~~~~~ Sync Note Actions ~~~~~~~ */
-
-export const noteEditState = note_id => {
-	return {
-		type: T.NOTE_EDIT_STATE,
-		payload: { note_id }
-	};
-};
-
-export const editNoteTitle = (note_id, title) => {
-	return {
-		type: T.EDIT_NOTE_TITLE,
-		payload: { note_id, title }
-	};
-};
-
-export const editNoteData = (note_id, data) => {
-	return {
-		type: T.EDIT_NOTE_DATA,
-		payload: { note_id, data }
-	};
-};
-
-export const discardNoteChanges = note_id => {
-	return {
-		type: T.DISCARD_NOTE_CHANGES,
-		payload: { note_id }
 	};
 };

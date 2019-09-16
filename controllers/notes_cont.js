@@ -13,8 +13,9 @@ NotesController.editNote = (req, res) => {
 };
 
 NotesController.postNote = async (req, res) => {
-	const { title, data, user_id, mediaObj } = req.body;
-	NoteService.ClientPostNoteAll(title, data, user_id, mediaObj)
+	const { title, data, user_id, mediaObj, tags } = req.body;
+	console.log(req.body);
+	NoteService.ClientPostNoteAll(title, data, user_id, mediaObj, tags)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => res.status(error.status).send(error.message));
 };

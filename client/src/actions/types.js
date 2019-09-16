@@ -59,6 +59,13 @@ export const FINISHED_DELETE_NOTE = "FINISHED_DELETE_NOTE";
 export const ERRORED_DELETE_NOTE = "ERRORED_DELETE_NOTE";
 
 export const ADD_NOTE = "ADD_NOTE";
+export const ADD_NOTE_TAG = "ADD_NOTE_TAG";
+export const REMOVE_NOTE_TAG = "REMOVE_NOTE_TAG";
+
+// Search Tags Constants
+export const BEGAN_SEARCH_TAGS = "BEGAN_SEARCH_TAGS";
+export const FINISHED_SEARCH_TAGS = "FINISHED_SEARCH_TAGS";
+export const ERRORED_SEARCH_TAGS = "ERRORED_SEARCH_TAGS";
 
 //LOGIN Constants
 export const BEGAN_LOGIN = "BEGAN_LOGIN";

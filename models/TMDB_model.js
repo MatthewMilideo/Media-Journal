@@ -46,7 +46,6 @@ TMDBModel.search = function(term, type, page = 1) {
 		});
 };
 
-
 TMDBModel.getItem = function(id, type) {
 	// Configuration
 	//	console.log(" in get item", id, type);
@@ -65,10 +64,13 @@ TMDBModel.getItem = function(id, type) {
 	}
 
 	return TMDB.get(loc, { params: { api_key: KEY, append_to_response } })
-		.then(response => {
-			return { status: 200, data: response.data };
+		.then(item => {
+			item = TMDBModel.formatItem(item.data);
+			console.log(item);
+			return { status: 200, data: item };
 		})
 		.catch(error => {
+			console.log(error);
 			if (error.response) {
 				throw { status: error.response.status, data: error.message, error };
 			}
@@ -99,22 +101,105 @@ TMDBModel.formatResponse = response => {
 	return response;
 };
 
+TMDBModel.formatItem = data => {
+	if (data.release_date)
+		data.release_date = formatDate(
+			data.release_dates.results[0].release_dates[0].release_date
+		);
+	if (data.budget) data.budget = formatMoney(data.budget);
+	if (data.revenue) data.revenue = formatMoney(data.revenue);
+	if (data.crew) data.crew = crewFormatter(data.credits.crew, null); 
+	return data; 
+};
+
+const monthObj = {
+    0: 'January',
+    1: 'Febuary',
+    2: 'March',
+    3: 'April',
+    4: 'May',
+    5: 'June',
+    6: 'July',
+    7: 'August',
+    8: 'September',
+    9: 'October',
+    10: 'November',
+    11: 'December'
+}
+
+const dayObj = {
+    0: 'Sunday',
+    1: 'Monday',
+    2: 'Tuesday',
+    3: 'Wednesday',
+    4: 'Thursday',
+    5: 'Friday',
+    6: 'Saturday',
+    7: 'Sunday',
+}
+
+
+const formatDate = (date) => {
+    let d = new Date(date);
+    let dayName = dayObj[d.getDay()];
+    let day = d.getDate();
+    let month = monthObj[d.getMonth()];
+    let year = d.getFullYear();
+
+    return  (dayName + ', ' + month + ' ' + day +', ' + year); 
+} 
+
+const formatMoney = (num) => {
+    ////console.log(('num', num);
+    if (num === 0) return null; 
+
+    let returnStr = '$'
+    num = num.toString();
+    let numLen = num.length -1; 
+    let counter = 0; 
+
+    for(let i = numLen; i >= 0; i-- ){
+        counter++; 
+        if (counter === 3 && i != 0){
+            counter = 0; 
+            let str1 = num.slice(0, i);
+            let str2 = num.slice(i, num.length); 
+            num = str1.concat(',', str2);  
+        }
+    }
+    returnStr = returnStr.concat(num);
+    return returnStr;
+} 
+
+//This object defines the standard crew rolls that I use in the fromatter below. 
+const standardRoles = [
+	"Director",
+	"Executive Producer",
+	"Producer",
+	"Director of Photography",
+	"Writer"
+];
+//Formats the crew from a TMDB item query and returns roles listed above 
+const crewFormatter = (input, creator = null, output = standardRoles) => {
+	let returnObj = {};
+	output.forEach(role => (returnObj[role] = []));
+
+	returnObj["Creator"] = [];
+	if (creator != null) {
+		creator.forEach(crew => {
+			returnObj["Creator"].push(crew);
+		});
+	}
+
+	input.forEach(crew => {
+		if (returnObj[crew.job]) returnObj[crew.job].push(crew);
+	});
+
+	return returnObj;
+};
+
+
 /*
-
-import { formatDate, formatMoney } from "../helpers";
-import * as T from "../actions/types";
-
-
-/*
-
-Movie Formatter 
-
-release_date: formatDate(
-	data.release_dates.results[0].release_dates[0].release_date
-),
-budget: formatMoney(data.budget),
-revenue: formatMoney(data.revenue),
-crew: crewFormatter(data.credits.crew, null),
 
 TV Formatter 
 
@@ -225,6 +310,5 @@ export const formatMoney = (num) => {
 
 
 */
-
 
 module.exports = TMDBModel;

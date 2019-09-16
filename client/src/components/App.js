@@ -9,21 +9,25 @@ import SearchPage from "./Navigation/SearchPage";
 import JournalHome from "./Navigation/JournalHome";
 import NewMediaPage from "./Navigation/NewMediaPage";
 
-
+import styled from "styled-components";
+import image from "../video-camera.svg";
 
 import history from "../history";
-import "../styles/style.css";
 import NavBar from "./NavBar";
+
+const SContainer = styled(Container)`
+	background-image: url(${image});
+`;
 
 class App extends React.Component {
 	render() {
 		//console.log(history);
 		return (
-			<Container fluid className = 'pl-0 pr-0'>
-					<Router basename={"client/build/"} history={history}>
-						<div >
-							<NavBar/>
-							<Container className = 'mt-3'>
+			<SContainer fluid className="pl-0 pr-0">
+				<Router basename={"client/build/"} history={history}>
+					<div>
+						<NavBar />
+						<Container className="mt-3 bg-white">
 							<Switch>
 								<Route
 									path={`${process.env.PUBLIC_URL}/Home`}
@@ -42,11 +46,10 @@ class App extends React.Component {
 									component={NewMediaPage}
 								/>
 							</Switch>
-							</Container>
-						</div>
-					</Router>
-		
-			</Container>
+						</Container>
+					</div>
+				</Router>
+			</SContainer>
 		);
 	}
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import TagSearch from "./TagSearch";
 import { connect } from "react-redux";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
@@ -14,13 +15,14 @@ class Note extends React.Component {
 		edit: this.props.Note.new,
 		localTitle: "",
 		localData: "",
-		blur: false
+		tagData: ""
 	};
 
 	onSaveChanges = () => {
 		const { id, type, CID } = this.props;
 		const { user_id } = this.props.User;
 		const { localTitle, localData } = this.state;
+		const { tags } = this.props.Note;
 		console.log("user_id", user_id);
 
 		if (!this.props.Note.new) {
@@ -32,7 +34,8 @@ class Note extends React.Component {
 			localData,
 			user_id,
 			{ CID, type, title: "Hi" },
-			id
+			id,
+			tags
 		);
 
 		this.setState({ edit: false });
@@ -45,7 +48,11 @@ class Note extends React.Component {
 		return (
 			<Card className="mb-3 p-3 shadow-sm">
 				<Card.Title> {title} </Card.Title>
-				<Card.Body> {data} </Card.Body>
+				<Card.Body>
+					{data}
+					Note Tags:
+				</Card.Body>
+
 				<div className="d-flex">
 					<Button
 						onClick={() =>
@@ -68,12 +75,13 @@ class Note extends React.Component {
 	};
 
 	renderEdit = () => {
-		const { localTitle, localData, media } = this.state;
+		const { localTitle, localData } = this.state;
+		const { tags, note_id } = this.props.Note;
 		return (
 			<Card className="mb-3 p-3 shadow-sm">
 				<Card.Title>
 					<Form.Group controlId="noteTitle">
-						<Form.Label>Title</Form.Label>
+						<Form.Label>Note Title: </Form.Label>
 						<Form.Control
 							type="text"
 							value={localTitle}
@@ -81,36 +89,34 @@ class Note extends React.Component {
 						/>
 					</Form.Group>
 				</Card.Title>
-				<Card.Body>
-					<Form.Group controlId="noteData">
-						<Form.Label>Note Text</Form.Label>
-						<Form.Control
-							as="textarea"
-							rows="5"
-							value={localData}
-							onChange={e => this.setState({ localData: e.target.value })}
-						/>
-					</Form.Group>
-				</Card.Body>
-				<div className="d-flex">
-					<Button className="mr-1" onClick={this.onSaveChanges}>
-						Save Changes
-					</Button>
-					<Button
-						onClick={() => this.setState({ edit: false })}
-						className="bg-warning"
-					>
-						Discard Changes
-					</Button>
-					<Button className=" ml-auto bg-danger"> Delete </Button>
-				</div>
+				<Form.Group controlId="noteData">
+					<Form.Label>Note Text: </Form.Label>
+					<Form.Control
+						as="textarea"
+						rows="5"
+						value={localData}
+						onChange={e => this.setState({ localData: e.target.value })}
+					/>
+				</Form.Group>
+				<TagSearch tags={tags} note_id={note_id} />
+				<Card.Footer className="m-n3">
+					<div className="d-flex">
+						<Button className="mr-1" onClick={this.onSaveChanges}>
+							Save Changes
+						</Button>
+						<Button
+							onClick={() => this.setState({ edit: false })}
+							className="bg-warning ml-auto"
+						>
+							Discard Changes
+						</Button>
+					</div>
+				</Card.Footer>
 			</Card>
 		);
 	};
 
 	render() {
-		console.log(this.state);
-		console.log(this.props.new);
 		const { edit } = this.state;
 		return edit ? this.renderEdit() : this.renderStatic();
 	}

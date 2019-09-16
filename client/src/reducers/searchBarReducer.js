@@ -5,7 +5,6 @@ const defaultState = {
 	searchText: '', 
 };
 
-
 export const SEARCH_BAR_TEXT = 'SEARCH_BAR_TEXT';
 export const SEARCH_BAR_ACTIVE_CHANGE = 'SEARCH_BAR_ACTIVE_CHANGE';
 

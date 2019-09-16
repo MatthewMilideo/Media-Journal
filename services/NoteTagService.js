@@ -1,6 +1,7 @@
 const TagService = require("../services/TagService");
 const NoteTag = require("../models/notes_tag_model");
 const helpers = require("../models/helpers");
+const isEqual = require("lodash/isEqual");
 const types = require("../types");
 
 const NoteTagService = {};
@@ -63,20 +64,6 @@ NoteTagService.getByNoteAndUserID = async function(IDs) {
 	// If there is only a single ID we wrap it in an array so the DB query functions properly.
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkNoteTagNU(IDs)) {
-		return {
-			status: 400,
-			data: "You must provide valid ID(s)."
-		};
-	}
-
-	return await media_notes.getByNoteAndUserID(IDs);
-};
-
-NoteTagService.getByNoteAndUserID = async function(IDs) {
-	// If there is only a single ID we wrap it in an array so the DB query functions properly.
-	if (!Array.isArray(IDs)) IDs = [IDs];
-	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkNoteIDUserID(IDs)) {
 		return {
 			status: 400,
@@ -97,60 +84,69 @@ NoteTagService.getByTagAndUserID = async function(IDs) {
 			data: "You must provide valid ID(s)."
 		};
 	}
-
 	return await NoteTag.getByTagAndUserID(IDs);
 };
 
-NoteTagService.postNT = async function(noteID, tagID, userID) {
+NoteTagService.getByAll = async function(IDs) {
+	// If there is only a single ID we wrap it in an array so the DB query functions properly.
+	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([noteID, tagID, userID]))
+	if (!helpers.checkNTAll(IDs)) {
 		return {
 			status: 400,
-			data: "You must provide a valid noteID, tagID, and userID."
+			data: "You must provide valid ID(s)."
 		};
-
-	return await NoteTag.postNT(noteID, tagID, userID);
+	}
+	return await NoteTag.getByAll(IDs);
 };
 
-NoteTagService.postTagAndNT = async function(noteID, title, userID) {
+NoteTagService.postNT = async function(IDs) {
+	// Check that IDs is an array, and convert it into one if not.
+	if (!Array.isArray(IDs)) IDs = [IDs];
+	// Check that every element of every obj of the IDs array is an integer.
+	if (!helpers.checkNTAll(IDs)) {
+		return {
+			status: 400,
+			data: "You must provide valid ID(s)."
+		};
+	}
+	let results = {};
+	results.added = [];
+	results.error = [];
+	for (let NT of IDs) {
+		let res = await NoteTag.postNT(NT.note_id, NT.tag_id, NT.user_id);
+		res.status !== 200 && res.status !== 201 && res.status !== 409
+			? results.error.push({ ...NT, ...res })
+			: results.added.push(NT);
+	}
+	return { status: 200, data: results };
+};
+
+// Input: [ {note_id, user_id, title} ]
+// Output: TBD
+
+NoteTagService.postTagAndNT = async function(IDs) {
+	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([noteID, userID], [title]))
+	if (!helpers.checkNoteTag(IDs))
 		return {
 			status: 400,
 			data: "You must provide a valid noteID, userID, and title."
 		};
-	let res = await TagService.postTag(title);
 
-	let tag_id = res.data[0].id;
+	// Get the titles from the input and insert all tags.
+	let titles = IDs.map(elem => elem.title);
+	let tags = await TagService.postTag(titles);
 
-	if (res.status === 409) {
-		res = await TagService.getByTitle(title);
-		tag_id = res.data[0].id;
+	if (tags.status !== 201 && tags.status !== 200) return tags;
+	// Generate an object for easy tag and map tag titles onto request object.
+	let tagsObj = {};
+	for (let tag of tags.data) {
+		tagsObj[tag.title] = tag;
 	}
+	IDs.map(id => (id.tag_id = tagsObj[id.title].id));
 
-	if (res.status !== 201 && res.status !== 409 && res.status !== 200)
-		return res;
-
-	return await NoteTag.postNT(noteID, tag_id, userID);
-};
-
-NoteTagService.postTagAndNT2 = async function(noteID, title, userID) {
-	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([noteID, userID], [title]))
-		return {
-			status: 400,
-			data: "You must provide a valid noteID, userID, and title."
-		};
-	let res = await TagService.postTag(title);
-
-	if (res.status !== 201 && res.status !== 409 && res.status !== 200)
-		return res;
-
-	let noteTags = [];
-	for (let i = 0; i < res.data.length; i++) {
-		let tag_id = res.data[i].id;
-		noteTags.push(await NoteTag.postNT(noteID, tag_id, userID));
-	}
+	return await NoteTagService.postNT(IDs);
 };
 
 NoteTagService.deleteNT = async function(mediaID, noteID, userID) {

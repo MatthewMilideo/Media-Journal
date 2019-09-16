@@ -34,11 +34,7 @@ Note_Tags.getByNoteID = noteIDs => {
 			"note_tag.user_id",
 			"tags.title"
 		])
-		.where(builder =>
-			builder.whereIn(
-				"note_tag.note_id", noteIDs
-			)
-		)
+		.where(builder => builder.whereIn("note_tag.note_id", noteIDs))
 		.then(data => {
 			if (data.length === 0)
 				return {
@@ -154,6 +150,29 @@ Note_Tags.getByTagAndUserID = ids => {
 		});
 };
 
+Note_Tags.getByAll = ids => {
+	return database("note_tag")
+		.join("tags", "note_tag.tag_id", "tags.id")
+		.select(["note_tag.note_id", "note_tag.tag_id", "note_tag.user_id"])
+		.where(builder =>
+			builder.whereIn(
+				["note_tag.note_id", "note_tag.user_id", "note_tag.tag_id"],
+				ids.map(id => [id.note_id, id.user_id, id.tag_id])
+			)
+		)
+		.then(data => {
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: []
+				};
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			return { status: 400, data: error.message, error };
+		});
+};
+
 Note_Tags.postNT = (note_id, tag_id, user_id) => {
 	return database("note_tag")
 		.insert({ note_id, tag_id, user_id }, ["note_id", "tag_id", "user_id"])
@@ -162,7 +181,7 @@ Note_Tags.postNT = (note_id, tag_id, user_id) => {
 		})
 		.catch(error => {
 			if (error.constraint === "note_tag_tag_id_foreign") {
-					return {
+				return {
 					status: 404,
 					data: "The tag required for this operation could not be found.",
 					error
@@ -208,7 +227,7 @@ Note_Tags.deleteNT = (note_id, tag_id, user_id) => {
 			return { status: 200, data };
 		})
 		.catch(error => {
-			return{
+			return {
 				status: 400,
 				data: error.message,
 				error

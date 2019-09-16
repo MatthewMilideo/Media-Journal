@@ -29,7 +29,7 @@ TagService.getByTitle = async function(titles) {
 };
 
 // Searching for tags like the one listed.
-TagService.searchByTitle = async function(tags) {
+TagService.searchByTitle = async function(title) {
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs([], [title]))
 		return {
@@ -40,38 +40,37 @@ TagService.searchByTitle = async function(tags) {
 	return await Tag.searchByTitle(title);
 };
 
+// Input: Titles
+// Output: { status: NUMBER, data: [tags] }
 TagService.postTag = async function(tags) {
+	// Check the Input.
+
 	if (!Array.isArray(tags)) tags = [tags];
-	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkArgs([], tags))
 		return {
 			status: 400,
 			data: "You must provide a valid title."
 		};
 
-	let tagObj = {};
-	tagObj.keysArr = [];
-	tags.forEach(elem => {
-		tagObj[elem] = {};
-		tagObj[elem].title = elem;
-		tagObj.keysArr.push(elem);
-	});
 	// Check if the tag is already inserted, and if it is remove that tag
 	// from the list to be inserted.
 	let res = await TagService.getByTitle(tags);
-	let filteredTags = [];
-
-	if (res.status !== 404) {
+	// If the call isn't successful return.
+	if (res.status !== 404 && res.status !== 200) return res;
+	// If tags were found.
+	if (res.status === 200) {
+		// extract tiles.
 		let titles = res.data.map(elem => elem.title);
+		// Filter tags by found titles
 		tags = tags.filter(tag => {
 			if (!titles.includes(tag)) return tag;
-			filteredTags.push(tag);
 		});
-		if (tags.length === 0) return { status: 409, data: res.data };
+		// If found all tags return
+		if (tags.length === 0) return { status: 200, data: res.data };
 	}
 
-	tags = tags.map(title => {
-		return { title };
+	tags = tags.map(tag => {
+		return { title: tag };
 	});
 
 	let res2 = await Tag.postTag(tags);

@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import userReducer, * as user from "./userReducer";
+import tagReducer, * as tag from './tagReducer';
 import searchBarReducer, * as search from "./searchBarReducer";
 import { searchHOR } from "./higherOrderReducers";
 
@@ -17,8 +18,7 @@ export default combineReducers({
 	...reducerObject,
 	user: userReducer,
 	search: searchBarReducer,
-
-	// Legacy
+	tag: tagReducer, 
 	item: itemReducer,
 	notes: notesReducer
 });
@@ -59,6 +59,10 @@ export function getUserErr(store) {
 
 export function getUser(store) {
 	return user._getUser(store["user"]);
+}
+
+export function getSearchTags(store) {
+	return tag._getSearchTags(store["tag"]);
 }
 
 // ~~~~~~~~ Other Selectors ~~~~~~

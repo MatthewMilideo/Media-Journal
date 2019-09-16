@@ -236,11 +236,11 @@ describe("TagService Tests", function() {
 			expect(res.data).to.equal("You must provide a valid title.");
 		});
 
-		it("postTag returns 409 when the tag already exists.", async () => {
+		it("postTag returns 200 when the tag already exists.", async () => {
 			let res = await TagService.postTag("Sad");
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
-			expect(res.status).to.equal(409);
+			expect(res.status).to.equal(200);
 			expect(res.data).to.be.a("array");
 			expect(res.data).to.have.length(1);
 			expect(res.data[0]).to.have.property("title");
@@ -249,11 +249,11 @@ describe("TagService Tests", function() {
 			expect(res.data[0].id).to.equal(1);
 		});
 
-		it("postTag returns 409 when the tag already exists.", async () => {
+		it("postTag returns 200 when the tag already exists.", async () => {
 			let res = await TagService.postTag(["Sad"]);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
-			expect(res.status).to.equal(409);
+			expect(res.status).to.equal(200);
 			expect(res.data).to.be.a("array");
 			expect(res.data).to.have.length(1);
 			expect(res.data[0]).to.have.property("title");
@@ -262,11 +262,11 @@ describe("TagService Tests", function() {
 			expect(res.data[0].id).to.equal(1);
 		});
 
-		it("postTag returns 409 when the tags already exists.", async () => {
+		it("postTag returns 200 when the tags already exists.", async () => {
 			let res = await TagService.postTag(["Sad", "Good"]);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
-			expect(res.status).to.equal(409);
+			expect(res.status).to.equal(200);
 			expect(res.data).to.be.a("array");
 			expect(res.data).to.have.length(2);
 			expect(res.data[0]).to.have.property("title");
@@ -301,6 +301,18 @@ describe("TagService Tests", function() {
 			expect(res.data[0].title).to.equal("Test");
 			expect(res.data[0]).to.have.property("id");
 			expect(res.data[0].id).to.equal(4);
+
+			res = await TagService.getByTitle("Hello"); 
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(200);
+			expect(res).to.have.property("data");
+			expect(res.data).to.be.a("Array");
+			expect(res.data).to.have.length(1);
+			expect(res.data[0]).to.have.property("title");
+			expect(res.data[0].title).to.equal("Hello");
+			expect(res.data[0]).to.have.property("id");
+			expect(res.data[0].id).to.equal(5);
 		});
 	});
 });

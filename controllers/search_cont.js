@@ -1,6 +1,7 @@
 const SearchPageService = require("../services/SearchPageService");
 const ItemService = require("../services/ItemService");
 const NoteService = require("../services/NoteService");
+const TagService = require ('../services/TagService')
 
 const SearchController = {};
 
@@ -40,5 +41,17 @@ SearchController.getNotesMedia = (req, res) => {
 			res.status(500).send(error);
 		});
 };
+
+SearchController.searchTags = (req, res) =>{
+	let {string} = req.query;
+	TagService.searchByTitle(string)
+	.then(response => {
+
+		res.status(response.status).send(response.data);
+	})
+	.catch(error => {
+		res.status(error.status).send(error.data);
+	});
+}
 
 module.exports = SearchController;
