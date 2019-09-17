@@ -6,15 +6,22 @@ const server = axios.create({
 	baseURL: "http://localhost:5000/"
 });
 
-/*  Real Actions  */
+// Input: user_id: int, term: string, type: specific string, page: int
+// Output: queryData: {information about the query}
+// 		   media: {The media searched for},
+//         keysArr: array containting ids for media obj.
+// This function calls my API, tells it to query an external API,
+// processes the data and adds information about the users interactions
+// with it and returns that data.
 
 export const extSearch = (user_id, term, type, page) => async dispatch => {
-	console.log("in search");
+	// Checks if the search is an original search, or a request for more information
+	// on a previous search.
 	let next;
 	page === 1 ? (next = "") : (next = T._NEXT);
+
 	dispatch({ type: `${type}${T._BEGAN_SEARCH}${next}` });
 
-	console.log(user_id, term, type, page);
 	try {
 		let res = await server.get("/search/", {
 			params: {
@@ -24,13 +31,14 @@ export const extSearch = (user_id, term, type, page) => async dispatch => {
 				page
 			}
 		});
+	
+		
 		dispatch({
 			type: `${type}${T._FINISHED_SEARCH}${next}`,
 			payload: {
-				data: res.data,
-				prevQuery: term,
-				prevElem: page,
-				totalElems: res.data.queryData.total_pages
+				media: res.data.media,
+				queryData: res.data.queryData,
+				keysArr: res.data.keysArr
 			}
 		});
 	} catch (error) {
@@ -46,8 +54,6 @@ export const extSearch = (user_id, term, type, page) => async dispatch => {
 			});
 			return;
 		}
-		console.log(error);
-		console.log(error.message);
 		dispatch({
 			type: `${type}${T._ERRORED_SEARCH}${next}`,
 			payload: error
@@ -207,7 +213,7 @@ export const postNote = (
 	data,
 	user_id,
 	mediaObj,
-	old_id, 
+	old_id,
 	tags
 ) => async dispatch => {
 	dispatch({ type: `${T.BEGAN_POST_NOTE}` });
@@ -224,12 +230,14 @@ export const postNote = (
 
 		//note_id: 28, media_id: 31, user_id: 61
 		let noteObj = {
-			note_id: res.data[0].note_id,
-			media_id: res.data[0].media_id,
-			user_id: res.data[0].user_id,
+			note_id: res.data.note_id,
+			media_id: res.data.media_id,
+			user_id: res.data.user_id,
 			title,
 			data,
-			media: mediaObj
+			media: mediaObj,
+			tags: res.data.tags,
+			errorTags: res.data.errorTags
 		};
 
 		dispatch({
@@ -240,6 +248,7 @@ export const postNote = (
 			}
 		});
 	} catch (error) {
+		console.log(error);
 		// Catch if my server is down.
 		if (!error.response) {
 			dispatch({
@@ -276,6 +285,11 @@ export const removeNoteTag = (tag, note_id) => {
 };
 
 export const deleteNote = note => async dispatch => {
+	if (note.new)
+		return dispatch({
+			type: `${T.FINISHED_DELETE_NOTE}`,
+			payload: { note_id: note.note_id }
+		});
 	dispatch({ type: `${T.BEGAN_DELETE_NOTE}` });
 	try {
 		if (!note.new) console.log(note.media_id);

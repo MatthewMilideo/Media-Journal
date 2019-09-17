@@ -37,8 +37,6 @@ const addNoteTag = (state, action) => {
 	let newState = { ...state };
 	newState.notes = { ...newState.notes };
 	newState.notes[note_id] = { ...newState.notes[note_id] };
-	console.log(note_id, newState.notes[note_id]);
-	console.log(newState.notes[note_id].tags);
 	newState.notes[note_id].tags = [...newState.notes[note_id].tags, tag];
 	return newState;
 };
@@ -86,7 +84,7 @@ const copyArr = function(arr, rmElem) {
 
 const postNote = (state, action) => {
 	const { noteObj, old_id } = action.payload;
-	console.log(noteObj,old_id);
+	console.log(noteObj, old_id);
 	let newState = { ...state };
 	newState.status = action.type;
 	newState.notes = copyObj(newState.notes, old_id);

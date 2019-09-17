@@ -707,7 +707,7 @@ describe("Note Services Tests", function() {
 				type: "MOVIE",
 				title: "First Reformed 2"
 			},
-			['Sad', 'New Tag'],
+			['Sad', 'New Tag']
 		);
 		console.log(' res is', res);
 		expect(res).to.be.a("object");

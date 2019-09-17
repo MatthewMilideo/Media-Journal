@@ -132,7 +132,7 @@ NoteService.ClientPostNoteAll = async function(
 	mediaObj,
 	tags
 ) {
-	let returnData = {};
+	console.log("IN POST NOTE ALL");
 	let media = await MediaService.postMediaAndMU(mediaObj, user_id);
 	let media_id = media.data[0].media_id;
 	if (media.status === 409) {
@@ -144,22 +144,26 @@ NoteService.ClientPostNoteAll = async function(
 	}
 	if (media.status !== 201 && media.status !== 409) return results;
 	media = { ...mediaObj, ...media.data[0] };
-	console.log("media", media);
 	let note = await NoteService.postNoteAndMN(title, data, user_id, media_id);
 	if (note.status !== 201) return note;
 	let note_id = note.data[0].note_id;
-	note = { ...note.data[0], media, title, data, user_id };
+	note = { ...note.data[0], media, title, data, user_id, tags: [] };
 
 	tags = tags.map(tag => {
-		return { note_id, user_id, title: tag };
+		return { note_id, user_id, title: tag.title };
 	});
 
-
 	let tagResult = await NoteTagService.postTagAndNT(tags);
-	if (tagResult.status !== 200) return { status: 200, note };
-	console.log('result', tagResult);
+	console.log("result of tags call", tagResult);
+	if (tagResult.status !== 200) {
+		let returnObj = { status: 200, data: note };
+		console.log(returnObj);
+		return returnObj;
+	}
+	console.log("result of tags call", tagResult);
 	note.tags = tagResult.data.added;
 	note.errorTags = tagResult.data.error;
+	console.log("Note with the tags", note);
 	return { status: 201, data: note };
 };
 

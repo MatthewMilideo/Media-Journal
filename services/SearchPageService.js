@@ -29,26 +29,26 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 
 	// Query External Database.
 	let results = await SearchPageService.searchExt(term, type, page);
+
 	if (results.status !== 200) return results;
 	// Create the return objects
 	if (type === types.BOOK) {
-		results = SearchPageService.processGBooks(results.data, user_id);
+		results = SearchPageService.processGBooks(results.data, user_id, term);
 	} else {
-		results = SearchPageService.processTMDB(results.data, user_id, type);
+		results = SearchPageService.processTMDB(results.data, user_id, type, term);
 	}
 
 	//Get a list of all viewed media.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
-
+	console.log(results2);
 	if (results2.status !== 200) return { status: 200, data: results };
 
 	let IDtoCID = {};
 
 	results2.data.forEach(elem => {
-		results[elem.CID].viewed = true;
+		results.media[elem.CID].viewed = true;
 		IDtoCID[elem.media_id] = elem.CID;
 	});
-
 	let ids = Object.keys(IDtoCID);
 
 	// Get a count of all notes for viewed media.
@@ -58,36 +58,40 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 
 	results2.data.forEach(elem => {
 		let theCID = IDtoCID[elem.media_id];
-		results[theCID].noteCount += 1;
+		results.media[theCID].noteCount += 1;
 	});
 
 	return { status: 200, data: results };
 };
 
-SearchPageService.processTMDB = function(data, user_id, type) {
+SearchPageService.processTMDB = function(data, user_id, type, term) {
 	let returnObj = {};
 	returnObj.queryData = {};
 	returnObj.queryData.page = data.page;
 	returnObj.queryData.total_results = data.total_results;
 	returnObj.queryData.total_pages = data.total_pages;
+	returnObj.queryData.term = term;
 	returnObj.keysArr = [];
 	returnObj.searchArr = [];
+	returnObj.media = {};
 
 	data.results.forEach(elem => {
 		elem.CID = elem.id.toString(10);
 		elem.type = type;
 		elem["viewed"] = false;
 		elem.noteCount = 0;
-		returnObj[elem.id] = elem;
+		returnObj.media[elem.id] = elem;
 		returnObj.keysArr.push(elem.id);
 		returnObj.searchArr.push({ CID: elem.id, user_id, type });
 	});
 	return returnObj;
 };
 
-SearchPageService.processGBooks = function(data, user_id) {
+SearchPageService.processGBooks = function(data, user_id, term) {
 	let returnObj = {};
 	returnObj.queryData = data.queryData;
+	returnObj.queryData.term = term;
+	returnObj.media = {};
 	returnObj.keysArr = [];
 
 	// Format the return object.
@@ -96,7 +100,7 @@ SearchPageService.processGBooks = function(data, user_id) {
 		elem.type = types.BOOK;
 		elem["viewed"] = false;
 		elem.noteCount = 0;
-		returnObj[elem.id] = elem;
+		returnObj.media[elem.id] = elem;
 		returnObj.keysArr.push(elem.id);
 		returnObj.searchArr.push({ CID: elem.id, type });
 	});

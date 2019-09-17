@@ -8,22 +8,17 @@ import Button from "react-bootstrap/Button";
 import { editNote, postNote, deleteNote } from "../actions";
 import { getNote, getUser } from "../reducers";
 
-import * as T from "../actions/types";
-
 class Note extends React.Component {
 	state = {
-		edit: this.props.Note.new,
+		edit: this.props.Note.new === true ? true : false,
 		localTitle: "",
-		localData: "",
-		tagData: ""
+		localData: ""
 	};
 
 	onSaveChanges = () => {
 		const { id, type, CID } = this.props;
 		const { user_id } = this.props.User;
 		const { localTitle, localData } = this.state;
-		const { tags } = this.props.Note;
-		console.log("user_id", user_id);
 
 		if (!this.props.Note.new) {
 			this.props.editNote(id, localTitle, localData);
@@ -35,41 +30,48 @@ class Note extends React.Component {
 			user_id,
 			{ CID, type, title: "Hi" },
 			id,
-			tags
+			this.props.Note.tags
 		);
 
 		this.setState({ edit: false });
 	};
 
-	onDiscardChanges = () => {};
+	onDiscardChanges = () => {
+		const { Note } = this.props;
+		if (Note.new) return this.props.deleteNote(Note);
+		this.setState({ edit: false });
+	};
 
 	renderStatic = () => {
-		const { title, data } = this.props.Note;
+		const { title, data, tags, note_id } = this.props.Note;
 		return (
 			<Card className="mb-3 p-3 shadow-sm">
 				<Card.Title> {title} </Card.Title>
-				<Card.Body>
-					{data}
-					Note Tags:
-				</Card.Body>
+				{data}
+				<TagSearch tags={tags} note_id={note_id} edit={this.state.edit} />
 
-				<div className="d-flex">
-					<Button
-						onClick={() =>
-							this.setState({ edit: true, localTitle: title, localData: data })
-						}
-						className="bg-warning"
-					>
-						Edit
-					</Button>
-					<Button
-						className=" ml-auto bg-danger"
-						onClick={() => this.props.deleteNote(this.props.Note)}
-					>
-						{" "}
-						Delete{" "}
-					</Button>
-				</div>
+				<Card.Footer className="m-n3">
+					<div className="d-flex">
+						<Button
+							onClick={() =>
+								this.setState({
+									edit: true,
+									localTitle: title,
+									localData: data
+								})
+							}
+							className="bg-warning"
+						>
+							Edit
+						</Button>
+						<Button
+							className=" ml-auto bg-danger"
+							onClick={() => this.props.deleteNote(this.props.Note)}
+						>
+							Delete
+						</Button>
+					</div>
+				</Card.Footer>
 			</Card>
 		);
 	};
@@ -77,6 +79,10 @@ class Note extends React.Component {
 	renderEdit = () => {
 		const { localTitle, localData } = this.state;
 		const { tags, note_id } = this.props.Note;
+
+		let saveDisabled = false;
+		if (!localTitle || !localData) saveDisabled = true;
+
 		return (
 			<Card className="mb-3 p-3 shadow-sm">
 				<Card.Title>
@@ -98,14 +104,18 @@ class Note extends React.Component {
 						onChange={e => this.setState({ localData: e.target.value })}
 					/>
 				</Form.Group>
-				<TagSearch tags={tags} note_id={note_id} />
+				<TagSearch tags={tags} note_id={note_id} edit={this.state.edit} />
 				<Card.Footer className="m-n3">
 					<div className="d-flex">
-						<Button className="mr-1" onClick={this.onSaveChanges}>
+						<Button
+							className="mr-1"
+							onClick={this.onSaveChanges}
+							disabled={saveDisabled}
+						>
 							Save Changes
 						</Button>
 						<Button
-							onClick={() => this.setState({ edit: false })}
+							onClick={this.onDiscardChanges}
 							className="bg-warning ml-auto"
 						>
 							Discard Changes
@@ -118,6 +128,7 @@ class Note extends React.Component {
 
 	render() {
 		const { edit } = this.state;
+		console.log(edit);
 		return edit ? this.renderEdit() : this.renderStatic();
 	}
 }

@@ -1,10 +1,15 @@
 import React from "react";
 
 import debounce from "lodash/debounce";
+import Styled from 'styled-components'
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import MediaCard from "./MediaCard";
+
+const PaddingDiv = Styled.div`
+height: 400px; 
+width: 100px;`
 
 class MediaGrid extends React.Component {
 	state = { width: window.innerWidth, height: window.innerHeight };
@@ -47,6 +52,7 @@ class MediaGrid extends React.Component {
 		return (
 			<div className="pt-3 pb-3 pr-3 pl-3">
 				<Row>{returnObj}</Row>
+				<PaddingDiv></PaddingDiv>
 			</div>
 		);
 	}

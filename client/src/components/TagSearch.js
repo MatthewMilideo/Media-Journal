@@ -6,6 +6,7 @@ import debounce from "lodash/debounce";
 import Styled from "styled-components";
 import { searchTag, addNoteTag, removeNoteTag } from "../actions";
 import { getSearchTags } from "../reducers";
+import { isNull } from "util";
 
 const ParentDiv = Styled.div`
     position: relative; 
@@ -118,6 +119,7 @@ class TagSearch extends React.Component {
 	};
 
 	renderSelectedTags = arr => {
+		const { edit } = this.props;
 		return (
 			<ULStyled>
 				{arr.map(elem => (
@@ -125,10 +127,12 @@ class TagSearch extends React.Component {
 						{" "}
 						<StyledBadge variant="info">
 							{elem.title}
-							<span
-								onClick={() => this.onTagDeleteClick(elem)}
-								className=" ml-2 oi oi-circle-x"
-							/>
+							{edit ? (
+								<span
+									onClick={() => this.onTagDeleteClick(elem)}
+									className=" ml-2 oi oi-circle-x"
+								/>
+							) : null}
 						</StyledBadge>
 					</li>
 				))}
@@ -136,7 +140,7 @@ class TagSearch extends React.Component {
 		);
 	};
 
-	render() {
+	renderEdit() {
 		return (
 			<ParentDiv className="mb-3">
 				{this.renderSelectedTags(this.props.tags)}
@@ -157,6 +161,21 @@ class TagSearch extends React.Component {
 				</Form>
 			</ParentDiv>
 		);
+	}
+
+	renderStatic() {
+		console.log("static");
+		return (
+			<ParentDiv className="mb-3">
+				{this.renderSelectedTags(this.props.tags)}
+			</ParentDiv>
+		);
+	}
+
+	render() {
+		const { edit } = this.props;
+		console.log("edit", edit);
+		return edit ? this.renderEdit() : this.renderStatic();
 	}
 }
 

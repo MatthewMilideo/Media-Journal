@@ -48,10 +48,10 @@ class SearchContainer extends React.Component {
 			const type = this.props.search.activeElem;
 			const data = this.props[type];
 			const { user_id } = this.props.User;
-
-			if (data.totalElems > data.prevElem) {
-				let newElem = data.prevElem + 1;
-				this.props.extSearch(user_id, data.prevQuery, type, newElem);
+			console.log(data.queryData.total_pages,data.queryData.page )
+			if (data.queryData.total_pages > data.queryData.page) {
+				let newElem = data.queryData.page + 1;
+				this.props.extSearch(user_id, data.queryData.term, type, newElem);
 			}
 		}
 	};
@@ -60,12 +60,12 @@ class SearchContainer extends React.Component {
 
 	// Converts the Redux Object into an array.
 	// Hopefully this function becomes uncessary as I optimize the code.
-	makeGrid = (media, type) => {
+	makeGrid = (data, type) => {
 		let arr = [];
-		for (let i = 0; i < media.keysArr.length; i++) {
-			let key = media.keysArr[i];
+		for (let i = 0; i < data.keysArr.length; i++) {
+			let key = data.keysArr[i];
 			arr.push({
-				...media.data[key]
+				...data.media[key]
 			});
 		}
 		return <MediaGrid media={arr} type={type} />;
@@ -86,7 +86,6 @@ class SearchContainer extends React.Component {
 	};
 
 	render() {
-		console.log(this.state);
 		const type = this.props.search.activeElem;
 		const data = this.props[type];
 		switch (data.status) {
