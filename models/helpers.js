@@ -158,6 +158,7 @@ exports.checkNTAll = function(arr) {
 
 exports.checkArgsAndMedia = function(ints, strings, mediaObj) {
 	if (!(exports.checkArgs(ints, strings) && exports.checkMediaObj(mediaObj))) {
+		console.log('hi');
 		return false;
 	}
 	return true;

@@ -63,14 +63,54 @@ NoteService.postNoteAll = async function(title, data, user_id, mediaObj) {
 	return results2;
 };
 
-// Inserts Note //
-NoteService.editNote = async function(note_id, title, data) {
-	if (!helpers.checkArgs([note_id], [title, data]))
+NoteService.editNoteTags = async function(note_id, addTags, rmTags, user_id) {
+	if (!Array.isArray(addTags)) addTags = [addTags];
+	if (!Array.isArray(rmTags)) rmTags = [rmTags];
+
+	let addData = addTags.map(tag => {
+		return {
+			note_id,
+			user_id,
+			title: tag
+		};
+	});
+
+	console.log(addData);
+
+	let res2 = await NoteTagService.postTagAndNT(addData);
+	console.log(res2);
+	if (res2.status !== 200) return res2;
+
+	console.log(note_id, user_id, rmTags);
+	let res3 = await NoteTagService.deleteNT(note_id, user_id, rmTags);
+	console.log(res3);
+	if (res3.status !== 200) return res3;
+
+	let res4 = await NoteTagService.getByNoteAndUserID({ note_id, user_id });
+	console.log(res4);
+};
+
+// Edits the note.
+NoteService.editNote = async function(
+	note_id,
+	title,
+	data,
+	addTags,
+	rmTags,
+	user_id
+) {
+	if (!Array.isArray(addTags)) addTags = [addTags];
+	if (!Array.isArray(rmTags)) rmTags = [rmTags];
+	if (
+		!helpers.checkArgs([note_id, ...addTags, ...rmTags, user_id], [title, data])
+	)
 		return {
 			status: 400,
-			data: "You must provide a valid note_id, title, and data."
+			data:
+				"You must provide a valid note_id, title, and data, addTags, rmTags, and user_id"
 		};
-	return await Notes.editNote(note_id, title, data);
+	let res = await Notes.editNote(note_id, title, data);
+	if (res.status !== 200) return res;
 };
 
 // Inserts Note //

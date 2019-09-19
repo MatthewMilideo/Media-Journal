@@ -1,6 +1,7 @@
 import React from "react";
 import TagSearch from "./TagSearch";
 import { connect } from "react-redux";
+import Styled from "styled-components";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,58 +9,97 @@ import Button from "react-bootstrap/Button";
 import { editNote, postNote, deleteNote } from "../actions";
 import { getNote, getUser } from "../reducers";
 
+const StyledP = Styled.p`
+white-space: pre-wrap; 
+`;
+
 class Note extends React.Component {
-	state = {
-		edit: this.props.Note.new === true ? true : false,
-		localTitle: "",
-		localData: ""
-	};
+	constructor(props) {
+		super(props);
+
+		this.props.Note.new
+			? (this.state = {
+					edit: true,
+					localTitle: "",
+					localData: "",
+					localTags: [],
+					rmTags: [],
+					addTags: []
+			  })
+			: (this.state = {
+					edit: false,
+					localTitle: this.props.Note.title,
+					localData: this.props.Note.data,
+					localTags: this.props.Note.tags,
+					rmTags: [],
+					addTags: []
+			  });
+	}
 
 	onSaveChanges = () => {
+		
 		const { id, type, CID } = this.props;
 		const { user_id } = this.props.User;
-		const { localTitle, localData } = this.state;
-
-		if (!this.props.Note.new) {
-			this.props.editNote(id, localTitle, localData);
-		}
-
-		this.props.postNote(
-			localTitle,
-			localData,
-			user_id,
-			{ CID, type, title: "Hi" },
-			id,
-			this.props.Note.tags
-		);
-
+		const { localTitle, localData, rmTags, addTags } = this.state;
+		console.log(this.props.Note);
+		!this.props.Note.new
+			? this.props.editNote(id, localTitle, localData, rmTags, addTags)
+			: this.props.postNote(
+					id,
+					localTitle,
+					localData,
+					this.props.Note.tags,
+					{ CID, type, title: "Hi" },
+					user_id
+			  );
 		this.setState({ edit: false });
 	};
 
 	onDiscardChanges = () => {
-		const { Note } = this.props;
-		if (Note.new) return this.props.deleteNote(Note);
-		this.setState({ edit: false });
+		Note.new
+			? this.props.deleteNote(this.props.Note)
+			: this.setState({ edit: false });
+	};
+
+	addNoteTag = tag => {
+		let { localTags, addTags } = this.state;
+		localTags.push(tag);
+		addTags.push(tag);
+		this.setState({ localTags, addTags });
+	};
+
+	removeNoteTag = tag => {
+		let { localTags, rmTags } = this.state;
+		rmTags.push(tag);
+		localTags = localTags.filter(elem => {
+			if (elem.title.toLowerCase().trim() !== tag.title.toLowerCase().trim()) {
+				return elem;
+			}
+		});
+		this.setState({ localTags, rmTags });
 	};
 
 	renderStatic = () => {
-		const { title, data, tags, note_id } = this.props.Note;
+		const { title, data, tags } = this.props.Note;
+
 		return (
 			<Card className="mb-3 p-3 shadow-sm">
-				<Card.Title> {title} </Card.Title>
-				{data}
-				<TagSearch tags={tags} note_id={note_id} edit={this.state.edit} />
+				<Card.Title className=" ml-n1 mr-n1 pb-2 border-bottom">
+					{title}
+				</Card.Title>
+				<StyledP>{data}</StyledP>
+
+				<TagSearch
+					tags={tags}
+					edit={this.state.edit}
+					removeNoteTag={this.removeNoteTag}
+					addNoteTag={this.addNoteTag}
+				/>
 
 				<Card.Footer className="m-n3">
 					<div className="d-flex">
 						<Button
-							onClick={() =>
-								this.setState({
-									edit: true,
-									localTitle: title,
-									localData: data
-								})
-							}
+							onClick={() => this.setState({ edit: true })}
 							className="bg-warning"
 						>
 							Edit
@@ -77,7 +117,7 @@ class Note extends React.Component {
 	};
 
 	renderEdit = () => {
-		const { localTitle, localData } = this.state;
+		const { localTitle, localData, localTags } = this.state;
 		const { tags, note_id } = this.props.Note;
 
 		let saveDisabled = false;
@@ -104,7 +144,12 @@ class Note extends React.Component {
 						onChange={e => this.setState({ localData: e.target.value })}
 					/>
 				</Form.Group>
-				<TagSearch tags={tags} note_id={note_id} edit={this.state.edit} />
+				<TagSearch
+					tags={localTags}
+					edit={this.state.edit}
+					removeNoteTag={this.removeNoteTag}
+					addNoteTag={this.addNoteTag}
+				/>
 				<Card.Footer className="m-n3">
 					<div className="d-flex">
 						<Button
@@ -128,7 +173,6 @@ class Note extends React.Component {
 
 	render() {
 		const { edit } = this.state;
-		console.log(edit);
 		return edit ? this.renderEdit() : this.renderStatic();
 	}
 }

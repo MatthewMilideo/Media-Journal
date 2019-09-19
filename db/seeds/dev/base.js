@@ -1,28 +1,28 @@
 let users = [
 	{
 		email: "mmilideo@gmail.com",
-		name: "Matthew",
+		name: "Matthew"
 	},
 	{
 		email: "tylerb7@gaol.com",
-		name: "Tyler",
+		name: "Tyler"
 	},
 	{
 		email: "MJ@gmail.com",
-		name: "MJ",
+		name: "MJ"
 	},
 	{
 		email: "M5555J@gmail.com",
-		name: "MJ",
+		name: "MJ"
 	},
 	{
 		email: "MJ45@gmail.com",
-		name: "MJ",
+		name: "MJ"
 	},
 	{
 		email: "testboboboboboob@gmail.com",
-		name: "Bo Bo Man",
-	},
+		name: "Bo Bo Man"
+	}
 ];
 
 let media = [
@@ -69,8 +69,6 @@ let tags = [
 		title: "Funny"
 	}
 ];
-
-
 
 exports.seed = function(knex) {
 	// We must return a Promise from within our seed function
@@ -128,14 +126,12 @@ exports.seed = function(knex) {
 										},
 										{
 											title: "The Trial - Note 2",
-											data:
-												"Franz Kafka be doing it.",
+											data: "Franz Kafka be doing it.",
 											user_id: userIDs[3]
 										},
 										{
 											title: "The Trial - Note 3",
-											data:
-												"I love court room drama!",
+											data: "I love court room drama!",
 											user_id: userIDs[3]
 										}
 									],
@@ -187,7 +183,6 @@ exports.seed = function(knex) {
 						}
 					]),
 					knex("note_tag").insert([
-
 						{
 							note_id: noteIDs[0],
 							tag_id: tagIDs[0],

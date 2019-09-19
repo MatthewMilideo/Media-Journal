@@ -79,12 +79,12 @@ Tags.searchByTitle = title => {
 		});
 };
 
-Tags.postTag = tags => {
+Tags.postTag = title => {
 	return database("tags")
 		.returning("*")
-		.insert(tags)
+		.insert({ title })
 		.then(data => {
-			return { status: 201, data };
+			return { status: 201, data: data[0] };
 		})
 		.catch(error => {
 			if (error.constraint === "tags_title_unique")
@@ -96,7 +96,7 @@ Tags.postTag = tags => {
 				};
 			return {
 				status: 400,
-				data: error.message,
+				data: { title, message: error.message },
 				error
 			};
 		});

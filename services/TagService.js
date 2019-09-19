@@ -25,7 +25,14 @@ TagService.getByTitle = async function(titles) {
 			data: "You must provide a valid title."
 		};
 
-	return await Tag.getByTitle(titles);
+	let res = await Tag.getByTitle(titles);
+	if (res.status !== 200) return res;
+	let tagObj = {};
+	res.data.forEach(tag => {
+		tagObj[tag.title] = tag;
+	});
+	res.data = tagObj;
+	return res;
 };
 
 // Searching for tags like the one listed.
@@ -42,41 +49,44 @@ TagService.searchByTitle = async function(title) {
 
 // Input: Titles
 // Output: { status: NUMBER, data: [tags] }
-TagService.postTag = async function(tags) {
+TagService.postTag = async function(tag_titles) {
 	// Check the Input.
-
-	if (!Array.isArray(tags)) tags = [tags];
-	if (!helpers.checkArgs([], tags))
+	if (!Array.isArray(tag_titles)) tag_titles = [tag_titles];
+	if (!helpers.checkArgs([], tag_titles))
 		return {
 			status: 400,
 			data: "You must provide a valid title."
 		};
 
-	// Check if the tag is already inserted, and if it is remove that tag
-	// from the list to be inserted.
-	let res = await TagService.getByTitle(tags);
-	// If the call isn't successful return.
-	if (res.status !== 404 && res.status !== 200) return res;
-	// If tags were found.
-	if (res.status === 200) {
-		// extract tiles.
-		let titles = res.data.map(elem => elem.title);
-		// Filter tags by found titles
-		tags = tags.filter(tag => {
-			if (!titles.includes(tag)) return tag;
-		});
-		// If found all tags return
-		if (tags.length === 0) return { status: 200, data: res.data };
-	}
+	let results = {};
+	results.success = [];
+	results.error = [];
 
-	tags = tags.map(tag => {
-		return { title: tag };
+	// Remove duplicates.
+	tag_titles = [...new Set(tag_titles)]
+
+	// Check if any tag_titles were already inserted. If they were
+	// remove those titles from the tags to be inserted, and add those
+	// tags to the results object.
+	let res = await TagService.getByTitle(tag_titles);
+	if (res.status !== 404 && res.status !== 200) return res;
+	tag_titles = tag_titles.filter(title => {
+		if (!res.data[title]) return title;
+		results.success.push({ status: 200, data: res.data[title] });
 	});
 
-	let res2 = await Tag.postTag(tags);
-	if (res2.status === 201 && res.status !== 404)
-		res2.data = [...res.data, ...res2.data];
-	return res2;
+	// Attempt to insert all remaining tags, and put the results into the
+	// return object.
+	for (let title of tag_titles) {
+		let { status, data } = await Tag.postTag(title);
+		status !== 201 && status !== 409
+			? results.error.push({ status, data: { message: data, title } })
+			: status === 409
+			? results.success.push({ status, data: { message: res.data, title } })
+			: results.success.push({ status, data });
+	}
+
+	return { status: 200, data: results };
 };
 
 module.exports = TagService;

@@ -177,59 +177,92 @@ Note_Tags.postNT = (note_id, tag_id, user_id) => {
 	return database("note_tag")
 		.insert({ note_id, tag_id, user_id }, ["note_id", "tag_id", "user_id"])
 		.then(data => {
-			return { status: 201, data };
+			return { status: 201, data: data[0] };
 		})
 		.catch(error => {
 			if (error.constraint === "note_tag_tag_id_foreign") {
 				return {
 					status: 404,
-					data: "The tag required for this operation could not be found.",
-					error
+					data: {
+						message: "The tag required for this operation could not be found.",
+						note_id,
+						tag_id,
+						user_id,
+						error
+					}
 				};
 			}
 			if (error.constraint === "note_tag_note_id_foreign")
 				return {
 					status: 404,
-					data: "The note required for this operation could not be found.",
-					error
+					data: {
+						message: "The note required for this operation could not be found.",
+						note_id,
+						tag_id,
+						user_id,
+						error
+					}
 				};
 			if (error.constraint === "note_tag_user_id_foreign") {
 				return {
 					status: 404,
-					data: "The user required for this operation could not be found.",
-					error
+					data: {
+						message: "The user required for this operation could not be found.",
+						note_id,
+						tag_id,
+						user_id,
+						error
+					}
 				};
 			}
 			if (error.constraint === "note_tag_pkey") {
 				return {
 					status: 409,
-					data:
-						"There was a conflict during insertion. You must provide a unique relation.",
-					error
+					data: {
+						message:
+							"There was a conflict during insertion. You must provide a unique relation.",
+						note_id,
+						tag_id,
+						user_id,
+						error
+					}
 				};
 			}
 			return {
 				status: 400,
-				data: error.message,
-				error
+				data: {
+					message: error.message,
+					note_id,
+					tag_id,
+					user_id,
+					error
+				}
 			};
 		});
 };
 
-Note_Tags.deleteNT = (note_id, tag_id, user_id) => {
+Note_Tags.deleteNT = (note_id, user_id, tag_id) => {
 	return database("note_tag")
 		.returning("*")
 		.where({ note_id, tag_id, user_id })
 		.del()
 		.then(data => {
 			if (data.length === 0)
-				return { status: 404, data: "The requested note_tag was not found." };
-			return { status: 200, data };
+				return {
+					status: 404,
+					data: {
+						message: "The requested note_tag was not found.",
+						note_id,
+						user_id,
+						tag_id
+					}
+				};
+			return { status: 200, data: data[0] };
 		})
 		.catch(error => {
 			return {
 				status: 400,
-				data: error.message,
+				data: { message: error.message, note_id, user_id, tag_id },
 				error
 			};
 		});

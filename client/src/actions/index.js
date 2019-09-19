@@ -31,8 +31,7 @@ export const extSearch = (user_id, term, type, page) => async dispatch => {
 				page
 			}
 		});
-	
-		
+
 		dispatch({
 			type: `${type}${T._FINISHED_SEARCH}${next}`,
 			payload: {
@@ -65,7 +64,7 @@ export const postMediaUser = (user_id, mediaObj) => async dispatch => {
 	const { type, CID } = mediaObj;
 	dispatch({ type: `${type}${T._BEGAN_POST_MEDIA_USER}` });
 	try {
-		let res = await server.post("/media_user/", {
+		let res = await server.post("/notes/media_user/", {
 			user_id,
 			mediaObj
 		});
@@ -167,7 +166,14 @@ export const getNotes = IDs => async dispatch => {
 	}
 };
 
-export const editNote = (id, title, data) => async dispatch => {
+export const editNote = (
+	id,
+	title,
+	data,
+	rmTags,
+	addTags,
+	user_id
+) => async dispatch => {
 	dispatch({ type: `${T.BEGAN_EDIT_NOTE}` });
 	try {
 		let res = await server.put("/notes/", {
@@ -209,12 +215,12 @@ export const editNote = (id, title, data) => async dispatch => {
 };
 
 export const postNote = (
+	old_id,
 	title,
 	data,
-	user_id,
+	tags,
 	mediaObj,
-	old_id,
-	tags
+	user_id
 ) => async dispatch => {
 	dispatch({ type: `${T.BEGAN_POST_NOTE}` });
 	console.log(tags);

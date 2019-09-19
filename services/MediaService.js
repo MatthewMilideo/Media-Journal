@@ -86,11 +86,13 @@ MediaService.postMU = async function(media_id, user_id) {
 
 /* Inserts Media Obj and Media User */
 MediaService.postMediaAndMU = async function(mediaObj, user_id) {
+	console.log('hello again', mediaObj, user_id );
 	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
 		return {
 			status: 400,
 			data: "You must provide a valid user_id mediaObj pair."
 		};
+
 	let results = await MediaService.postMedia(mediaObj);
 
 	let media_id = results.data[0].id;

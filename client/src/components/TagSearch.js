@@ -1,29 +1,37 @@
 import React from "react";
 import { connect } from "react-redux";
+
+import Styled from "styled-components";
+import debounce from "lodash/debounce";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
-import debounce from "lodash/debounce";
-import Styled from "styled-components";
-import { searchTag, addNoteTag, removeNoteTag } from "../actions";
+
+import { searchTag } from "../actions";
 import { getSearchTags } from "../reducers";
-import { isNull } from "util";
 
 const ParentDiv = Styled.div`
     position: relative; 
 `;
 
 const UnstyledForm = Styled(Form.Control)`
-width: 100%; 
-border: none; 
+width: 100%;
 :focus{
-    box-shadow-bottom-left: none; 
-    box-shadow-bottom-right: none; 
-    outline: none; 
+	border-bottom: none
 }
+
 `;
 
 const ULStyled2 = Styled.ul`
 position: absolute; 
+
+border-radius: .25rem;
+
+/*
+border-color: #80bdff;
+outline: 0;
+box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+	*/
+
 width: 100%; 
 list-style:none;
 padding: 0; 
@@ -62,8 +70,14 @@ border: solid;
 class TagSearch extends React.Component {
 	state = { formValue: "" };
 
+	debounceSearchTag = debounce(this.props.searchTag, 200, {
+		leading: true,
+		trailing: true
+	});
+
+	// Function needs to be debounced.
 	onFormValueChange = e => {
-		this.props.searchTag(e.target.value);
+		this.debounceSearchTag(e.target.value);
 		this.setState({ formValue: e.target.value });
 	};
 
@@ -75,29 +89,26 @@ class TagSearch extends React.Component {
 			this.setState({ formValue: "" });
 			return;
 		}
-
 		tags = this.props.tags;
-		this.props.addNoteTag(
-			{
-				title: e.target[0].value.trim(),
-				id: e.target[0].value,
-				new: true
-			},
-			note_id
-		);
+		this.props.addNoteTag({
+			title: e.target[0].value.trim(),
+			id: e.target[0].value,
+			new: true
+		});
 		this.setState({ formValue: "" });
 	};
 
 	tagClick = elem => {
-		this.props.addNoteTag(elem, this.props.note_id);
+		this.props.addNoteTag(elem);
 		this.setState({ formValue: "" });
 	};
 
 	onTagDeleteClick = elem => {
-		this.props.removeNoteTag(elem, this.props.note_id);
+		this.props.removeNoteTag(elem);
 	};
 
 	renderDBTags = (tags, max) => {
+		console.log(tags);
 		max = 4;
 		let bgFlag = false;
 		return (
@@ -164,7 +175,6 @@ class TagSearch extends React.Component {
 	}
 
 	renderStatic() {
-		console.log("static");
 		return (
 			<ParentDiv className="mb-3">
 				{this.renderSelectedTags(this.props.tags)}
@@ -173,8 +183,8 @@ class TagSearch extends React.Component {
 	}
 
 	render() {
+		console.log(this.props.Tags);
 		const { edit } = this.props;
-		console.log("edit", edit);
 		return edit ? this.renderEdit() : this.renderStatic();
 	}
 }
@@ -187,5 +197,5 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ searchTag, addNoteTag, removeNoteTag }
+	{ searchTag }
 )(TagSearch);

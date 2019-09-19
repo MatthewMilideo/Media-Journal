@@ -10,7 +10,7 @@ export default (state = defaultState, action) => {
 		// ~~~~~~~~~~ Login and Logout Cases ~~~~~~~~~~~~
 		case T.BEGAN_SEARCH_TAGS:
 			return {
-				...defaultState,
+				...state,
 				status: action.type
 			};
 		case T.FINISHED_SEARCH_TAGS:

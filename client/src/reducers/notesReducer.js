@@ -118,7 +118,6 @@ export default (state = defaultState, action) => {
 			return {
 				...state,
 				status: action.type,
-				notes: {}
 			};
 
 		case T.FINISHED_GET_NOTES:

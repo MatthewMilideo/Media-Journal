@@ -2,28 +2,27 @@ import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
-//import Card from "react-bootstrap/Card";
+import Jumbotron from "react-bootstrap/Jumbotron";
 
 import HomePage from "./Navigation/HomePage";
 import SearchPage from "./Navigation/SearchPage";
 import JournalHome from "./Navigation/JournalHome";
 import NewMediaPage from "./Navigation/NewMediaPage";
 
-import styled from "styled-components";
-import image from "../video-camera.svg";
+import Styled from "styled-components";
 
 import history from "../history";
 import NavBar from "./NavBar";
 
-const SContainer = styled(Container)`
-	background-image: url(${image});
+const StyledContainer = Styled(Container)`
+min-height: 100%;
 `;
 
 class App extends React.Component {
 	render() {
 		//console.log(history);
 		return (
-			<SContainer fluid className="pl-0 pr-0">
+			<StyledContainer fluid className=" d-flex flex-column pl-0 pr-0">
 				<Router basename={"client/build/"} history={history}>
 					<div>
 						<NavBar />
@@ -49,7 +48,14 @@ class App extends React.Component {
 						</Container>
 					</div>
 				</Router>
-			</SContainer>
+				<div className="flex-grow-1"> </div>
+				<Jumbotron fluid className="d-flex border-top mt-auto mb-0 p-3">
+					<span> Matthew Milideo 2019 </span>
+					<span className="ml-auto">
+						https://github.com/MatthewMilideo/Media-Journal
+					</span>
+				</Jumbotron>
+			</StyledContainer>
 		);
 	}
 }

@@ -7,20 +7,23 @@ import CSSTransition from "react-transition-group";
 
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Image from "react-bootstrap/Image";
 
 import { postMediaUser } from "../actions";
 import { getUser } from "../reducers";
 
-const CardTitle = styled(Card.Title)`
-	font-size: 15px;
-	min-height: 55px;
-`;
+const TitleDiv = styled.div`
+	flex-direction: column;
+	text-align: center;
+	font-size: 13px;
+	min-height: 65px;
 
-const CardImageDiv = styled.div`
-	flex-grow: 1;
-	width: 100%;
-	height: 300px;
-	background-color: light-gray;
+	span {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
 `;
 
 const CardImage = styled(Card.Img)`
@@ -29,42 +32,51 @@ const CardImage = styled(Card.Img)`
 
 const StyledCard = styled(Card)`
     width: 100%;
-    height: 100%; 
-	img{
-        width: 100%; 
-        flex-grow: 1;
-        max-height: 350px; 
-		}
+    height: 425px; 
     }
 `;
 
-const BlurredCard = styled(Card)`
-    position: relative; 
-    z-index: -5; 
-	width: 100%; 
-    height: 100%; 
-    min-height: 100%; 
-	img{
-        width: 100%; 
-        flex-grow: 1;
-        max-height: 350px; 
-		}
-    }
-    filter: blur(5px);
+const CardImageDiv = styled.div`
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background-color: light-gray;
+	img {
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+	}
+`;
+
+const BlurredDiv = styled.div`
+	background-color: white;
+	width: 100%;
+	height: 425px;
+	opacity: 0.1;
+	position: relative;
+	z-index: 2;
 `;
 
 const InnerDiv = styled.div`
 	position: relative;
 	z-index: 2;
 	width: 100%;
+	height: 425px;
 `;
 
-const BlurredDiv = styled.div`
-	background-color: white;
-	opacity: 0.1;
-	position: relative;
-	z-index: 2;
+const BlurredCard = styled(Card)`
 	width: 100%;
+	height: 425px; 
+    position: relative; 
+    z-index: -5; 
+	img{
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+		}
+    }
+    filter: blur(5px);
 `;
 
 const ContentDiv = styled.div`
@@ -97,75 +109,55 @@ const StyledArea = styled.div`
 class MediaCard extends React.Component {
 	state = { load: false, hover: false, height: 0, ref: React.createRef() };
 
-	componentDidUpdate(prevProps) {
-		const { ref, height } = this.state;
-
-		if (prevProps.len !== this.props.len) {
-			this.setState({ height: 0 });
-			return;
-		}
-
-		// If the width of the media grid changed, recalculate the heights.
-		if (prevProps.width !== this.props.width) {
-			this.setState({ height: 0 });
-			return;
-		}
-
-		// If the height has yet to be set in state, set it.
-		if (ref.current && height === 0) {
-			// I let the bootstrap grid(flex box) determine my height, as such I need to wait till it dynamically determines the
-			// height to read it. This is hacky but it works!
-			setTimeout(() => {
-				this.setState({ height: ref.current.clientHeight });
-			}, 1);
-		}
-	}
-
-	renderLoading = () => {
-		return (
-			<BlurredDiv className="bg-dark">
-				<StyledCard className="bg-dark">
-					<CardImageDiv />
-					<CardImage
-						src={this.props.data.largeImage}
-						onLoad={() => {
-							this.setState({ load: true });
-						}}
-					/>
-					<CardTitle> Media Title </CardTitle>
-				</StyledCard>
-			</BlurredDiv>
-		);
-	};
-
 	renderMedia = () => {
 		let style = {};
 		let className;
-		if (this.state.height !== 0) style = { height: `${this.state.height}px` };
 
-		this.props.data.viewed ? (className = "bg-success") : (className = "");
 		return (
 			<StyledCard
 				ref={this.state.ref}
 				style={style ? style : null}
-				className="d-flex p-1"
+				className="d-flex"
 				onMouseOver={e => this.delayMouseEnter(e)}
 				onMouseOut={() => this.delayMouseEnter.cancel()}
 				className={className}
 			>
-				<Card.Img src={this.props.data.largeImage} />
-				<CardTitle> {this.props.data.title} </CardTitle>
+				<CardImageDiv>
+					<Card.Img src={this.props.data.largeImage} />
+				</CardImageDiv>
+				<TitleDiv className="d-flex bg-light">
+					<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
+					{this.props.data.viewed ? (
+						<div className="d-flex border-top text-white mt-auto bg-info">
+							<span className="ml-2">
+								Viewed: <span className="d-inline oi oi-circle-check"></span>
+							</span>
+							<span className="ml-auto  mr-2">
+								Notes: {this.props.data.noteCount}
+							</span>
+						</div>
+					) : null}
+				</TitleDiv>
 			</StyledCard>
 		);
 	};
 
+	renderLoading = () => {
+		return (
+			<BlurredDiv className="bg-dark">
+				<CardImage
+					src={this.props.data.largeImage}
+					onLoad={() => {
+						this.setState({ load: true });
+					}}
+				/>
+			</BlurredDiv>
+		);
+	};
+
 	renderMouseOver = () => {
-		let style = {};
-		if (this.state.height !== 0) style = { height: `${this.state.height}px` };
 		return (
 			<InnerDiv
-				style={style ? style : null}
-				className="d-flex p-1"
 				onMouseLeave={e => {
 					this.delayMouseEnter.cancel();
 					this.setState({ hover: false });
@@ -200,8 +192,10 @@ class MediaCard extends React.Component {
 
 				<BlurredDiv>
 					<StyledCard>
-						<Card.Img src={this.props.data.largeImage} />
-						<CardTitle> {this.props.data.title} </CardTitle>
+						<CardImageDiv>
+							<Card.Img src={this.props.data.largeImage} />
+						</CardImageDiv>
+						<TitleDiv> {this.props.data.title} </TitleDiv>
 					</StyledCard>
 				</BlurredDiv>
 			</InnerDiv>
@@ -213,8 +207,6 @@ class MediaCard extends React.Component {
 	handleMouseEnter = e => {
 		this.setState({ hover: true });
 	};
-
-	//	<Link to={`/media/${this.props.type}/${this.props.data.id}`}>
 
 	render() {
 		const { load } = this.state;
