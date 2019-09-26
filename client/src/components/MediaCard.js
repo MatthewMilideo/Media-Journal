@@ -96,7 +96,7 @@ class MediaCard extends React.Component {
 		entries => {
 			entries.forEach(entry => {
 				const { isIntersecting } = entry;
-				if (isIntersecting) {
+				if (isIntersecting && this.props.data.largeImage) {
 					this.ref.current.src = this.props.data.largeImage;
 					this.observer = this.observer.disconnect();
 				}

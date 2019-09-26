@@ -65,11 +65,13 @@ export const searchHOR = type => (state = defaultSearchState, action) => {
 			return finishedNextSearch(state, action);
 		case `${type}${T._ERRORED_SEARCH}`:
 			return {
+				...state,
 				status: action.type,
-				...action.payload
+				data: action.payload
 			};
 		case `${type}${T._ERRORED_SEARCH_NEXT}`:
 			return {
+				...state,
 				status: action.type,
 				data: action.payload
 			};
