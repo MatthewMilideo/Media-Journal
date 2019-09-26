@@ -39,13 +39,14 @@ exports.checkArgs = function(ints, strings = []) {
 This function returns true if valid and false if invalid. */
 const typeArr = ["MOVIE", "TV", "BOOK", "GAME"];
 exports.checkMediaObj = function(obj) {
+	console.log(' the obj in media obj is', obj);
 	if (typeof obj === "object" && obj !== null) {
 		if (!obj.title) return false;
 		if (typeof obj.title !== "string") return false;
 		if (!obj.type) return false;
 		if (!typeArr.includes(obj.type)) return false;
 		if (!obj.CID) return false;
-		if (typeof obj.CID !== "string") return false;
+		console.log('hallo');
 		return true;
 	}
 	return false;
@@ -157,8 +158,8 @@ exports.checkNTAll = function(arr) {
 /* Wrapper function for checkArgs and CheckMediaObj together.  */
 
 exports.checkArgsAndMedia = function(ints, strings, mediaObj) {
+	console.log(ints, strings, mediaObj);
 	if (!(exports.checkArgs(ints, strings) && exports.checkMediaObj(mediaObj))) {
-		console.log('hi');
 		return false;
 	}
 	return true;

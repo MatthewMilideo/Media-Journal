@@ -33,5 +33,9 @@ export function _getSearchState(store) {
 	return store;
 }
 
+export function _getSearchActiveElem(store) {
+	return store.activeElem;
+}
+
 
 

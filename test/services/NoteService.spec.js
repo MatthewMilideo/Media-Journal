@@ -87,7 +87,7 @@ describe("Note Services Tests", function() {
 			expect(res.data[1].title).to.equal("First Reformed Note 2");
 		});
 	});
-
+	
 	describe("Post Note Service Tests", async () => {
 		it("Post Note returns 400 when no arguments are provided", async () => {
 			let res = await NoteService.postNote();
@@ -268,8 +268,9 @@ describe("Note Services Tests", function() {
 				"You must provide a valid user_id mediaObj pair."
 			);
 		});
-		it("Post NoteAll returns 400 when invalid arguments are provided for post note.", async () => {
-			let res = await NoteService.postNoteAll("Test Note", 5, 1, {
+
+		it("Post NoteAll returns 400 when an invalid title is provided.", async () => {
+			let res = await NoteService.postNoteAll(1, 5, 1, {
 				CID: "1234567",
 				type: "MOVIE",
 				title: "The Media Obj"
@@ -283,7 +284,63 @@ describe("Note Services Tests", function() {
 			);
 		});
 
-		it("Post NoteAll returns 400 when invalid arguments are provided for post note and there was a 409 in post media", async () => {
+		it("Post NoteAll returns 400 when an invalid data is provided.", async () => {
+			let res = await NoteService.postNoteAll("Title", 5, 1, {
+				CID: "1234567",
+				type: "MOVIE",
+				title: "The Media Obj"
+			});
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(400);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal(
+				"You must provide a valid user_id, title, and data."
+			);
+		});
+
+		it("Post NoteAll returns 400 when an invalid user_id is provided.", async () => {
+			let res = await NoteService.postNoteAll("Title", "data", "test", {
+				CID: "1234567",
+				type: "MOVIE",
+				title: "The Media Obj"
+			});
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(400);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal(
+				"You must provide a valid user_id mediaObj pair."
+			);
+		});
+
+		it("Post NoteAll returns 400 when an invalid mediaObj is provided.", async () => {
+			let res = await NoteService.postNoteAll("Title", "data", 1, "test");
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(400);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal(
+				"You must provide a valid user_id mediaObj pair."
+			);
+		});
+
+		it("Post NoteAll returns 404 when a user that isn't found is provided.", async () => {
+			let res = await NoteService.postNoteAll("Title", "data", 100, {
+				CID: "1234",
+				type: "MOVIE",
+				title: "First Reformed"
+			});
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(404);
+			expect(res).to.have.property("data");
+			expect(res.data).to.equal(
+				"The user required for this operation could not be found."
+			);
+		});
+
+		it("Post NoteAll returns 400 when an invalid argument is provided, and there was a 409 in post media", async () => {
 			let res = await NoteService.postNoteAll("Test Note", 5, 1, {
 				CID: "1234",
 				type: "MOVIE",
@@ -298,7 +355,7 @@ describe("Note Services Tests", function() {
 			);
 		});
 
-		it("Post NoteAll returns 201 when inserted after 409 in media.", async () => {
+		it("Post NoteAll returns 201 when without tags.", async () => {
 			let res = await NoteService.postNoteAll(
 				"Another First Reformed Note",
 				"We all love this movie!",
@@ -308,15 +365,25 @@ describe("Note Services Tests", function() {
 					type: "MOVIE",
 					title: "First Reformed"
 				}
+				//	["Sad", "Ethan Hawke"]
 			);
+
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
-			expect(res.data).to.be.a("array");
-			expect(res.data).to.have.length(1);
-			expect(res.data[0]).to.have.property("media_id");
-			expect(res.data[0].media_id).to.equal(1);
+			expect(res.data).to.be.a("object");
+			expect(res.data).to.have.property("media");
+			expect(res.data.media).to.be.a("object");
+			expect(res.data.media).to.have.property("media_id");
+			expect(res.data.media.media_id).to.equal(1);
+			expect(res.data).to.have.property("title");
+			expect(res.data.title).to.equal("Another First Reformed Note");
+			expect(res.data).to.have.property("data");
+			expect(res.data.data).to.equal("We all love this movie!");
+			expect(res.data).to.have.property("user_id");
+			expect(res.data.user_id).to.equal(1);
+			expect(res.data).to.have.property("tags");
 
-			res = await NoteService.getByID(5);
+			res = await NoteService.getByID(7);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(200);
@@ -327,7 +394,7 @@ describe("Note Services Tests", function() {
 			expect(res.data[0].title).to.equal("Another First Reformed Note");
 
 			res = await MediaNoteService.getByNoteAndUserID({
-				note_id: 5,
+				note_id: 7,
 				user_id: 1
 			});
 			expect(res).to.be.a("object");
@@ -338,39 +405,49 @@ describe("Note Services Tests", function() {
 			expect(res.data).to.have.length(1);
 			expect(res.data[0]).to.have.property("media_id");
 			expect(res.data[0].media_id).to.equal(1);
+
+			res = await NoteTagService.getByNoteAndUserID({ note_id: 7, user_id: 1 });
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(404);
 		});
-		it("Post NoteAll returns 201 when inserted all the way", async () => {
+		it("Post NoteAll returns 201 when without tags.", async () => {
 			let res = await NoteService.postNoteAll(
 				"Another First Reformed Note",
 				"We all love this movie!",
 				1,
 				{
-					CID: "12345678910",
+					CID: "1234",
 					type: "MOVIE",
-					title: "First Reformed 2"
-				}
+					title: "First Reformed"
+				},
+				["Sad", "Ethan Hawke"]
 			);
+
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
-			expect(res.status).to.equal(201);
-			expect(res.data).to.be.a("Array");
-			expect(res.data).to.have.length(1);
-			expect(res.data[0]).to.have.property("media_id");
-			expect(res.data[0].media_id).to.equal(4);
+			expect(res.data).to.be.a("object");
+			expect(res.data).to.have.property("media");
+			expect(res.data.media).to.be.a("object");
+			expect(res.data.media).to.have.property("media_id");
+			expect(res.data.media.media_id).to.equal(1);
+			expect(res.data).to.have.property("title");
+			expect(res.data.title).to.equal("Another First Reformed Note");
+			expect(res.data).to.have.property("data");
+			expect(res.data.data).to.equal("We all love this movie!");
+			expect(res.data).to.have.property("user_id");
+			expect(res.data.user_id).to.equal(1);
+			expect(res.data).to.have.property("tags");
+			expect(res.data.tags).to.be.a("array");
+			expect(res.data.tags).to.have.length(2);
+			expect(res.data.tags[0]).to.be.a("object");
+			expect(res.data.tags[0]).to.have.property("title");
+			expect(res.data.tags[0].title).to.equal("Sad");
+			expect(res.data.tags[1]).to.be.a("object");
+			expect(res.data.tags[1]).to.have.property("title");
+			expect(res.data.tags[1].title).to.equal("Ethan Hawke");
 
-			res = await MediaService.getByMediaIDUser({ media_id: 4, user_id: 1 });
-			expect(res).to.have.property("status");
-			expect(res.status).to.equal(200);
-			expect(res.data).to.be.a("Array");
-			expect(res.data).to.have.length(1);
-			expect(res.data[0]).to.have.property("media_id");
-			expect(res.data[0].media_id).to.equal(4);
-			expect(res.data[0]).to.have.property("title");
-			expect(res.data[0].title).to.equal("First Reformed 2");
-			expect(res.data[0]).to.have.property("user_id");
-			expect(res.data[0].user_id).to.equal(1);
-
-			res = await NoteService.getByID(5);
+			res = await NoteService.getByID(7);
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(200);
@@ -381,7 +458,7 @@ describe("Note Services Tests", function() {
 			expect(res.data[0].title).to.equal("Another First Reformed Note");
 
 			res = await MediaNoteService.getByNoteAndUserID({
-				note_id: 5,
+				note_id: 7,
 				user_id: 1
 			});
 			expect(res).to.be.a("object");
@@ -391,10 +468,17 @@ describe("Note Services Tests", function() {
 			expect(res.data).to.be.a("array");
 			expect(res.data).to.have.length(1);
 			expect(res.data[0]).to.have.property("media_id");
-			expect(res.data[0].media_id).to.equal(4);
+			expect(res.data[0].media_id).to.equal(1);
+
+			res = await NoteTagService.getByNoteAndUserID({ note_id: 7, user_id: 1 });
+			expect(res).to.be.a("object");
+			expect(res).to.have.property("status");
+			expect(res.status).to.equal(200);
+			expect(res.data).to.be.a("array");
+			expect(res.data).to.have.length(2);
 		});
 	});
-	
+	/*
 	describe("Client Get Notes Tests", async () => {
 		it("It returns 400 when there are no arguments provided.", async () => {
 			let res = await NoteService.clientGetNotesMedia();
@@ -702,7 +786,7 @@ describe("Note Services Tests", function() {
 
 	
 
-	
+	*/
 
 	it("It returns 400 when no arguemnts are provided.", async () => {
 		let res = await NoteService.editNote();
@@ -714,7 +798,7 @@ describe("Note Services Tests", function() {
 			"You must provide a valid note_id, title, and data."
 		);
 	});
-	it("It returns 400 when no invalid id.", async () => {
+	it("It returns 400 when no invalid note_id.", async () => {
 		let res = await NoteService.editNote("test", "hello", "hello");
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
@@ -724,8 +808,8 @@ describe("Note Services Tests", function() {
 			"You must provide a valid note_id, title, and data."
 		);
 	});
-	it("It returns 400 when no invalid id.", async () => {
-		let res = await NoteService.editNote(1, "hello");
+	it("It returns 400 when no invalid user_id.", async () => {
+		let res = await NoteService.editNote(1, "hello", "test", [], [], "test");
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
 		expect(res.status).to.equal(400);
@@ -735,40 +819,89 @@ describe("Note Services Tests", function() {
 		);
 	});
 	it("It returns 404 when the note is not found.", async () => {
-		let res = await NoteService.editNote(1000, "hello", "hello");
+		let res = await NoteService.editNote(1000, "hello", "hello", [], [], 1);
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
 		expect(res.status).to.equal(404);
 		expect(res).to.have.property("data");
 		expect(res.data).to.equal("The requested note was not found.");
 	});
-	it("It returns 201 when the note is edited.", async () => {
-		let res = await NoteService.editNote(1, "Note-Test", "New Data");
+
+	it("User_id not found.", async () => {
+		let res = await NoteService.editNote(
+			1,
+			"hellotitle",
+			"hellodata",
+			["test"],
+			[],
+			100
+		);
+		expect(res).to.be.a("object");
+		expect(res).to.have.property("status");
+		expect(res.status).to.equal(404);
+		expect(res).to.have.property("data");
+		expect(res.data).to.equal("The requested note was not found.");
+	});
+
+	it("It returns 201 when the note is edited with no tags", async () => {
+		let res = await NoteService.editNote(1, "Note-Test", "New Data", [], [], 1);
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
 		expect(res.status).to.equal(201);
 		expect(res).to.have.property("data");
-		expect(res.data).to.be.a("array");
-		expect(res.data).to.have.length(1);
-		expect(res.data[0]).to.be.a("object");
-		expect(res.data[0]).to.have.property("title");
-		expect(res.data[0].title).to.equal("Note-Test");
-		expect(res.data[0]).to.have.property("data");
-		expect(res.data[0].data).to.equal("New Data");
-
-		res = await NoteService.getByID(1);
-		expect(res.data).to.have.length(1);
-		expect(res.data[0]).to.be.a("object");
-		expect(res.data[0]).to.have.property("title");
-		expect(res.data[0].title).to.equal("Note-Test");
-		expect(res.data[0]).to.have.property("data");
-		expect(res.data[0].data).to.equal("New Data");
-	});
-	*/
-
-	it("Test", async () => {
-		let res = await NoteService.editNoteTags(1, 'TEST', 1, 2);
+		expect(res.data).to.be.a("object");
+		expect(res.data).to.have.property("title");
+		expect(res.data.title).to.equal("Note-Test");
+		expect(res.data).to.have.property("data");
+		expect(res.data.data).to.equal("New Data");
+		expect(res.data).to.have.property("tags");
+		expect(res.data.tags).to.be.a("array");
+		expect(res.data.tags).to.have.length(0);
 	});
 
+	it("It returns 201 when the note is edited with tags aded", async () => {
+		let res = await NoteService.editNote(
+			1,
+			"Note-Test",
+			"New Data",
+			["Sad", "test", "Good"],
+			[],
+			1
+		);
+		expect(res).to.be.a("object");
+		expect(res).to.have.property("status");
+		expect(res.status).to.equal(201);
+		expect(res).to.have.property("data");
+		expect(res.data).to.be.a("object");
+		expect(res.data).to.have.property("title");
+		expect(res.data.title).to.equal("Note-Test");
+		expect(res.data).to.have.property("data");
+		expect(res.data.data).to.equal("New Data");
+		expect(res.data).to.have.property("tags");
+		expect(res.data.tags).to.be.a("array");
+		expect(res.data.tags).to.have.length(3);
+	});
 
+	it("It returns 201 when the note is edited with tags added and removed", async () => {
+		let res = await NoteService.editNote(
+			1,
+			"Note-Test",
+			"New Data",
+			["Sad", "test", "Good"],
+			[1, 2],
+			1
+		);
+		expect(res).to.be.a("object");
+		expect(res).to.have.property("status");
+		expect(res.status).to.equal(201);
+		expect(res).to.have.property("data");
+		expect(res.data).to.be.a("object");
+		expect(res.data).to.have.property("title");
+		expect(res.data.title).to.equal("Note-Test");
+		expect(res.data).to.have.property("data");
+		expect(res.data.data).to.equal("New Data");
+		expect(res.data).to.have.property("tags");
+		expect(res.data.tags).to.be.a("array");
+		expect(res.data.tags).to.have.length(1);
+	});
 });

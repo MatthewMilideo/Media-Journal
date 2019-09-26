@@ -14,7 +14,10 @@ SearchPageService.searchExt = async function(term, type, page = 0) {
 			status: 400,
 			data: "You must provide a valid term, type, and page."
 		};
-	if (type === types.BOOK) return await gBooks.search(term, page);
+	if (type === types.BOOK) {
+		page = page * 20;
+		return await gBooks.search(term, page);
+	}
 	if (page === 0) page = 1;
 	return await TMDB.search(term, type, page);
 };
@@ -33,14 +36,18 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 	if (results.status !== 200) return results;
 	// Create the return objects
 	if (type === types.BOOK) {
-		results = SearchPageService.processGBooks(results.data, user_id, term);
+		results = SearchPageService.processGBooks(
+			results.data,
+			user_id,
+			term,
+			page
+		);
 	} else {
 		results = SearchPageService.processTMDB(results.data, user_id, type, term);
 	}
 
 	//Get a list of all viewed media.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
-	console.log(results2);
 	if (results2.status !== 200) return { status: 200, data: results };
 
 	let IDtoCID = {};
@@ -87,22 +94,47 @@ SearchPageService.processTMDB = function(data, user_id, type, term) {
 	return returnObj;
 };
 
-SearchPageService.processGBooks = function(data, user_id, term) {
+SearchPageService.processGBooks = function(data, user_id, term, page) {
 	let returnObj = {};
-	returnObj.queryData = data.queryData;
-	returnObj.queryData.term = term;
+	let queryData = {};
+
+	queryData.index = page * 20;
+	queryData.page = page;
+	console.log( typeof page);
+	queryData.total_results = data.totalItems;
+	queryData.total_pages = Math.floor(data.totalItems / 20);
+	queryData.term = term;
+	if (data.totalItems % 20 !== 0) queryData.total_pages += 1;
+	returnObj.queryData = queryData;
+
 	returnObj.media = {};
 	returnObj.keysArr = [];
+	returnObj.searchArr = [];
 
 	// Format the return object.
-	data.results.forEach(elem => {
-		elem.CID = elem.id;
+	data.items.forEach(book => {
+		let elem = {};
+		elem.id = book.id;
+		console.log(elem.id);
 		elem.type = types.BOOK;
 		elem["viewed"] = false;
 		elem.noteCount = 0;
-		returnObj.media[elem.id] = elem;
-		returnObj.keysArr.push(elem.id);
-		returnObj.searchArr.push({ CID: elem.id, type });
+		if (book.volumeInfo.imageLinks) {
+			if (book.volumeInfo.imageLinks.smallThumbnail) {
+				elem.smallImage = book.volumeInfo.imageLinks.smallThumbnail;
+				elem.largeImage = elem.smallImage.replace("&zoom=5", "&zoom=3");
+			}
+		}
+		else {
+			elem.largeImage =
+				"https://images.unsplash.com/photo-1476081718509-d5d0b661a376?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2466&q=80";
+			elem.smallImage =
+				"https://images.unsplash.com/photo-1476081718509-d5d0b661a376?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2466&q=80";
+		}
+		elem = { ...elem, ...book.volumeInfo };
+		returnObj.media[book.id] = elem;
+		returnObj.keysArr.push(book.id);
+		returnObj.searchArr.push({ CID: book.id, user_id, type: types.BOOK });
 	});
 	return returnObj;
 };

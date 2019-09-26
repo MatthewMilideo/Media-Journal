@@ -1,4 +1,3 @@
-
 const NoteService = require("../services/NoteService");
 const MediaService = require("../services/MediaService");
 const MediaNoteService = require("../services/MediaNoteService");
@@ -6,23 +5,22 @@ const MediaNoteService = require("../services/MediaNoteService");
 const NotesController = {};
 
 NotesController.editNote = (req, res) => {
-	const { id, title, data } = req.body;
-	NoteService.editNote(id, title, data)
+	const { id, title, data, addTags, rmTags, user_id } = req.body;
+	NoteService.editNote(id, title, data, addTags, rmTags, user_id)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => res.status(error.status).send(error.message));
 };
 
 NotesController.postNote = async (req, res) => {
 	const { title, data, user_id, mediaObj, tags } = req.body;
-	NoteService.ClientPostNoteAll(title, data, user_id, mediaObj, tags)
+	NoteService.postNoteAll(title, data, user_id, mediaObj, tags)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => res.status(error.status).send(error.message));
 };
 
 NotesController.postMediaUser = async (req, res) => {
-	console.log("hello");
 	const { user_id, mediaObj } = req.body;
-	MediaService.postMediaAndMU(user_id, mediaObj)
+	MediaService.postMediaAndMU(mediaObj, user_id)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => res.status(error.status).send(error.message));
 };

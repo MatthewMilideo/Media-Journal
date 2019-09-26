@@ -1,43 +1,47 @@
 import React from "react";
-
 import { connect } from "react-redux";
-import Alert from "react-bootstrap/Alert";
-
 import Styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 import MediaCard from "./MediaCard";
 import { extSearch } from "../actions/index";
-import { getUser, getSearchState, getMediaState } from "../reducers";
+import { getUser, getSearchState, getMediaState, getSearchActiveElem} from "../reducers";
 import * as T from "../actions/types";
 
 const PaddingDiv = Styled.div`
-height: 200px; 
+height: 100px; 
 width: 100px;`;
 
-class SearchContainer extends React.Component {
-	state = { test: "hello" };
+const SpinnerDiv = Styled.div`
+display: flex; 
+justify-content: center; 
+align-items: center; 
+height: 50px; 
+width: 100%;`;
 
+class SearchContainer extends React.Component {
 	myRef = React.createRef();
-	imageRefs = [];
+
 
 	callback = entries => {
-		console.log(entries);
-		const type = this.props.search.activeElem;
+		const type = this.props.search;
 		const data = this.props[type];
 		const { user_id } = this.props.User;
-		if (data.queryData.total_pages > data.queryData.page) {
-			let newElem = data.queryData.page + 1;
-			this.props.extSearch(user_id, data.queryData.term, type, newElem);
-		}
 
-		if (
-			data.queryData.total_pages &&
-			data.queryData.total_pages === data.queryData.page
-		) {
-			console.log("hello");
-			this.observer.unobserve(this.myRef.current);
+		if (data.status !== `${type}${T._ERRORED_SEARCH}`) {
+			if (data.queryData.total_pages > data.queryData.page) {
+				let newElem = data.queryData.page + 1;
+				console.log(data.queryData.page, newElem);
+				this.props.extSearch(user_id, data.queryData.term, type, newElem);
+			}
+			if (
+				data.queryData.total_pages &&
+				data.queryData.total_pages === data.queryData.page
+			) {
+				this.observer.unobserve(this.myRef.current);
+			}
 		}
 	};
 
@@ -45,20 +49,20 @@ class SearchContainer extends React.Component {
 		root: null,
 		threshold: 0.1
 	});
+	
+	componentDidMount() {
+		const type = this.props.search;
+		const data = this.props[type];
 
-	componentDidMount(prevProps) {
 		this.observer.observe(this.myRef.current);
 	}
 
-	componentDidUpdate(prevProps) {}
-
-	handleScroll = e => {};
 
 	renderGrid(media, type) {
 		const mediaLength = media.length;
 		let returnObj;
 		media
-			? (returnObj = media.map(elem => {
+			? (returnObj = media.map((elem, i) => {
 					return (
 						<Col xs={12} sm={6} md={4} lg={3} key={elem.id} className="mb-3">
 							<MediaCard
@@ -73,10 +77,8 @@ class SearchContainer extends React.Component {
 			: (returnObj = <div> </div>);
 
 		return (
-			<div className="pt-3 pb-3 pr-3 pl-3">
+			<div className="pb-3 pr-3 pl-3">
 				<Row className="d-flex justify-content-center"> {returnObj} </Row>
-				<button onClick={() => console.log(this.myRef)}> </button>
-				<PaddingDiv ref={this.myRef} />
 			</div>
 		);
 	}
@@ -96,7 +98,7 @@ class SearchContainer extends React.Component {
 
 	emptyGrid = () => {
 		let arr = [];
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 9; i++) {
 			arr.push({
 				id: i,
 				smallImage: null,
@@ -108,29 +110,78 @@ class SearchContainer extends React.Component {
 		return this.renderGrid(arr, "MOVIE");
 	};
 
+	renderAlert = (title, body, variant = "danger") => {
+		return (
+			<Alert className="mt-3" variant={variant}>
+				<Alert.Heading> {title} </Alert.Heading>
+				<p>{body}</p>
+			</Alert>
+		);
+	};
+
 	render() {
-		console.log(this.myRef);
-		const type = this.props.search.activeElem;
+		console.log('render container');
+		const type = this.props.search;
+		
 		const data = this.props[type];
-		switch (data.status) {
-			default:
-				return this.emptyGrid();
-			case `${type}${T._BEGAN_SEARCH_NEXT}`:
-				return this.makeGrid(data, type);
-			case `${type}${T._ERRORED_SEARCH}`:
-				return (
-					<Alert variant="danger">
-						<Alert.Heading>Uh Oh!</Alert.Heading>
-						<p>There was an error with that search! Please try another term.</p>
-					</Alert>
+
+		let returnData;
+		if (data.status === null)
+			returnData = this.renderAlert(
+				"Search for some content!",
+				"You can search for a piece of media above.",
+				"primary"
+			);
+		else if (data.status === `${type}${T._BEGAN_SEARCH}`) {
+			returnData = (
+				<React.Fragment>
+					<SpinnerDiv>
+						<Spinner animation="border" />
+					</SpinnerDiv>
+					{this.emptyGrid()}
+				</React.Fragment>
+			);
+		} else if (data.status === `${type}${T._BEGAN_SEARCH}${T._NEXT}`) {
+			returnData = (
+				<React.Fragment>
+					<SpinnerDiv />
+					{this.makeGrid(data, type)}
+					<SpinnerDiv>
+						<Spinner animation="border" />
+					</SpinnerDiv>
+				</React.Fragment>
+			);
+		} else if (data.status === `${type}${T._ERRORED_SEARCH}`) {
+			if (data.serverStatus === 503)
+				returnData = this.renderAlert(
+					"Could Not Connect",
+					"There was a problem connecting to the server."
 				);
-			case `${type}${T._FINISHED_SEARCH}`: {
-				return this.makeGrid(data, type);
-			}
-			case `${type}${T._FINISHED_SEARCH_NEXT}`: {
-				return this.makeGrid(data, type);
-			}
+			else if (data.serverStatus === 404)
+				returnData = this.renderAlert(
+					"No Media Found!",
+					"Try searching for something else."
+				);
+			else
+				returnData = this.renderAlert(
+					"Error!",
+					"There was an error with input or an internal server error!"
+				);
+		} else {
+			returnData = (
+				<React.Fragment>
+					<SpinnerDiv />
+					{this.makeGrid(data, type)}
+				</React.Fragment>
+			);
 		}
+
+		return (
+			<div>
+				{returnData}
+				<PaddingDiv ref={this.myRef} />
+			</div>
+		);
 	}
 }
 
@@ -139,7 +190,7 @@ const mapStateToProps = state => {
 		MOVIE: getMediaState(state, T.MOVIE),
 		TV: getMediaState(state, T.TV),
 		BOOK: getMediaState(state, T.BOOK),
-		search: getSearchState(state),
+		search: getSearchActiveElem(state),
 		User: getUser(state)
 	};
 };

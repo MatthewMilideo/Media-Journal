@@ -7,6 +7,7 @@ const router = new Router();
 router.get("/", SearchController.search);
 router.get("/item/", SearchController.getItem);
 router.get("/notes/", SearchController.getNotesMedia);
+router.get("/notesUser/", SearchController.getNotesUser); 
 router.get("/tags/", SearchController.searchTags);
 
 module.exports = router;

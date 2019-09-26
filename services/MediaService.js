@@ -86,7 +86,6 @@ MediaService.postMU = async function(media_id, user_id) {
 
 /* Inserts Media Obj and Media User */
 MediaService.postMediaAndMU = async function(mediaObj, user_id) {
-	console.log('hello again', mediaObj, user_id );
 	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
 		return {
 			status: 400,
@@ -109,7 +108,14 @@ MediaService.postMediaAndMU = async function(mediaObj, user_id) {
 		return results;
 	}
 
-	return await MediaService.postMU(media_id, user_id);
+	let results2 = await MediaService.postMU(media_id, user_id);
+
+	if (results2.status === 409) {
+		results2.data = [];
+		results2.data.push({ media_id, ...mediaObj });
+	}
+
+	return results2;
 };
 
 module.exports = MediaService;

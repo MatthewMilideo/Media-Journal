@@ -54,14 +54,15 @@ const removeNoteTag = (state, action) => {
 };
 
 const editNote = (state, payload) => {
-	const { id, title, data } = payload;
+	const { id, title, data, tags } = payload;
 	let newState = { ...state };
 	newState.status = T.FINISHED_EDIT_NOTE;
 	newState.notes = { ...newState.notes };
 	newState.notes[id] = { ...newState.notes[id] };
 	newState.notes[id].title = title;
 	newState.notes[id].data = data;
-	newState.notes[id].note = false;
+	newState.notes[id].tags = tags;
+	newState.notes[id].new = false;
 	return newState;
 };
 
@@ -117,7 +118,7 @@ export default (state = defaultState, action) => {
 		case T.BEGAN_GET_NOTES:
 			return {
 				...state,
-				status: action.type,
+				status: action.type
 			};
 
 		case T.FINISHED_GET_NOTES:

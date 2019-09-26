@@ -66,11 +66,11 @@ TMDBModel.getItem = function(id, type) {
 	return TMDB.get(loc, { params: { api_key: KEY, append_to_response } })
 		.then(item => {
 			item = TMDBModel.formatItem(item.data);
-			console.log(item);
+			//console.log(item);
 			return { status: 200, data: item };
 		})
 		.catch(error => {
-			console.log(error);
+			//console.log(error);
 			if (error.response) {
 				throw { status: error.response.status, data: error.message, error };
 			}
@@ -85,6 +85,7 @@ TMDBModel.getItem = function(id, type) {
 TMDBModel.formatResponse = response => {
 	//console.log(response);
 	response.results = response.results.map(elem => {
+		if (elem.name) elem.title = elem.name;
 		//	console.log(elem.poster_path);
 		elem.smallImage = `https://image.tmdb.org/t/p/w45${elem.poster_path}`;
 		elem.largeImage = `https://image.tmdb.org/t/p/w500${elem.poster_path}`;
@@ -106,72 +107,81 @@ TMDBModel.formatItem = data => {
 		data.release_date = formatDate(
 			data.release_dates.results[0].release_dates[0].release_date
 		);
+
+		if (data.first_air_date)
+		data.first_air_date = formatDate(
+			data.first_air_date
+		);
+		if (data.last_air_date)
+		data.last_air_date = formatDate(
+			data.last_air_date
+		);
 	if (data.budget) data.budget = formatMoney(data.budget);
 	if (data.revenue) data.revenue = formatMoney(data.revenue);
-	if (data.crew) data.crew = crewFormatter(data.credits.crew, null); 
-	return data; 
+	if (data.crew) data.crew = crewFormatter(data.credits.crew, null);
+	if (data.name) data.title = data.name;
+	return data;
 };
 
 const monthObj = {
-    0: 'January',
-    1: 'Febuary',
-    2: 'March',
-    3: 'April',
-    4: 'May',
-    5: 'June',
-    6: 'July',
-    7: 'August',
-    8: 'September',
-    9: 'October',
-    10: 'November',
-    11: 'December'
-}
+	0: "January",
+	1: "Febuary",
+	2: "March",
+	3: "April",
+	4: "May",
+	5: "June",
+	6: "July",
+	7: "August",
+	8: "September",
+	9: "October",
+	10: "November",
+	11: "December"
+};
 
 const dayObj = {
-    0: 'Sunday',
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-    7: 'Sunday',
-}
+	0: "Sunday",
+	1: "Monday",
+	2: "Tuesday",
+	3: "Wednesday",
+	4: "Thursday",
+	5: "Friday",
+	6: "Saturday",
+	7: "Sunday"
+};
 
+const formatDate = date => {
+	let d = new Date(date);
+	let dayName = dayObj[d.getDay()];
+	let day = d.getDate();
+	let month = monthObj[d.getMonth()];
+	let year = d.getFullYear();
 
-const formatDate = (date) => {
-    let d = new Date(date);
-    let dayName = dayObj[d.getDay()];
-    let day = d.getDate();
-    let month = monthObj[d.getMonth()];
-    let year = d.getFullYear();
+	return dayName + ", " + month + " " + day + ", " + year;
+};
 
-    return  (dayName + ', ' + month + ' ' + day +', ' + year); 
-} 
+const formatMoney = num => {
+	////console.log(('num', num);
+	if (num === 0) return null;
 
-const formatMoney = (num) => {
-    ////console.log(('num', num);
-    if (num === 0) return null; 
+	let returnStr = "$";
+	num = num.toString();
+	let numLen = num.length - 1;
+	let counter = 0;
 
-    let returnStr = '$'
-    num = num.toString();
-    let numLen = num.length -1; 
-    let counter = 0; 
+	for (let i = numLen; i >= 0; i--) {
+		counter++;
+		if (counter === 3 && i != 0) {
+			counter = 0;
+			let str1 = num.slice(0, i);
+			let str2 = num.slice(i, num.length);
+			num = str1.concat(",", str2);
+		}
+	}
+	returnStr = returnStr.concat(num);
+	return returnStr;
+};
 
-    for(let i = numLen; i >= 0; i-- ){
-        counter++; 
-        if (counter === 3 && i != 0){
-            counter = 0; 
-            let str1 = num.slice(0, i);
-            let str2 = num.slice(i, num.length); 
-            num = str1.concat(',', str2);  
-        }
-    }
-    returnStr = returnStr.concat(num);
-    return returnStr;
-} 
-
-//This object defines the standard crew rolls that I use in the fromatter below. 
+//This object defines the standard crew rolls that I use in the fromatter below.
 const standardRoles = [
 	"Director",
 	"Executive Producer",
@@ -179,7 +189,7 @@ const standardRoles = [
 	"Director of Photography",
 	"Writer"
 ];
-//Formats the crew from a TMDB item query and returns roles listed above 
+//Formats the crew from a TMDB item query and returns roles listed above
 const crewFormatter = (input, creator = null, output = standardRoles) => {
 	let returnObj = {};
 	output.forEach(role => (returnObj[role] = []));
@@ -197,7 +207,6 @@ const crewFormatter = (input, creator = null, output = standardRoles) => {
 
 	return returnObj;
 };
-
 
 /*
 

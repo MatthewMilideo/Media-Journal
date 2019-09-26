@@ -56,7 +56,6 @@ class SearchBar extends React.Component {
 		return (
 			<Form onSubmit={this.onSubmit}>
 				<InputGroup>
-					<Form.Label> {this.renderType(activeElem)} </Form.Label>
 					<Form.Control
 						type="text"
 						placeholder="Enter Text"
@@ -77,7 +76,7 @@ class SearchBar extends React.Component {
 		e.preventDefault();
 		const { activeElem, searchText } = this.props.Search;
 		const { user_id } = this.props.User;
-		this.props.extSearch(user_id, searchText, activeElem, 1);
+		this.props.extSearch(user_id, searchText, activeElem, 0);
 		this.props.searchBarText("");
 	};
 

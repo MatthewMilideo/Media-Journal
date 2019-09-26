@@ -48,10 +48,9 @@ Notes.postNote = (title, data, user_id) => {
 		});
 };
 
-Notes.editNote = (id, title, data) => {
-
+Notes.editNote = (id, title, data, user_id) => {
 	return database("notes")
-		.where({ id })
+		.where({ id, user_id })
 		.update(
 			{
 				title,

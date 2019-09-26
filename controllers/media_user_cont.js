@@ -54,7 +54,7 @@ Media_UserController.getUsers = (req, res) => {
 
 Media_UserController.postMediaUser = (req, res) => {
 	const {user_id, mediaObj} = req.body;
-	MediaService.postMU(user_id, mediaObj)
+	MediaService.postMU(mediaObj, user_id)
 	.then(data => {
 		res.status(data.status).send(data.data);
 	})
@@ -64,7 +64,8 @@ Media_UserController.postMediaUser = (req, res) => {
 }
 
 Media_UserController.postMU = (req, res) => {
-	const { media_id, user_id, mediaObj } = req.body;
+	const { media_id, user_id } = req.body;
+	let mediaObj = JSON.parse(mediaObj);
 	Media_User.postMU(media_id, user_id)
 		.then(data => {
 			res.status(data.status).send(data.data);

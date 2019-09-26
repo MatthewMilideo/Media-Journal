@@ -10,7 +10,7 @@ import * as T from "../actions/types";
 
 class NoteManager extends React.Component {
 	componentDidMount() {
-		const { CID, type, user_id } = this.props;
+		const { CID, type, user_id} = this.props;
 		this.props.getNotes({ CID, type, user_id });
 	}
 

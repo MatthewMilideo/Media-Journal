@@ -24,7 +24,8 @@ class Note extends React.Component {
 					localData: "",
 					localTags: [],
 					rmTags: [],
-					addTags: []
+					addTags: [],
+					tagFlag: false
 			  })
 			: (this.state = {
 					edit: false,
@@ -32,27 +33,33 @@ class Note extends React.Component {
 					localData: this.props.Note.data,
 					localTags: this.props.Note.tags,
 					rmTags: [],
-					addTags: []
+					addTags: [],
+					tagFlag: false
 			  });
 	}
 
+	componentDidUpdate(prevProps) {
+		if (this.state.tagFlag === true)
+			this.setState({ localTags: this.props.tags });
+	}
+
 	onSaveChanges = () => {
-		
 		const { id, type, CID } = this.props;
 		const { user_id } = this.props.User;
-		const { localTitle, localData, rmTags, addTags } = this.state;
-		console.log(this.props.Note);
+		const { localTitle, localData, rmTags, addTags, localTags } = this.state;
+		console.log(localTags);
 		!this.props.Note.new
-			? this.props.editNote(id, localTitle, localData, rmTags, addTags)
+			? this.props.editNote(id, localTitle, localData, addTags, rmTags, user_id)
 			: this.props.postNote(
 					id,
 					localTitle,
 					localData,
-					this.props.Note.tags,
 					{ CID, type, title: "Hi" },
-					user_id
+					user_id,
+					localTags
 			  );
-		this.setState({ edit: false });
+
+		this.setState({ edit: false, rmTags: [], addTags: [] });
 	};
 
 	onDiscardChanges = () => {

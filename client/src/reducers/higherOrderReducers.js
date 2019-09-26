@@ -34,16 +34,16 @@ function finishedNextSearch(state, action) {
 	for (let i = 0; i < keysArr.length; i++) {
 		let key = keysArr[i];
 		if (newState.media[key]) {
-			cleanKeysArr = [
-				...cleanKeysArr.slice(0, i),
-				...cleanKeysArr.slice(i + 1, cleanKeysArr.length)
-			];
+			console.log("removing key", key, "at", i);
+			cleanKeysArr = cleanKeysArr.filter(elem => elem !== key);
 			media = copyObj(media, key);
+			console.log(cleanKeysArr);
 		}
 	}
 	newState.keysArr = [...newState.keysArr, ...cleanKeysArr];
 	newState.media = { ...newState.media, ...media };
 	newState.queryData = action.payload.queryData;
+	//console.log(newState.queryData);
 	return newState;
 }
 
@@ -65,7 +65,8 @@ export const searchHOR = type => (state = defaultSearchState, action) => {
 			return finishedNextSearch(state, action);
 		case `${type}${T._ERRORED_SEARCH}`:
 			return {
-				status: action.type
+				status: action.type,
+				...action.payload
 			};
 		case `${type}${T._ERRORED_SEARCH_NEXT}`:
 			return {
@@ -78,11 +79,11 @@ export const searchHOR = type => (state = defaultSearchState, action) => {
 			};
 		case `${type}${T._SUCCESS_POST_MEDIA_USER}`: {
 			let newState = { ...state };
-			newState.data = { ...newState.data };
-			newState.data[action.payload.CID] = {
-				...newState.data[action.payload.CID]
+			newState.media = { ...newState.media };
+			newState.media[action.payload.CID] = {
+				...newState.media[action.payload.CID]
 			};
-			newState.data[action.payload.CID].viewed = true;
+			newState.media[action.payload.CID].viewed = true;
 			return newState;
 		}
 		case `${type}${T._ERRORED_POST_MEDIA_USER}`:

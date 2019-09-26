@@ -7,6 +7,11 @@ const SearchController = {};
 
 SearchController.search = (req, res) => {
 	let { user_id, term, page, type } = req.query;
+	user_id = parseInt(user_id);
+	page = parseInt(page);
+	//console.log('in cont'); 
+	//console.log(typeof user_id , 'id'); 
+	//console.log(typeof user_id , 'page'); 
 
 	SearchPageService.search(user_id, term, type, page)
 		.then(response => {
@@ -35,6 +40,18 @@ SearchController.getNotesMedia = (req, res) => {
 	NoteService.clientGetNotesMedia(IDs)
 		.then(response => {
 
+			res.status(response.status).send(response.data);
+		})
+		.catch(error => {
+			res.status(500).send(error);
+		});
+};
+
+SearchController.getNotesUser = (req, res) => {
+	let { user_id } = req.query;
+
+	NoteService.clientGetNotesUser(user_id)
+		.then(response => {
 			res.status(response.status).send(response.data);
 		})
 		.catch(error => {

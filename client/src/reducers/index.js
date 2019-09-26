@@ -29,6 +29,10 @@ export function getSearchState(store) {
 	return store["search"];
 }
 
+export function getSearchActiveElem(store) {
+	return search._getSearchActiveElem(store["search"]);
+}
+
 export function getMediaState(store, type) {
 	return store[type];
 }

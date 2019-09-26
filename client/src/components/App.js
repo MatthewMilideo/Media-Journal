@@ -48,8 +48,8 @@ class App extends React.Component {
 						</Container>
 					</div>
 				</Router>
-				<div className="flex-grow-1"> </div>
-				<Jumbotron fluid className="d-flex border-top mt-auto mb-0 p-3">
+				<div className="flex-grow-1 mb-3"> </div>
+				<Jumbotron fluid className="d-flex border-top mt-auto mt-5 mb-0 p-3">
 					<span> Matthew Milideo 2019 </span>
 					<span className="ml-auto">
 						https://github.com/MatthewMilideo/Media-Journal

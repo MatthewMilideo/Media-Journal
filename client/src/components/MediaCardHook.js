@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -23,6 +23,8 @@ const TitleDiv = styled.div`
 		overflow: hidden;
 	}
 `;
+
+const CardImage = styled(Card.Img)``;
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -100,64 +102,85 @@ const StyledArea = styled.div`
 	}
 `;
 
-class MediaCard extends React.Component {
-	state = { load: false, hover: false };
-
-	ref = React.createRef();
-
-	observer = new IntersectionObserver(
-		entries => {
-			entries.forEach(entry => {
-				const { isIntersecting } = entry;
-				if (isIntersecting) {
-					this.ref.current.src = this.props.data.largeImage;
-					this.observer = this.observer.disconnect();
-				}
-			});
-		},
-		{
-			root: null,
-			threshold: 0.1
+// Hook
+function useOnScreen(ref, imageSrc, rootMargin = "0px") {
+    const [isIntersecting, setIntersecting] = useState(false);
+    
+    
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				// Update our state when observer callback fires
+				setIntersecting(entry.isIntersecting);
+			},
+			{
+				root: null,
+				threshold: 0.1,
+				rootMargin
+			}
+		);
+		if (ref.current) {
+			observer.observe(ref.current);
 		}
-	);
+		return () => {
+			if (ref.current) observer.unobserve(ref.current);
+		};
+	}, []); // Empty array ensures that effect is only run on mount and unmount
 
-	componentDidMount() {
-		this.observer.observe(this.ref.current);
-	}
+	return isIntersecting;
+}
 
-	renderLoading = () => {
+/* 
+prop : user_id
+*/
+
+function MediaCardHook(props) {
+	const ref = useRef();
+	const [loaded, setLoaded] = useState(false);
+	const [hover, setHover] = useState(false);
+    const onScreen = useOnScreen(ref, props.data.largeImage);
+    
+
+
+
+	let renderLoading = () => {
+		console.log("render Loading");
 		return (
 			<BlurredDiv className="bg-dark">
-				<img
-					ref={this.ref}
+				<CardImage
+					ref={ref}
 					src={null}
 					onLoad={() => {
-						this.setState({ load: true });
+                        console.log('test');
+						setLoaded(true);
 					}}
 				/>
 			</BlurredDiv>
 		);
 	};
 
-	renderMedia = () => {
+	let renderMedia = () => {
+		let style = {};
+		let className;
+
 		return (
 			<StyledCard
+				style={style ? style : null}
 				className="d-flex"
-				onMouseOver={e => this.delayMouseEnter(e)}
-				onMouseOut={() => this.delayMouseEnter.cancel()}
+				className={className}
 			>
 				<CardImageDiv>
-					<Card.Img src={this.props.data.largeImage} />
+					<Card.Img src={props.data.largeImage} />
 				</CardImageDiv>
 				<TitleDiv className="d-flex bg-light">
-					<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
-					{this.props.data.viewed ? (
+					<span className="ml-2 mr-2 mt-1"> {props.data.title} </span>
+					{props.data.viewed ? (
 						<div className="d-flex border-top text-white mt-auto bg-info">
 							<span className="ml-2">
 								Viewed: <span className="d-inline oi oi-circle-check"></span>
 							</span>
 							<span className="ml-auto  mr-2">
-								Notes: {this.props.data.noteCount}
+								Notes: {props.data.noteCount}
 							</span>
 						</div>
 					) : null}
@@ -165,6 +188,22 @@ class MediaCard extends React.Component {
 			</StyledCard>
 		);
 	};
+
+	return loaded ? renderMedia() : renderLoading();
+}
+
+export default MediaCardHook;
+
+/*
+	
+
+	
+
+	
+
+	
+
+	
 
 	renderMouseOver = () => {
 		return (
@@ -196,7 +235,7 @@ class MediaCard extends React.Component {
 								this.props.postMediaUser(user_id, mediaObj);
 							}}
 						>
-							<span className="oi oi-plus"> {this.props.type === 'BOOK' ? 'Add Data to Read' : 'Add Data to Viewed'} </span>
+							<span className="oi oi-plus"> Add Data to Viewed </span>
 						</Button>
 					</StyledArea>
 				</ContentDiv>
@@ -221,22 +260,15 @@ class MediaCard extends React.Component {
 
 	render() {
 		const { load } = this.state;
+		console.log(this.ref);
 
 		if (this.state.hover === true) {
+			console.log("in hover");
 			return this.renderMouseOver();
 		}
 
-		return !load ? this.renderLoading() : this.renderMedia();
+		return load ? this.renderMedia() : this.renderLoading();
 	}
 }
 
-const mapStatetoProps = state => {
-	return {
-		User: getUser(state)
-	};
-};
-
-export default connect(
-	mapStatetoProps,
-	{ postMediaUser }
-)(MediaCard);
+*/

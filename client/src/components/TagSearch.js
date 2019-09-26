@@ -22,6 +22,7 @@ width: 100%;
 `;
 
 const ULStyled2 = Styled.ul`
+z-index: 100; 
 position: absolute; 
 
 border-radius: .25rem;
@@ -108,7 +109,6 @@ class TagSearch extends React.Component {
 	};
 
 	renderDBTags = (tags, max) => {
-		console.log(tags);
 		max = 4;
 		let bgFlag = false;
 		return (
@@ -118,7 +118,7 @@ class TagSearch extends React.Component {
 					return index < max ? (
 						<li
 							onClick={() => this.tagClick(elem)}
-							key={elem.id}
+							key={elem.title}
 							className={bgFlag ? "bg-white" : "bg-light"}
 						>
 							{elem.title}
@@ -133,20 +133,23 @@ class TagSearch extends React.Component {
 		const { edit } = this.props;
 		return (
 			<ULStyled>
-				{arr.map(elem => (
-					<li key={elem.id}>
-						{" "}
-						<StyledBadge variant="info">
-							{elem.title}
-							{edit ? (
-								<span
-									onClick={() => this.onTagDeleteClick(elem)}
-									className=" ml-2 oi oi-circle-x"
-								/>
-							) : null}
-						</StyledBadge>
-					</li>
-				))}
+				{arr.map(elem => {
+					return (
+						<li key={elem.tag_id}>
+							{" "}
+							<StyledBadge variant="info" key={elem.tag_id}>
+								{elem.title}
+								{edit ? (
+									<span
+										key={elem.tag_id}
+										onClick={() => this.onTagDeleteClick(elem)}
+										className=" ml-2 oi oi-circle-x"
+									/>
+								) : null}
+							</StyledBadge>
+						</li>
+					);
+				})}
 			</ULStyled>
 		);
 	};
@@ -183,7 +186,6 @@ class TagSearch extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.Tags);
 		const { edit } = this.props;
 		return edit ? this.renderEdit() : this.renderStatic();
 	}
