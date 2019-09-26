@@ -34,7 +34,7 @@ const UnstyledList = styled.ul`
 `;
 
 const ImageList = props => {
-	let { prodComps, networks, data, number, label, flag } = props;
+	let { prodComps, networks, data, number, flag } = props;
 	if (!number) number = 3;
 
 	if (prodComps && networks) data = [...networks, ...prodComps];
@@ -48,7 +48,6 @@ const ImageList = props => {
 	if (flag === true) {
 		for (let elem of data) {
 			if (elem.logo_path) {
-				console.log("in the if", elem.logo_path);
 				returnData.push(
 					<StyledImage
 					key = {elem.logo_path}
@@ -72,7 +71,6 @@ const ImageList = props => {
 		<div>
 			<UnstyledList>
 				{returnData.map(elem => {
-					console.log(elem);
 					return <li key = {elem.key}> {elem} </li>;
 				})}
 			</UnstyledList>

@@ -52,7 +52,7 @@ class SearchBar extends React.Component {
 	};
 
 	renderForm = () => {
-		const { activeElem, searchText } = this.props.Search;
+		const { searchText } = this.props.Search;
 		return (
 			<Form onSubmit={this.onSubmit}>
 				<InputGroup>

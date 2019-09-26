@@ -59,19 +59,6 @@ const InnerDiv = styled.div`
 	height: 425px;
 `;
 
-const BlurredCard = styled(Card)`
-	width: 100%;
-	height: 425px; 
-    position: relative; 
-    z-index: -5; 
-	img{
-		height: 100%;
-		object-fit: cover;
-		object-position: top;
-		}
-    }
-    filter: blur(5px);
-`;
 
 const ContentDiv = styled.div`
 	position: absolute;
@@ -129,6 +116,7 @@ class MediaCard extends React.Component {
 		return (
 			<BlurredDiv className="bg-dark">
 				<img
+					alt = 'Loading'
 					ref={this.ref}
 					src={null}
 					onLoad={() => {

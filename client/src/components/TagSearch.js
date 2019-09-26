@@ -62,11 +62,6 @@ li{
 }
 `;
 
-const resultDiv = Styled.div`
-background-color: white; 
-width: 100%; 
-border: solid; 
-`;
 
 class TagSearch extends React.Component {
 	state = { formValue: "" };
@@ -84,7 +79,7 @@ class TagSearch extends React.Component {
 
 	onFormSubmit = e => {
 		e.preventDefault();
-		let { tags, note_id } = this.props;
+		let { tags} = this.props;
 		tags = tags.map(tag => tag.title.toLowerCase().trim());
 		if (tags.includes(e.target[0].value.toLowerCase().trim())) {
 			this.setState({ formValue: "" });

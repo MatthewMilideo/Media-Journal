@@ -20,7 +20,7 @@ NotesController.postNote = async (req, res) => {
 
 NotesController.postMediaUser = async (req, res) => {
 	const { user_id, mediaObj } = req.body;
-	MediaService.postMediaAndMU(mediaObj, user_id)
+	MediaService.postMediaAndMU(mediaObj, user_ids)
 		.then(response => res.status(response.status).send(response.data))
 		.catch(error => res.status(error.status).send(error.message));
 };

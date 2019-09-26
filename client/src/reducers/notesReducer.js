@@ -49,6 +49,7 @@ const removeNoteTag = (state, action) => {
 	newState.notes[note_id] = { ...newState.notes[note_id] };
 	newState.notes[note_id].tags = newState.notes[note_id].tags.filter(elem => {
 		if (elem.id !== tag.id) return elem;
+		return null;
 	});
 	return newState;
 };

@@ -82,6 +82,7 @@ class Note extends React.Component {
 			if (elem.title.toLowerCase().trim() !== tag.title.toLowerCase().trim()) {
 				return elem;
 			}
+			return null; 
 		});
 		this.setState({ localTags, rmTags });
 	};
@@ -125,7 +126,6 @@ class Note extends React.Component {
 
 	renderEdit = () => {
 		const { localTitle, localData, localTags } = this.state;
-		const { tags, note_id } = this.props.Note;
 
 		let saveDisabled = false;
 		if (!localTitle || !localData) saveDisabled = true;

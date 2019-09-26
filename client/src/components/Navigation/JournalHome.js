@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotesUser } from "../../actions";
-import TestComponent from "../testComponent";
-import MediaCardHook from "../MediaCardHook";
 import NoteManager from "../NoteManager";
 
 function JournalHome(props) {

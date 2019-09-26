@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Image from "react-bootstrap/Image";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Alert from "react-bootstrap/Alert";
-import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -17,7 +16,6 @@ import { getItemData, getUser } from "../../reducers";
 
 import * as T from "../../actions/types";
 
-import _ from "lodash";
 
 const InorderList = styled.ul`
 	list-style: none;

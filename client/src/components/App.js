@@ -7,7 +7,7 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import HomePage from "./Navigation/HomePage";
 import SearchPage from "./Navigation/SearchPage";
 import JournalHome from "./Navigation/JournalHome";
-import NewMediaPage from "./Navigation/NewMediaPage";
+import MediaPage from "./Navigation/MediaPage";
 
 import Styled from "styled-components";
 
@@ -38,11 +38,15 @@ class App extends React.Component {
 									exact
 									component={SearchPage}
 								/>
-								<Route path={`/Journal`} exact component={JournalHome} />
+								<Route
+									path={`${process.env.PUBLIC_URL}/Journal`}
+									exact
+									component={JournalHome}
+								/>
 								<Route
 									path={`${process.env.PUBLIC_URL}/media/:type?/:id?`}
 									exact
-									component={NewMediaPage}
+									component={MediaPage}
 								/>
 							</Switch>
 						</Container>

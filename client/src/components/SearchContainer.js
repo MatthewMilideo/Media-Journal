@@ -7,7 +7,7 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import MediaCard from "./MediaCard";
 import { extSearch } from "../actions/index";
-import { getUser, getSearchState, getMediaState, getSearchActiveElem} from "../reducers";
+import { getUser, getMediaState, getSearchActiveElem } from "../reducers";
 import * as T from "../actions/types";
 
 const PaddingDiv = Styled.div`
@@ -24,13 +24,16 @@ width: 100%;`;
 class SearchContainer extends React.Component {
 	myRef = React.createRef();
 
-
 	callback = entries => {
 		const type = this.props.search;
 		const data = this.props[type];
 		const { user_id } = this.props.User;
 
-		if (data.status !== `${type}${T._ERRORED_SEARCH}`) {
+		console.log(data);
+		if (
+			data.status !== `${type}${T._ERRORED_SEARCH}` &&
+			data.status !== `${type}${T._ERRORED_SEARCH}_NEXT`
+		) {
 			if (data.queryData.total_pages > data.queryData.page) {
 				let newElem = data.queryData.page + 1;
 				console.log(data.queryData.page, newElem);
@@ -49,14 +52,10 @@ class SearchContainer extends React.Component {
 		root: null,
 		threshold: 0.1
 	});
-	
-	componentDidMount() {
-		const type = this.props.search;
-		const data = this.props[type];
 
+	componentDidMount() {
 		this.observer.observe(this.myRef.current);
 	}
-
 
 	renderGrid(media, type) {
 		const mediaLength = media.length;
@@ -120,9 +119,9 @@ class SearchContainer extends React.Component {
 	};
 
 	render() {
-		console.log('render container');
+		console.log("render container");
 		const type = this.props.search;
-		
+
 		const data = this.props[type];
 
 		let returnData;
@@ -152,6 +151,22 @@ class SearchContainer extends React.Component {
 				</React.Fragment>
 			);
 		} else if (data.status === `${type}${T._ERRORED_SEARCH}`) {
+			if (data.serverStatus === 503)
+				returnData = this.renderAlert(
+					"Could Not Connect",
+					"There was a problem connecting to the server."
+				);
+			else if (data.serverStatus === 404)
+				returnData = this.renderAlert(
+					"No Media Found!",
+					"Try searching for something else."
+				);
+			else
+				returnData = this.renderAlert(
+					"Error!",
+					"There was an error with input or an internal server error!"
+				);
+		} else if (data.status === `${type}${T._ERRORED_SEARCH}_NEXT`) {
 			if (data.serverStatus === 503)
 				returnData = this.renderAlert(
 					"Could Not Connect",
