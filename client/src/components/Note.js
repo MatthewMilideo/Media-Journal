@@ -11,6 +11,7 @@ import { getNote, getUser } from "../reducers";
 
 const StyledP = Styled.p`
 white-space: pre-wrap; 
+min-height: 50px; 
 `;
 
 class Note extends React.Component {
@@ -29,9 +30,9 @@ class Note extends React.Component {
 			  })
 			: (this.state = {
 					edit: false,
-					localTitle: this.props.Note.title,
+					localTitle: this.props.Note.note_title,
 					localData: this.props.Note.data,
-					localTags: this.props.Note.tags,
+					localTags: [...this.props.Note.tags],
 					rmTags: [],
 					addTags: [],
 					tagFlag: false
@@ -44,17 +45,18 @@ class Note extends React.Component {
 	}
 
 	onSaveChanges = () => {
-		const { id, type, CID } = this.props;
+
+		const { id, type, CID, title } = this.props;
 		const { user_id } = this.props.User;
 		const { localTitle, localData, rmTags, addTags, localTags } = this.state;
-		console.log(localTags);
+
 		!this.props.Note.new
 			? this.props.editNote(id, localTitle, localData, addTags, rmTags, user_id)
 			: this.props.postNote(
 					id,
 					localTitle,
 					localData,
-					{ CID, type, title: "Hi" },
+					{ CID, type, title },
 					user_id,
 					localTags
 			  );
@@ -63,9 +65,15 @@ class Note extends React.Component {
 	};
 
 	onDiscardChanges = () => {
+
 		Note.new
 			? this.props.deleteNote(this.props.Note)
-			: this.setState({ edit: false });
+			: this.setState({
+					edit: false,
+					addTags: [],
+					rmTags: [],
+					localTags: this.props.Note.tags
+			  });
 	};
 
 	addNoteTag = tag => {
@@ -82,18 +90,18 @@ class Note extends React.Component {
 			if (elem.title.toLowerCase().trim() !== tag.title.toLowerCase().trim()) {
 				return elem;
 			}
-			return null; 
+			return null;
 		});
 		this.setState({ localTags, rmTags });
 	};
 
 	renderStatic = () => {
-		const { title, data, tags } = this.props.Note;
+		const { note_title, data, tags, media_title, type } = this.props.Note;
 
 		return (
 			<Card className="mb-3 p-3 shadow-sm">
 				<Card.Title className=" ml-n1 mr-n1 pb-2 border-bottom">
-					{title}
+					{note_title} // {media_title} - {type}
 				</Card.Title>
 				<StyledP>{data}</StyledP>
 

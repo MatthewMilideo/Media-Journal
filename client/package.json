@@ -12,17 +12,17 @@
     "knex": "^0.19.4",
     "lodash": "^4.17.15",
     "open-iconic": "^1.1.1",
-    "react": "^16.9.0",
+    "react": "^16.10.1",
     "react-bootstrap": "^1.0.0-beta.12",
-    "react-dom": "^16.9.0",
-    "react-redux": "^7.1.0-rc.1",
+    "react-dom": "^16.10.1",
+    "react-redux": "^7.1.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
     "react-transition-group": "^4.3.0",
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^4.3.2",
+    "styled-components": "^4.4.0",
     "typescript": "^3.6.3"
   },
   "proxy": "http://localhost:5000/",
@@ -43,16 +43,16 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/core": "^7.6.0",
+    "@babel/core": "^7.6.2",
     "@babel/plugin-transform-modules-commonjs": "^7.6.0",
-    "@babel/register": "^7.6.0",
+    "@babel/register": "^7.6.2",
     "babel-plugin-inline-react-svg": "^1.1.0",
     "babel-preset-react-app-babel-7": "^4.0.2-0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.4.0",
     "ignore-styles": "^5.0.1",
-    "sinon": "^7.4.2"
+    "sinon": "^7.5.0"
   },
   "jest": {
     "snapshotSerializers": [

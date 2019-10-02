@@ -13,7 +13,10 @@ Media_User.getAllMU = user_id => {
 		.select()
 		.then(data => {
 			if (data.length === 0) {
-				return { status: 404, data: "The requested media_users were not found." };
+				return {
+					status: 404,
+					data: "The requested media_users were not found."
+				};
 			}
 			return { status: 200, data };
 		})
@@ -41,7 +44,10 @@ Media_User.getMUBulk = (media_ids, user_id) => {
 		.andWhere(builder => builder.where({ user_id }))
 		.then(data => {
 			if (data.length === 0) {
-				return { status: 404, data: "The requested media_users were not found." };
+				return {
+					status: 404,
+					data: "The requested media_users were not found."
+				};
 			}
 			return { status: 200, data };
 		})
@@ -60,12 +66,12 @@ Media_User.getMU = (media_id, user_id) => {
 	return database
 		.from("user_media")
 		.select("media_id")
-		.where({ user_id, media_id})
+		.where({ user_id, media_id })
 		.then(data => {
 			if (data.length === 0) {
 				return { status: 404, data: "The requested media_user was not found." };
 			}
-			return { status: 200, data:'' };
+			return { status: 200, data: "" };
 		})
 		.catch(error => {
 			throw { status: 400, message: error.message };
@@ -143,7 +149,12 @@ Media_User.postMU = (media_id, user_id) => {
 						error
 					};
 				case "user_media_pkey":
-					return { status: 409, data: "There was a conflict during insertion. You must provide a unique relation.", error };
+					return {
+						status: 409,
+						data:
+							"There was a conflict during insertion. You must provide a unique relation.",
+						error
+					};
 				default:
 					return { status: 400, data: "Error", error };
 			}
@@ -152,11 +163,7 @@ Media_User.postMU = (media_id, user_id) => {
 
 // Gets all Users for a given media_id
 Media_User.deleteMU = (media_id, user_id) => {
-	if (helpers.checkArgs([media_id, user_id]) === false)
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid media_id and user_id."
-		});
+
 	return database
 		.returning("*")
 		.from("user_media")
@@ -168,6 +175,7 @@ Media_User.deleteMU = (media_id, user_id) => {
 			return { status: 200, data };
 		})
 		.catch(error => {
+
 			throw { status: 400, error };
 		});
 };

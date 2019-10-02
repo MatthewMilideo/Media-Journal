@@ -20,3 +20,4 @@ exports.down = function(knex, Promise) {
 		})
 	]);
 };
+

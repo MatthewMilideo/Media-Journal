@@ -41,7 +41,6 @@ export const extSearch = (user_id, term, type, page) => async dispatch => {
 			}
 		});
 	} catch (error) {
-		console.log(error.response);
 		// Catch if my server is down.
 		if (!error.response) {
 			dispatch({
@@ -73,7 +72,7 @@ export const postMediaUser = (user_id, mediaObj) => async dispatch => {
 			user_id,
 			mediaObj
 		});
-		console.log(res);
+
 		dispatch({
 			type: `${type}${T._SUCCESS_POST_MEDIA_USER}`,
 			payload: {
@@ -85,6 +84,31 @@ export const postMediaUser = (user_id, mediaObj) => async dispatch => {
 	} catch (error) {
 		dispatch({
 			type: `${type}${T._ERRORED_POST_MEDIA_USER}`,
+			payload: error
+		});
+	}
+};
+
+export const deleteMediaUser = (user_id, mediaObj) => async dispatch => {
+	dispatch({ type: `${T._BEGAN_DELETE_MEDIA_USER}` });
+	try {
+		let res = await server.delete("/notes/media_user/", {
+			data: {
+				user_id,
+				mediaObj
+			}
+		});
+
+		dispatch({
+			type: `${T._SUCCESS_DELETE_MEDIA_USER}`,
+			payload: {
+				user_id,
+				CID: mediaObj.CID
+			}
+		});
+	} catch (error) {
+		dispatch({
+			type: `${T._ERRORED_DELETE_MEDIA_USER}`,
 			payload: error
 		});
 	}
@@ -129,7 +153,6 @@ export const getItem = (user_id, CID, type) => async (dispatch, getState) => {
 };
 
 export const getNotesUser = user_id => async dispatch => {
-	console.log(user_id);
 	dispatch({ type: `${T.BEGAN_GET_NOTES}` });
 	try {
 		let res = await server.get("/search/notesUser/", {
@@ -146,7 +169,6 @@ export const getNotesUser = user_id => async dispatch => {
 		});
 	} catch (error) {
 		// Catch if my server is down.
-		console.log(error.response);
 		if (!error.response) {
 			dispatch({
 				type: `${T.ERRORED_GET_NOTES}`,
@@ -161,6 +183,91 @@ export const getNotesUser = user_id => async dispatch => {
 		// If responding to a server defined error.
 		dispatch({
 			type: `${T.ERRORED_GET_NOTES}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
+		});
+	}
+};
+
+export const getMediaUser = user_id => async dispatch => {
+	dispatch({ type: `${T.BEGAN_GET_MEDIA}` });
+	try {
+		let res = await server.get("/search/mediaUser/", {
+			params: {
+				user_id
+			}
+		});
+
+		dispatch({
+			type: `${T.FINISHED_GET_MEDIA}`,
+			payload: {
+				media: res.data,
+				keysArr: res.data.keysArr
+			}
+		});
+		console.log(res);
+	} catch (error) {
+		// Catch if my server is down.
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_GET_MEDIA}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
+		// If responding to a server defined error.
+		dispatch({
+			type: `${T.ERRORED_GET_MEDIA}`,
+			payload: {
+				status: error.response.status,
+				data: error.response.data,
+				error: error.response.error
+			}
+		});
+	}
+};
+
+export const getNotesTags = (tag_ids, user_id) => async dispatch => {
+	dispatch({ type: `${T.BEGAN_GET_NOTES_TAGS}` });
+	try {
+		let res = await server.get("/search/noteTags/", {
+			params: {
+				tag_ids,
+				user_id
+			}
+		});
+		console.log(res);
+		dispatch({
+			type: `${T.FINISHED_GET_NOTES_TAGS}`,
+			payload: {
+				notes: res.data,
+				keysArr: res.data.keysArr
+			}
+		});
+	} catch (error) {
+		// Catch if my server is down.
+
+		if (!error.response) {
+			dispatch({
+				type: `${T.ERRORED_GET_NOTES_TAGS}`,
+				payload: {
+					status: 503,
+					data: "The Server is down.",
+					error: error
+				}
+			});
+			return;
+		}
+		// If responding to a server defined error.
+		dispatch({
+			type: `${T.ERRORED_GET_NOTES_TAGS}`,
 			payload: {
 				status: error.response.status,
 				data: error.response.data,
@@ -187,7 +294,7 @@ export const getNotes = IDs => async dispatch => {
 		});
 	} catch (error) {
 		// Catch if my server is down.
-		console.log(error.response);
+
 		if (!error.response) {
 			dispatch({
 				type: `${T.ERRORED_GET_NOTES}`,
@@ -271,7 +378,7 @@ export const postNote = (
 	tags
 ) => async dispatch => {
 	dispatch({ type: `${T.BEGAN_POST_NOTE}` });
-	console.log(old_id, title, data, mediaObj, user_id, tags);
+
 	try {
 		let res = await server.post("/notes/", {
 			title,
@@ -286,9 +393,10 @@ export const postNote = (
 			note_id: res.data.note_id,
 			media_id: res.data.media_id,
 			user_id: res.data.user_id,
-			title,
+			note_title: title,
 			data,
-			media: mediaObj,
+			type: mediaObj.type,
+			media_title: mediaObj.title,
 			tags: res.data.tags,
 			errorTags: res.data.errorTags
 		};
@@ -301,7 +409,6 @@ export const postNote = (
 			}
 		});
 	} catch (error) {
-		console.log(error);
 		// Catch if my server is down.
 		if (!error.response) {
 			dispatch({
@@ -345,7 +452,6 @@ export const deleteNote = note => async dispatch => {
 		});
 	dispatch({ type: `${T.BEGAN_DELETE_NOTE}` });
 	try {
-		//if (!note.new) console.log(note.media_id);
 		await server.delete("/notes/", {
 			data: {
 				media_id: note.media_id,
@@ -358,7 +464,6 @@ export const deleteNote = note => async dispatch => {
 			payload: { note_id: note.note_id }
 		});
 	} catch (error) {
-		console.log(error);
 		// Catch if my server is down.
 		if (!error.response) {
 			dispatch({
@@ -400,7 +505,7 @@ export const searchTag = string => async dispatch => {
 		});
 	} catch (error) {
 		// Catch if my server is down.
-		console.log(error.response);
+
 		if (!error.response) {
 			dispatch({
 				type: `${T.ERRORED_SEARCH_TAGS}`,

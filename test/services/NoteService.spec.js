@@ -715,7 +715,7 @@ describe("Note Services Tests", function() {
 			expect(res.data[8].tags).to.have.length(2);
 			expect(res.data[8].tags[0]).to.have.property("title");
 			expect(res.data[8].tags[0].title).to.equal("The Mob");
-			console.log(res);
+
 		});
 	});
 	
@@ -733,7 +733,7 @@ describe("Note Services Tests", function() {
 			},
 			['Sad', 'New Tag']
 		);
-		console.log(' res is', res);
+
 		expect(res).to.be.a("object");
 		expect(res).to.have.property("status");
 		expect(res.status).to.equal(201);

@@ -776,7 +776,7 @@ describe("MediaService Tests", function() {
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(200);
 			expect(res).to.have.property("data");
-			console.log(res.data);
+
 			expect(res.data).to.have.property("media_id");
 	
 		});

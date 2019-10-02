@@ -94,7 +94,7 @@ describe("TMDB Model Tests", function() {
 
 		it("SearchTV returns 404 when there is a search term and we are querying a non-existent page.", async () => {
 			let res = await expect(TMDB.searchTV("Star Wars", -1)).to.be.rejected;
-			//console.log(res.data.results);
+
 
 			expect(res.status).to.equal(400);
 			expect(res).to.have.property("status");

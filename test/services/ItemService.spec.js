@@ -106,7 +106,7 @@ describe("Item Services Tests", function() {
             requester.close();
 
 			let res = await ItemService.get(1, "11", T.MOVIE, [4]);
-			console.log(res);
+
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(400);
 		});

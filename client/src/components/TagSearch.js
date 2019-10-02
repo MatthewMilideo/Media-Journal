@@ -49,6 +49,7 @@ li:last-child {
 `;
 
 const StyledBadge = Styled(Badge)`
+margin-top: .5rem;
 font-size: 1rem;
 padding: .5rem; 
 `;
@@ -62,9 +63,29 @@ li{
 }
 `;
 
-
 class TagSearch extends React.Component {
-	state = { formValue: "" };
+	state = { formValue: "", renderTags: false };
+
+	componentWillMount() {
+		document.addEventListener("mousedown", this.handleClick, false);
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener("mousedown", this.handleClick, false);
+	}
+
+	handleClick = e => {
+		if (this.node)
+			if (this.node.contains(e.target)) {
+				return;
+			}
+
+		this.handleOutsideClick();
+	};
+
+	handleOutsideClick = e => {
+		this.setState({ renderTags: false });
+	};
 
 	debounceSearchTag = debounce(this.props.searchTag, 200, {
 		leading: true,
@@ -73,13 +94,14 @@ class TagSearch extends React.Component {
 
 	// Function needs to be debounced.
 	onFormValueChange = e => {
+		if (e.target.value.length > 20) return;
 		this.debounceSearchTag(e.target.value);
 		this.setState({ formValue: e.target.value });
 	};
 
 	onFormSubmit = e => {
 		e.preventDefault();
-		let { tags} = this.props;
+		let { tags } = this.props;
 		tags = tags.map(tag => tag.title.toLowerCase().trim());
 		if (tags.includes(e.target[0].value.toLowerCase().trim())) {
 			this.setState({ formValue: "" });
@@ -96,6 +118,7 @@ class TagSearch extends React.Component {
 
 	tagClick = elem => {
 		this.props.addNoteTag(elem);
+		
 		this.setState({ formValue: "" });
 	};
 
@@ -104,16 +127,23 @@ class TagSearch extends React.Component {
 	};
 
 	renderDBTags = (tags, max) => {
+
 		max = 4;
+		tags = [...tags];
 		let bgFlag = false;
+
+		//	if (tags.length === 0 || tags[0].title !== this.state.formValue) {
+		//		tags.unshift({ title: this.state.formValue, id: this.state.formValue });
+		//	}
+
 		return (
-			<ULStyled2>
+			<ULStyled2 >
 				{tags.map((elem, index) => {
 					bgFlag = !bgFlag;
 					return index < max ? (
 						<li
 							onClick={() => this.tagClick(elem)}
-							key={elem.title}
+							key={elem.id}
 							className={bgFlag ? "bg-white" : "bg-light"}
 						>
 							{elem.title}
@@ -129,14 +159,15 @@ class TagSearch extends React.Component {
 		return (
 			<ULStyled>
 				{arr.map(elem => {
+	
 					return (
-						<li key={elem.tag_id}>
+						<li key={elem.id}>
 							{" "}
-							<StyledBadge variant="info" key={elem.tag_id}>
+							<StyledBadge variant="info" key={elem.id}>
 								{elem.title}
 								{edit ? (
 									<span
-										key={elem.tag_id}
+										key={elem.id}
 										onClick={() => this.onTagDeleteClick(elem)}
 										className=" ml-2 oi oi-circle-x"
 									/>
@@ -151,9 +182,16 @@ class TagSearch extends React.Component {
 
 	renderEdit() {
 		return (
-			<ParentDiv className="mb-3">
+			<ParentDiv className="mb-3" >
 				{this.renderSelectedTags(this.props.tags)}
-				<Form onSubmit={this.onFormSubmit}>
+				<Form ref = {node => this.node= node}
+					onSubmit={this.onFormSubmit}
+					onBlur={e => {
+				
+					//	this.setState({ renderTags: false });
+					}}
+					onFocus={() => this.setState({ renderTags: true })}
+				>
 					<Form.Group controlId="noteTags">
 						<Form.Label>Note Tags: </Form.Label>
 						<UnstyledForm
@@ -163,7 +201,7 @@ class TagSearch extends React.Component {
 							autoComplete="off"
 						/>
 
-						{this.state.formValue
+						{this.state.formValue && this.state.renderTags
 							? this.renderDBTags(this.props.Tags.tags)
 							: null}
 					</Form.Group>

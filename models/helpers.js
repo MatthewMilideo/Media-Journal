@@ -39,14 +39,12 @@ exports.checkArgs = function(ints, strings = []) {
 This function returns true if valid and false if invalid. */
 const typeArr = ["MOVIE", "TV", "BOOK", "GAME"];
 exports.checkMediaObj = function(obj) {
-	console.log(' the obj in media obj is', obj);
 	if (typeof obj === "object" && obj !== null) {
 		if (!obj.title) return false;
 		if (typeof obj.title !== "string") return false;
 		if (!obj.type) return false;
 		if (!typeArr.includes(obj.type)) return false;
 		if (!obj.CID) return false;
-		console.log('hallo');
 		return true;
 	}
 	return false;
@@ -158,7 +156,7 @@ exports.checkNTAll = function(arr) {
 /* Wrapper function for checkArgs and CheckMediaObj together.  */
 
 exports.checkArgsAndMedia = function(ints, strings, mediaObj) {
-	console.log(ints, strings, mediaObj);
+
 	if (!(exports.checkArgs(ints, strings) && exports.checkMediaObj(mediaObj))) {
 		return false;
 	}
@@ -170,6 +168,7 @@ exports.checkArgsType = function(ints, strings, type) {
 		return false;
 	}
 	return true;
+	console.log('test');
 };
 
 /* ~~~~~ Variables for testing ~~~~~ */
@@ -206,26 +205,4 @@ let invalidMediaObj = {
 	CID: "1234",
 	type: "test"
 };
-
-console.log('~~~~ Should Print true ~~~~~~~~~~')
-
-console.log(checkArgs(validInts1, validStrings1)); 
-console.log(checkArgs(validInts2, validStrings1)); 
-console.log(checkArgsAndMedia(validInts1,validStrings1, validMediaObj));
-
-
-console.log('~~~~ Should Print false ~~~~~~~~~~')
-console.log(checkArgs(invalidInts1, validStrings1)); 
-console.log(checkArgs(invalidInts2, validStrings1)); 
-console.log(checkArgs(invalidInts3, validStrings1)); 
-console.log(checkArgs(validInts1, invalidStrings1)); 
-console.log(checkArgs(validInts1, invalidStrings2)); 
-console.log(checkArgs(validInts1, invalidStrings3)); 
-
-
-console.log(checkArgsAndMedia(invalidInts1,validStrings1, validMediaObj));
-console.log(checkArgsAndMedia(validInts1,invalidStrings1, validMediaObj));
-console.log(checkArgsAndMedia(validInts1,validStrings1, invalidMediaObj));
-console.log(checkArgsAndMedia(invalidInts1,invalidStrings1, invalidMediaObj));
-
 */

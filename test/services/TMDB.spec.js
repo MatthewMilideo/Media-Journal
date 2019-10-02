@@ -64,12 +64,12 @@ describe("Route: '/test/ ", function() {
 				});
 
 
-				//console.log(res.body);
+
 				res = await requester
 					.get("/test/")
 					.query({ user_id: 1, term: 'Star Wars'});
 
-				console.log(res.body);
+	
 
 
 				requester.close();

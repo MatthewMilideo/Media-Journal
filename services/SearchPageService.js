@@ -100,7 +100,7 @@ SearchPageService.processGBooks = function(data, user_id, term, page) {
 
 	queryData.index = page * 20;
 	queryData.page = page;
-	console.log( typeof page);
+
 	queryData.total_results = data.totalItems;
 	queryData.total_pages = Math.floor(data.totalItems / 20);
 	queryData.term = term;
@@ -115,7 +115,7 @@ SearchPageService.processGBooks = function(data, user_id, term, page) {
 	data.items.forEach(book => {
 		let elem = {};
 		elem.id = book.id;
-		console.log(elem.id);
+
 		elem.type = types.BOOK;
 		elem["viewed"] = false;
 		elem.noteCount = 0;

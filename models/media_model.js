@@ -46,6 +46,31 @@ Media.getByCID = IDs => {
 };
 
 // Get Media from Media User by [ {CID, TYPE, USER}]
+Media.getByUserID = IDs => {
+	return database("media")
+		.join("user_media", "media.id", "user_media.media_id")
+		.select([
+			"user_media.media_id",
+			"media.title",
+			"media.CID",
+			"media.type",
+			"user_media.user_id"
+		])
+		.where(builder =>
+			builder.whereIn( ["user_media.user_id"], IDs)
+		)
+		.then(data => {
+			if (data.length === 0) {
+				return { status: 404, data: "The requested media were not found." };
+			}
+			return { status: 200, data };
+		})
+		.catch(error => {
+			return Promise.reject({ status: 400, data: error.message, error });
+		});
+};
+
+// Get Media from Media User by [ {CID, TYPE, USER}]
 Media.getByCIDUser = IDs => {
 	return database("media")
 		.join("user_media", "media.id", "user_media.media_id")

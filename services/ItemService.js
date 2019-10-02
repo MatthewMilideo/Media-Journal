@@ -28,12 +28,19 @@ ItemService.get = async function(user_id, CID, type) {
 	}
 
 	try {
-        itemData = await queryFunc(CID, type);
+		itemData = await queryFunc(CID, type);
+		itemData.data.viewed = false; 
+		res = await MediaService.getByCIDUser({
+			CID,
+			type,
+			user_id
+		});
+		if (res.status === 200){
+			itemData.data.viewed = true; 
+		}
 	} catch (error) {
 		return Promise.reject(error);
 	}
-
-	//console.log(itemData);
 
 	return { status: 200, data: itemData };
 };
@@ -47,7 +54,7 @@ ItemService.formatGBooksResponse = response => {
 	returnData.results = response.items.map(elem => {
 		if (elem.volumeInfo.imageLinks) {
 			if (elem.volumeInfo.imageLinks.thumbnail) {
-				console.log(elem.volumeInfo.imageLinks);
+
 				elem.image = elem.volumeInfo.imageLinks.smallThumbnail;
 				elem.image = elem.image.replace("&zoom=5", "&zoom=3");
 			}
@@ -94,7 +101,7 @@ const formatDate = date => {
 };
 
 const formatMoney = num => {
-	////console.log(('num', num);
+
 	if (num === 0) return null;
 
 	let returnStr = "$";

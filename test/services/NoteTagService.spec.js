@@ -48,7 +48,7 @@ describe("Route: '/media_user/ ", function() {
 		});
 		it("It returns 404 when noteIDs are not found.", async () => {
 			let res = await noteTagService.getByNoteID([100, 101]);
-			console.log(res);
+	
 			expect(res).to.be.a("object");
 			expect(res).to.have.property("status");
 			expect(res.status).to.equal(404);

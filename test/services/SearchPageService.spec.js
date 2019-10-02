@@ -232,7 +232,7 @@ describe("Note Services Tests", function() {
 				4
 			);
 
-			console.log(res);
+
 
 			res = await MediaService.postMediaAndMU(
 				{ title: "Call Me By Your Name", CID: "140607", type: "MOVIE" },

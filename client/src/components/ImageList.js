@@ -57,8 +57,6 @@ const ImageList = props => {
 				);
 			} else textData.push(<span> {elem.name} </span>);
 		}
-		console.log(returnData);
-		console.log(textData);
 		let i = 0;
 		while (returnData.length < number) {
 			if (textData[i]) returnData.push(textData[i]);
@@ -66,7 +64,6 @@ const ImageList = props => {
 		}
 	}
 	returnData = returnData.slice(0, number );
-	console.log(returnData);
 	return (
 		<div>
 			<UnstyledList>

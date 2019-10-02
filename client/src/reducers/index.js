@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import userReducer, * as user from "./userReducer";
-import tagReducer, * as tag from './tagReducer';
+import tagReducer, * as tag from "./tagReducer";
+import viewedReducer from "./viewedReducer";
 import searchBarReducer, * as search from "./searchBarReducer";
 import { searchHOR } from "./higherOrderReducers";
 
@@ -18,9 +19,10 @@ export default combineReducers({
 	...reducerObject,
 	user: userReducer,
 	search: searchBarReducer,
-	tag: tagReducer, 
+	tag: tagReducer,
 	item: itemReducer,
-	notes: notesReducer
+	notes: notesReducer,
+	viewed: viewedReducer
 });
 
 // ~~~~ Public Selectors ~~~~

@@ -28,11 +28,13 @@ class SearchContainer extends React.Component {
 		const type = this.props.search;
 		const data = this.props[type];
 		const { user_id } = this.props.User;
+		console.log('callback');
 		console.log(data);
-		if (data.keysArr.length !== 0) {
+
+		if (data.keysArr.length !== 0 && data.status !== `${type}${T._ERRORED_SEARCH}` && data.status !== `${type}${T._ERRORED_SEARCH}_NEXT`) {
 			if (data.queryData.total_pages > data.queryData.page) {
 				let newElem = data.queryData.page + 1;
-				console.log(data.queryData.page, newElem);
+
 				this.props.extSearch(user_id, data.queryData.term, type, newElem);
 			}
 			if (

@@ -49,7 +49,21 @@ NoteService.deleteNote = async function(note_id) {
 	return await Notes.deleteNote(note_id, title, data);
 };
 
-// New Function. 
+NoteService.getbyTag = async function(tag_ids, user_id) {
+	if (!Array.isArray(tag_ids)) tag_ids = [tag_ids];
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkArgs([user_id, ...tag_ids])) {
+		return {
+			status: 400,
+			data: "You must provide a valid note_id."
+		};
+	}
+
+	let res = await Notes.getbyTag(tag_ids, user_id);
+	console.log(res);
+	if (res.status !== 200) return res;
+};
+
 NoteService.clientGetNotesUser = async function(user_id) {
 	if (!helpers.checkArgs([user_id], []))
 		return {
@@ -57,21 +71,17 @@ NoteService.clientGetNotesUser = async function(user_id) {
 			data: "You must provide a valid user_id."
 		};
 
-	console.log(user_id);
 	let res = await MediaNoteService.getByUserID(user_id);
 	if (res.status !== 200) return res;
-	
+
 	let mediaNotes = {};
 	mediaNotes.keysArr = [];
-	console.log(res.data);
-	let requestData = res.data.map(elem => {
+	requestData = res.data.map(elem => {
 		mediaNotes[elem.note_id] = elem;
 		mediaNotes[elem.note_id]["tags"] = [];
 		mediaNotes.keysArr.push(elem.note_id);
 		return { note_id: elem.note_id, user_id: elem.user_id };
 	});
-
-	console.log(requestData);
 
 	let noteTags = await NoteTagService.getByNoteAndUserID(requestData);
 
@@ -79,6 +89,17 @@ NoteService.clientGetNotesUser = async function(user_id) {
 	noteTags = noteTags.data;
 	noteTags.forEach(elem => {
 		if (mediaNotes[elem.note_id]) mediaNotes[elem.note_id].tags.push(elem);
+	});
+
+	mediaNotes.mKeysArr = [];
+	mediaNotes.mediaOrg = {};
+	mediaNotes.keysArr.forEach(elem => {
+		let CID = mediaNotes[elem].CID;
+		if (!mediaNotes.mediaOrg[CID]) {
+			mediaNotes.mediaOrg[CID] = [];
+			mediaNotes.mKeysArr.push(CID);
+		}
+		mediaNotes.mediaOrg[CID].push(mediaNotes[elem]);
 	});
 
 	return { status: 200, data: mediaNotes };
@@ -127,13 +148,13 @@ NoteService.clientGetNotesMedia = async function(IDs) {
 //  ~~~~~~~~~~
 // Output: TBD
 NoteService.postNoteAll = async function(title, data, user_id, mediaObj, tags) {
-	console.log(arguments);
 	// Add the Media and MU.
-	console.log('after post mediaObj and user_id', mediaObj, user_id);
+
 	let media = await MediaService.postMediaAndMU(mediaObj, user_id);
+
 	if (media.status !== 201 && media.status !== 409) return media;
 	media = media.data[0];
-	console.log('after post media and mu mn');
+
 	// Add the Note and MN
 	let note = await NoteService.postNoteAndMN(
 		title,
@@ -141,9 +162,18 @@ NoteService.postNoteAll = async function(title, data, user_id, mediaObj, tags) {
 		user_id,
 		media.media_id
 	);
+
 	if (note.status !== 201) return note;
-	console.log('after post note mn');
-	note = { ...note.data[0], media, title, data, user_id, tags: [] };
+
+	note = {
+		...note.data[0],
+		...media,
+		note_title: title,
+		data,
+		user_id,
+		tags: []
+	};
+
 	// Add Tags and Note Tags
 	tags = tags.map(tag => (tag = tag.title));
 	let tagResult = await NoteTagService.postTagAndNT(
@@ -151,8 +181,6 @@ NoteService.postNoteAll = async function(title, data, user_id, mediaObj, tags) {
 		user_id,
 		tags
 	);
-
-	console.log('after tag 1');
 
 	if (tagResult.status !== 200) return { status: 200, data: note };
 	note.tags = tagResult.data.NTs.success.map(elem => {
@@ -163,8 +191,6 @@ NoteService.postNoteAll = async function(title, data, user_id, mediaObj, tags) {
 			user_id
 		};
 	});
-
-	console.log('after final tag 1');
 
 	return { status: 201, data: note };
 };

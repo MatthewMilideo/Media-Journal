@@ -56,7 +56,7 @@ Notes.editNote = (id, title, data, user_id) => {
 				title,
 				data
 			},
-			["id", "title", "data"]
+			["id", "title as note_title", "data"]
 		)
 		.then(data => {
 			if (data.length === 0)
@@ -158,6 +158,48 @@ Notes.getMediaUserNotes = (media_ids, user_id) => {
 			throw { status: 400, data: error.message, error };
 		});
 };
+
+// Not finsished. 
+Notes.getbyTag = (tag_ids, user_id) => {
+	console.log('input', tag_ids, user_id);
+	if (!Array.isArray(tag_ids)) tag_ids = [tag_ids];
+	if (!helpers.checkArgs([tag_ids, user_id])) {
+		return Promise.reject({
+			status: 400,
+			data: "You must provide valid tag_ids and a user_id."
+		});
+	}
+	return database("note_tag")
+		.join("tags", "note_tag.tag_id", "tags.id")
+		.join("notes", "note_tag.note_id", "notes.id")
+		.join("media_note", "media_note.note_id", "notes.id")
+		.join("media", "media.id", "media_note.media_id")
+		.select([
+			"notes.id as note_id",
+			"notes.title as note_title",
+			"notes.data",
+			"media.id as media_id",
+			"media.type",
+			"media.CID",
+			"media.title as media_title",
+			"note_tag.tag_id"
+		])
+		.where(builder => builder.whereIn("note_tag.tag_id", tag_ids))
+		.then(data => {
+			console.log('model response', data)
+			return data.length === 0
+				? { status: 404, data: "The requested notes were not found." }
+				: { status: 200, data };
+		})
+		.catch(error => {
+			throw { status: 400, data: error.message, error };
+		});
+};
+
+/*
+	.where(builder => builder.whereIn("tags.id", tag_ids))
+		.andWhere(builder => builder.whereIn("note_tag.user_id", [user_id] ))
+		*/
 
 // Need to add to this later
 Notes.deleteNote = async note_id => {

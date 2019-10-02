@@ -7,7 +7,7 @@ const defaultState = {
 		data: null,
 		error: null
 	},
-	notes: { keysArr: [] }
+	notes: { keysArr: [], mKeysArr: [], mediaOrg: {} }
 };
 
 function getRandomInt(max) {
@@ -42,7 +42,6 @@ const addNoteTag = (state, action) => {
 };
 
 const removeNoteTag = (state, action) => {
-	console.log("in remove note tag", action);
 	const { tag, note_id } = action.payload;
 	let newState = { ...state };
 	newState.notes = { ...newState.notes };
@@ -60,7 +59,7 @@ const editNote = (state, payload) => {
 	newState.status = T.FINISHED_EDIT_NOTE;
 	newState.notes = { ...newState.notes };
 	newState.notes[id] = { ...newState.notes[id] };
-	newState.notes[id].title = title;
+	newState.notes[id].note_title = title;
 	newState.notes[id].data = data;
 	newState.notes[id].tags = tags;
 	newState.notes[id].new = false;
@@ -86,7 +85,6 @@ const copyArr = function(arr, rmElem) {
 
 const postNote = (state, action) => {
 	const { noteObj, old_id } = action.payload;
-	console.log(noteObj, old_id);
 	let newState = { ...state };
 	newState.status = action.type;
 	newState.notes = copyObj(newState.notes, old_id);
@@ -133,7 +131,7 @@ export default (state = defaultState, action) => {
 			return {
 				...state,
 				status: action.type,
-				notes: { keysArr: [] },
+				notes: { keysArr: [], mKeysArr: [], mediaOrg: {} },
 				error: {
 					status: action.payload.status,
 					data: action.payload.data,

@@ -9,7 +9,7 @@ const GBooks = axios.create({
 const GBooksModel = {};
 
 GBooksModel.search = async function(term, index = 0) {
-	console.log(index);
+
 	return GBooks.get("", {
 		params: {
 			q: term,
@@ -27,7 +27,7 @@ GBooksModel.search = async function(term, index = 0) {
 					data: "The requested books were not found."
 				};
 			}
-			console.log(response.data.items[0]);
+
 			return { status: 200, data: response.data };
 		})
 		.catch(error => {
@@ -51,7 +51,7 @@ GBooksModel.getBook = async function(id) {
 			return { status: 200, data: response };
 		})
 		.catch(error => {
-			console.log(error);
+
 			if (!error.status) {
 				throw { status: error.response.status, data: error.message, error };
 			} else {

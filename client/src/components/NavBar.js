@@ -25,7 +25,6 @@ class NavBar extends React.Component {
 	}
 
 	render() {
-		console.log(this.props, this.state);
 		return (
 			<Nav
 				variant="tabs"
@@ -49,7 +48,7 @@ class NavBar extends React.Component {
 						eventKey="Content"
 						onClick={() => this.setState({ activeItem: "Content" })}
 					>
-						 Browse Content
+						Browse Content
 					</Nav.Link>
 				</Nav.Item>
 				<Nav.Item>
@@ -59,7 +58,7 @@ class NavBar extends React.Component {
 						eventKey="Notes"
 						onClick={() => this.setState({ activeItem: "Notes" })}
 					>
-						 Browse Notes
+						Browse Notes and Viewed Media
 					</Nav.Link>
 				</Nav.Item>
 			</Nav>

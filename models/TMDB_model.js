@@ -48,7 +48,7 @@ TMDBModel.search = function(term, type, page = 1) {
 
 TMDBModel.getItem = function(id, type) {
 	// Configuration
-	//	console.log(" in get item", id, type);
+
 	let loc = type === T.MOVIE ? `/movie/${id}` : `/tv/${id}`;
 	let append_to_response =
 		type === T.MOVIE
@@ -56,7 +56,7 @@ TMDBModel.getItem = function(id, type) {
 			: "credits,images";
 
 	if (!helpers.checkArgsType([id], [], type)) {
-		//		console.log("in helpers");
+
 		return Promise.reject({
 			status: 400,
 			data: "You must provide a valid id and type."
@@ -66,11 +66,11 @@ TMDBModel.getItem = function(id, type) {
 	return TMDB.get(loc, { params: { api_key: KEY, append_to_response } })
 		.then(item => {
 			item = TMDBModel.formatItem(item.data);
-			//console.log(item);
+
 			return { status: 200, data: item };
 		})
 		.catch(error => {
-			//console.log(error);
+
 			if (error.response) {
 				throw { status: error.response.status, data: error.message, error };
 			}
@@ -83,14 +83,14 @@ TMDBModel.getItem = function(id, type) {
 };
 
 TMDBModel.formatResponse = response => {
-	//console.log(response);
+
 	response.results = response.results.map(elem => {
 		if (elem.name) elem.title = elem.name;
-		//	console.log(elem.poster_path);
+
 		elem.smallImage = `https://image.tmdb.org/t/p/w45${elem.poster_path}`;
 		elem.largeImage = `https://image.tmdb.org/t/p/w500${elem.poster_path}`;
 		if (!elem.poster_path) {
-			//		console.log('in if');
+
 			elem.smallImage =
 				"https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=45&q=80";
 			elem.largeImage =
@@ -160,7 +160,7 @@ const formatDate = date => {
 };
 
 const formatMoney = num => {
-	////console.log(('num', num);
+
 	if (num === 0) return null;
 
 	let returnStr = "$";
@@ -214,7 +214,7 @@ TV Formatter
 
 	let firstDate = formatDate(new Date(data.first_air_date));
 	let lastDate = formatDate(new Date(data.last_air_date));
-	////console.log(('date',firstDate)
+
 
 			crew: crewFormatter(data.credits.crew, data.created_by),
 
@@ -254,7 +254,7 @@ const crewFormatter = (input, creator = null, output = standardRoles) => {
 const removeBR = text => {
 	if (text === undefined) return text;
 	let value = text.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g, "");
-	//console.log(value);
+
 	return value;
 };
 
@@ -296,7 +296,7 @@ export const formatDate = (date) => {
 } 
 
 export const formatMoney = (num) => {
-    ////console.log(('num', num);
+
     if (num === 0) return null; 
 
     let returnStr = '$'

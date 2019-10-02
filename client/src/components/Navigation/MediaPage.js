@@ -16,7 +16,6 @@ import { getItemData, getUser } from "../../reducers";
 
 import * as T from "../../actions/types";
 
-
 const InorderList = styled.ul`
 	list-style: none;
 	padding: 0px;
@@ -49,7 +48,7 @@ let StyledJumbotron = styled(Jumbotron)`
 
 function renderList(title, list) {
 	let modifier = "";
-	console.log(arguments);
+
 	if (list && list.length > 1) modifier = "s";
 	return list && list.length > 0 ? (
 		<InorderList>
@@ -121,7 +120,7 @@ class MediaPage extends React.Component {
 	renderBook() {
 		const { data } = this.props.Item.data;
 		return (
-			<RenderCard  image={data.largeImage}>
+			<RenderCard image={data.largeImage}>
 				<div>
 					<div className=" mb-2 border-bottom">
 						<h1 className="mb-2"> {data.title} </h1>
@@ -139,13 +138,20 @@ class MediaPage extends React.Component {
 						</div>
 					</div>
 				</div>
+				{data.viewed ? (
+					<div className=" mb-n3 ml-n3 mr-n3 p-1 pb-2 d-flex justify-content-center border-top text-white mt-auto bg-info">
+						<span className="ml-2">
+							Read: <span className="d-inline oi oi-circle-check"></span>
+						</span>
+					</div>
+				) : null}
 			</RenderCard>
 		);
 	}
 
 	renderMovie() {
 		const { data } = this.props.Item.data;
-		console.log(data.largeImage);
+
 		return (
 			<RenderCard image={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}>
 				<div className=" mb-2 border-bottom">
@@ -203,6 +209,14 @@ class MediaPage extends React.Component {
 							/>
 						</div>
 					) : null}
+
+					{data.viewed ? (
+						<div className=" mb-n3 ml-n3 mr-n3 p-1 pb-2 d-flex justify-content-center border-top text-white mt-auto bg-info">
+							<span className="ml-2">
+								Viewed: <span className="d-inline oi oi-circle-check"></span>
+							</span>
+						</div>
+					) : null}
 				</div>
 			</RenderCard>
 		);
@@ -212,6 +226,8 @@ class MediaPage extends React.Component {
 		const { id, type } = this.props.match.params;
 		const { status } = this.props.Item;
 		const { user_id } = this.props.User;
+		let title;
+		if (this.props.Item.data.data) title = this.props.Item.data.data.title;
 
 		if (status === T.BEGAN_ITEM) return <div> LOADING </div>;
 		else if (status === T.ERRORED_ITEM)
@@ -227,12 +243,24 @@ class MediaPage extends React.Component {
 					{type !== T.BOOK ? (
 						<div>
 							{this.renderMovie()}
-							<NoteManager CID={id} type={type} user_id={user_id} />
+							<NoteManager
+								buttonFlag={true}
+								CID={id}
+								type={type}
+								title={title}
+								user_id={user_id}
+							/>
 						</div>
 					) : (
 						<div>
 							{this.renderBook()}
-							<NoteManager  CID={id} type={type} user_id={user_id} />
+							<NoteManager
+								buttonFlag={true}
+								CID={id}
+								type={type}
+								title={title}
+								user_id={user_id}
+							/>
 						</div>
 					)}
 				</div>
@@ -252,26 +280,3 @@ export default connect(
 	mapStateToProps,
 	{ getItem }
 )(MediaPage);
-
-/*
-
-
-									<ul>
-										{data.credits
-											? data.credits.crew.map(crew => {
-													if (
-														crew.department === "Writing" ||
-														crew.job === "Director of Photography" ||
-														crew.job === "Director"
-													)
-														return (
-															<li key={`${crew.id}${crew.job}`}>
-																{" "}
-																{crew.job} {crew.name}
-															</li>
-														);
-											  })
-											: null}
-									</ul>
-
-									*/

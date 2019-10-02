@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import debounce from "lodash/debounce";
 
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
-import { postMediaUser } from "../actions";
+import { postMediaUser, deleteMediaUser } from "../actions";
 import { getUser } from "../reducers";
 
 const TitleDiv = styled.div`
@@ -58,7 +58,6 @@ const InnerDiv = styled.div`
 	width: 100%;
 	height: 425px;
 `;
-
 
 const ContentDiv = styled.div`
 	position: absolute;
@@ -116,7 +115,7 @@ class MediaCard extends React.Component {
 		return (
 			<BlurredDiv className="bg-dark">
 				<img
-					alt = 'Loading'
+					alt="Loading"
 					ref={this.ref}
 					src={null}
 					onLoad={() => {
@@ -128,30 +127,68 @@ class MediaCard extends React.Component {
 	};
 
 	renderMedia = () => {
+		let buttonText = this.props.type === "BOOK" ? "Read:" : "Viewed:";
+
 		return (
-			<StyledCard
-				className="d-flex"
-				onMouseOver={e => this.delayMouseEnter(e)}
-				onMouseOut={() => this.delayMouseEnter.cancel()}
+			<Link
+				style={{ color: "inherit", textDecoration: "none" }}
+				to={`/media/${this.props.type}/${this.props.data.id}`}
 			>
-				<CardImageDiv>
-					<Card.Img src={this.props.data.largeImage} />
-				</CardImageDiv>
-				<TitleDiv className="d-flex bg-light">
-					<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
-					{this.props.data.viewed ? (
-						<div className="d-flex border-top text-white mt-auto bg-info">
-							<span className="ml-2">
-								Viewed: <span className="d-inline oi oi-circle-check"></span>
-							</span>
-							<span className="ml-auto  mr-2">
-								Notes: {this.props.data.noteCount}
-							</span>
-						</div>
-					) : null}
-				</TitleDiv>
-			</StyledCard>
+				<StyledCard
+					className="d-flex"
+					onMouseOver={e => this.delayMouseEnter(e)}
+					onMouseOut={() => this.delayMouseEnter.cancel()}
+				>
+					<CardImageDiv>
+						<Card.Img src={this.props.data.largeImage} />
+					</CardImageDiv>
+					<TitleDiv className="d-flex bg-light">
+						<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
+						{this.props.data.viewed ? (
+							<div className="d-flex border-top text-white mt-auto bg-info">
+								<span className="ml-2">
+									{buttonText}{" "}
+									<span className="d-inline oi oi-circle-check"></span>
+								</span>
+								<span className="ml-auto  mr-2">
+									Notes: {this.props.data.noteCount}
+								</span>
+							</div>
+						) : null}
+					</TitleDiv>
+				</StyledCard>
+			</Link>
 		);
+	};
+
+	renderButton = user_id => {
+		let buttonText;
+		this.props.data.viewed
+			? (buttonText =
+					this.props.type === "BOOK"
+						? "Remove from Read"
+						: "Remove from Viewed")
+			: (buttonText =
+					this.props.type === "BOOK" ? "Add to Read" : "Add to Viewed");
+		let func;
+		this.props.data.viewed
+			? (func = this.props.deleteMediaUser)
+			: (func = this.props.postMediaUser);
+
+		return func !== null ? (
+			<Button
+				onClick={() => {
+					let mediaObj = {
+						title: this.props.data.title,
+						CID: this.props.data.id,
+						type: this.props.type
+					};
+					func(this.props.User.user_id, mediaObj);
+				}}
+			>
+				<span className="oi oi-plus" /> <span> {buttonText}</span>
+			</Button>
+		) : null;
 	};
 
 	renderMouseOver = () => {
@@ -171,22 +208,11 @@ class MediaCard extends React.Component {
 							<span className="oi oi-plus"> View Media </span>
 						</Link>
 					</StyledArea>
-					<StyledArea>
-						<Button
-							onClick={() => {
-								const { data } = this.props;
-								const { user_id } = this.props.User;
-								let mediaObj = {
-									title: data.title,
-									CID: data.id,
-									type: this.props.type
-								};
-								this.props.postMediaUser(user_id, mediaObj);
-							}}
-						>
-							<span className="oi oi-plus"> {this.props.type === 'BOOK' ? 'Add Data to Read' : 'Add Data to Viewed'} </span>
-						</Button>
-					</StyledArea>
+					{this.props.data.viewed && this.props.data.noteCount > 0 ? null : (
+						<StyledArea>
+							{this.renderButton(this.props.User.user_id)}
+						</StyledArea>
+					)}
 				</ContentDiv>
 
 				<BlurredDiv>
@@ -204,7 +230,7 @@ class MediaCard extends React.Component {
 	delayMouseEnter = debounce(e => this.handleMouseEnter(e), 100);
 
 	handleMouseEnter = e => {
-		this.setState({ hover: true });
+		if (window.innerWidth > 575) this.setState({ hover: true });
 	};
 
 	render() {
@@ -226,5 +252,5 @@ const mapStatetoProps = state => {
 
 export default connect(
 	mapStatetoProps,
-	{ postMediaUser }
+	{ postMediaUser, deleteMediaUser }
 )(MediaCard);

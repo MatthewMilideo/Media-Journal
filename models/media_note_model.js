@@ -65,7 +65,7 @@ Media_Note.getByMediaID = media_ids => {
 		});
 };
 
-Media_Note.getByUserID = user_ids => {
+Media_Note.workinggetByUserID = user_ids => {
 	return database("media_note")
 		.join("notes", "media_note.note_id", "notes.id")
 		.select([
@@ -89,6 +89,35 @@ Media_Note.getByUserID = user_ids => {
 		});
 };
 
+Media_Note.getByUserID = user_ids => {
+	return database("media_note")
+		.join("media", "media_note.media_id", "media.id")
+		.join("notes", "media_note.note_id", "notes.id")
+		.select([
+			"media_note.media_id",
+			"media_note.note_id",
+			"media_note.user_id",
+			"notes.title as note_title",
+			"notes.data",
+			"media.CID",
+			"media.title as media_title",
+			"media.type"
+		])
+		.where(builder => builder.whereIn("media_note.user_id", user_ids))
+		.then(data => {
+	
+			if (data.length === 0)
+				return {
+					status: 404,
+					data: "The requested media_notes were not found."
+				};
+			return { status: 200, data: data };
+		})
+		.catch(error => {
+			return { status: 400, data: error.message, error };
+		});
+};
+
 Media_Note.getByMediaAndUserID = ids => {
 	return database("media_note")
 		.join("notes", "media_note.note_id", "notes.id")
@@ -96,7 +125,7 @@ Media_Note.getByMediaAndUserID = ids => {
 			"media_note.media_id",
 			"media_note.note_id",
 			"media_note.user_id",
-			"notes.title",
+			"notes.title as note_title",
 			"notes.data"
 		])
 		.where(builder =>

@@ -137,12 +137,12 @@ NoteTagService.editNT = async function(
 	add_tag_titles,
 	rm_tag_ids
 ) {
-	console.log(add_tag_titles, rm_tag_ids);
+
 	add_tag_titles = add_tag_titles.map(tag => {
 		return tag.title;
 	});
 	rm_tag_ids = rm_tag_ids.map(tag => tag.tag_id);
-	console.log(add_tag_titles, rm_tag_ids);
+
 	// Check that IDs is an array, and convert it into one if not.
 	if (!Array.isArray(add_tag_titles)) add_tag_titles = [add_tag_titles];
 	if (!Array.isArray(rm_tag_ids)) rm_tag_ids = [rm_tag_ids];
@@ -178,13 +178,7 @@ NoteTagService.editNT = async function(
 	let res = await NoteTagService.getByNoteAndUserID({ note_id, user_id });
 	results.final = res;
 
-	/*
-	console.log("results", results);
-	console.log("results.tags", results.tags);
-	console.log("results.NTs", results.NTs);
-	console.log("results.rm", results.rm);
-	console.log("results.final", results.final);
-	*/
+
 
 	return { status: 200, data: results };
 };
