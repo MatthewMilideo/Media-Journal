@@ -45,7 +45,6 @@ class Note extends React.Component {
 	}
 
 	onSaveChanges = () => {
-
 		const { id, type, CID, title } = this.props;
 		const { user_id } = this.props.User;
 		const { localTitle, localData, rmTags, addTags, localTags } = this.state;
@@ -65,8 +64,7 @@ class Note extends React.Component {
 	};
 
 	onDiscardChanges = () => {
-
-		Note.new
+		this.props.Note.new
 			? this.props.deleteNote(this.props.Note)
 			: this.setState({
 					edit: false,
@@ -96,7 +94,12 @@ class Note extends React.Component {
 	};
 
 	renderStatic = () => {
-		const { note_title, data, tags, media_title, type } = this.props.Note;
+		let { note_title, data, tags, media_title, type } = this.props.Note;
+
+		if (!media_title && this.props.Note.media) {
+			media_title = this.props.Note.media.title;
+			type = this.props.Note.media.type;
+		}
 
 		return (
 			<Card className="mb-3 p-3 shadow-sm">

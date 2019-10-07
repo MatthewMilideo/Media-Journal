@@ -13,6 +13,7 @@ import Styled from "styled-components";
 
 import history from "../history";
 import NavBar from "./NavBar";
+import Signup from "./Signup";
 
 const StyledContainer = Styled(Container)`
 min-height: 100%;
@@ -46,6 +47,11 @@ class App extends React.Component {
 									path={`${process.env.PUBLIC_URL}/media/:type?/:id?`}
 									exact
 									component={MediaPage}
+								/>
+								<Route
+									path={`${process.env.PUBLIC_URL}/login`}
+									exact
+									component={Signup}
 								/>
 							</Switch>
 						</Container>

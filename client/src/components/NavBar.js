@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
-
+import { signOut } from "../actions/firebase";
 import { getUserInfo, getUserErr } from "../reducers";
 class NavBar extends React.Component {
 	state = { activeItem: "" };
@@ -11,6 +11,8 @@ class NavBar extends React.Component {
 		if (this.props.location === "/home") this.setState({ activeItem: "home" });
 		else if (this.props.location === "/journal")
 			this.setState({ activeItem: "Notes" });
+		else if (this.props.location === "/login")
+			this.setState({ activeItem: "Sign In" });
 		else this.setState({ activeItem: "Content" });
 	}
 
@@ -20,6 +22,8 @@ class NavBar extends React.Component {
 				this.setState({ activeItem: "home" });
 			else if (this.props.location === "/journal")
 				this.setState({ activeItem: "Notes" });
+			else if (this.props.location === "/login")
+				this.setState({ activeItem: "Sign In" });
 			else this.setState({ activeItem: "Content" });
 		}
 	}
@@ -29,7 +33,7 @@ class NavBar extends React.Component {
 			<Nav
 				variant="tabs"
 				activeKey={this.state.activeItem}
-				className="pl-3 pt-2 bg-light"
+				className="pl-3 pt-2 pr-3 bg-light"
 			>
 				<Nav.Item href="/home">
 					<Nav.Link
@@ -58,8 +62,24 @@ class NavBar extends React.Component {
 						eventKey="Notes"
 						onClick={() => this.setState({ activeItem: "Notes" })}
 					>
-						Browse Notes and Viewed Media
+						Browse Notes
 					</Nav.Link>
+				</Nav.Item>
+				<Nav.Item className="ml-auto">
+					{this.props.auth.isLoaded && this.props.auth.isEmpty ? (
+						<Nav.Link
+							as={Link}
+							to="/login"
+							eventKey="Sign In"
+							onClick={() => this.setState({ activeItem: "Sign In" })}
+						>
+							Sign In
+						</Nav.Link>
+					) : (
+						<Nav.Link eventKey="Sign In" onClick={() => this.props.signOut()}>
+							Sign Out
+						</Nav.Link>
+					)}
 				</Nav.Item>
 			</Nav>
 		);
@@ -69,13 +89,12 @@ class NavBar extends React.Component {
 const mapStateToProps = state => {
 	return {
 		userInfo: getUserInfo(state),
-		userErr: getUserErr(state)
+		userErr: getUserErr(state),
+		auth: state.firebaseReducer.auth
 	};
 };
 
 export default connect(
 	mapStateToProps,
-	{
-		//	logoutUser
-	}
+	{ signOut }
 )(NavBar);

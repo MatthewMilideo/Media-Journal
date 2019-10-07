@@ -2,7 +2,7 @@ import * as T from "../actions/types";
 
 import axios from "axios";
 
-const server = axios.create({
+export const server = axios.create({
 	baseURL: "http://localhost:5000/"
 });
 
@@ -396,10 +396,19 @@ export const postNote = (
 			note_title: title,
 			data,
 			type: mediaObj.type,
+			CID: mediaObj.CID,
 			media_title: mediaObj.title,
 			tags: res.data.tags,
 			errorTags: res.data.errorTags
 		};
+
+		dispatch({
+			type: `${T.FINISHED_POST_NOTE2}`,
+			payload: {
+				noteObj,
+				old_id
+			}
+		});
 
 		dispatch({
 			type: `${T.FINISHED_POST_NOTE}`,

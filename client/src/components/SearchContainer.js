@@ -28,10 +28,15 @@ class SearchContainer extends React.Component {
 		const type = this.props.search;
 		const data = this.props[type];
 		const { user_id } = this.props.User;
-		console.log('callback');
+		console.log("callback");
 		console.log(data);
 
-		if (data.keysArr.length !== 0 && data.status !== `${type}${T._ERRORED_SEARCH}` && data.status !== `${type}${T._ERRORED_SEARCH}_NEXT`) {
+		if (
+			data.keysArr.length !== 0 &&
+			data.status !== `${type}${T._BEGAN_SEARCH}_NEXT` &&
+			data.status !== `${type}${T._ERRORED_SEARCH}` &&
+			data.status !== `${type}${T._ERRORED_SEARCH}_NEXT`
+		) {
 			if (data.queryData.total_pages > data.queryData.page) {
 				let newElem = data.queryData.page + 1;
 
@@ -55,15 +60,28 @@ class SearchContainer extends React.Component {
 		this.observer.observe(this.myRef.current);
 	}
 
+
 	renderGrid(media, type) {
 		const mediaLength = media.length;
 		let returnObj;
 		media
 			? (returnObj = media.map((elem, i) => {
 					return (
-						<Col xs={12} sm={6} md={4} lg={3} key={elem.id} className="mb-3">
+						<Col
+							xs={12}
+							sm={6}
+							md={4}
+							lg={3}
+							key={elem.id}
+							className="mb-3"
+							onMouseEnter={() => {
+								console.log("entered grid");
+							}}
+						>
 							<MediaCard
 								key={elem.id}
+								index={i}
+								onHover={this.hoverChange}
 								data={elem}
 								type={type}
 								len={mediaLength}

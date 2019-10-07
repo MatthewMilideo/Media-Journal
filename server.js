@@ -10,7 +10,30 @@ const environment = process.env.NODE_ENV || "development";
 const configuration = require("./knexfile")[environment];
 const database = require("knex")(configuration);
 
+const admin = require("./firebase-admin/admin");
+
 const app = express();
+
+async function verifyToken(req, res, next) {
+	console.log("hello");
+	const idToken = req.headers.authorization;
+	console.log(idToken);
+	try {
+		const decodedToken = await admin.auth().verifyIdToken(idToken);
+
+		if (decodedToken) {
+			req.body.uid = decodedToken.uid;
+
+			return next();
+		} else {
+			return res.status(401).send("You are not authorized!");
+		}
+	} catch (e) {
+		return res.status(401).send("You are not authorized!");
+	}
+}
+
+
 
 app.use(bodyParser.json());
 app.use(
@@ -24,6 +47,13 @@ app.use(
 		origin: "http://localhost:3000"
 	})
 );
+
+app.use("/notes", verifyToken);
+app.use("/search/notes", verifyToken);
+app.use("/search/notesUser", verifyToken);
+app.use("/search/mediaUser", verifyToken);
+app.use("/search/noteTags", verifyToken);
+app.use("/search/tags", verifyToken);
 mountRoutes(app);
 
 if (app.get("env") === "development") {

@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { firebaseReducer } from "react-redux-firebase";
 import userReducer, * as user from "./userReducer";
 import tagReducer, * as tag from "./tagReducer";
 import viewedReducer from "./viewedReducer";
@@ -17,6 +18,7 @@ reducerObject[T.BOOK] = searchHOR(T.BOOK);
 
 export default combineReducers({
 	...reducerObject,
+	firebaseReducer,
 	user: userReducer,
 	search: searchBarReducer,
 	tag: tagReducer,

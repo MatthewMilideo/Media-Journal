@@ -47,6 +47,20 @@ function finishedNextSearch(state, action) {
 	return newState;
 }
 
+function finishedPostNote(state, action) {
+	let { type, CID } = action.payload;
+	let newState = { ...state };
+	 newState[type] = {...newState[type]};
+	 newState[type] = {...newState[type].media};
+	 if (newState[type].media[CID]){
+		 newState[type].media[CID] = {...newState[type].media[CID] }
+		 newState[type].media[CID].viewed = true; 
+		 newState[type].media[CID].noteCount = newState[type].media[CID].noteCount += 1 ; 
+
+	 }
+	return newState;
+}
+
 export const searchHOR = type => (state = defaultSearchState, action) => {
 	switch (action.type) {
 		case `${type}${T._BEGAN_SEARCH}`:
@@ -109,6 +123,8 @@ export const searchHOR = type => (state = defaultSearchState, action) => {
 			return {
 				...state
 			};
+		//case `${T.FINISHED_POST_NOTE2}` :
+		//	return finishedPostNote(state, action);
 		default:
 			return state;
 	}

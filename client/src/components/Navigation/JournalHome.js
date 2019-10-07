@@ -1,9 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getNotesUser, getMediaUser, getNotesTags } from "../../actions";
+import Nav from "react-bootstrap/Nav";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import NoteManager from "../NoteManager";
+import AuthCard from "../AuthCard";
 import * as T from "../../actions/types";
 
 function RenderFilter(props) {
@@ -32,6 +34,26 @@ function RenderFilter(props) {
 	);
 }
 
+function TheNav(props) {
+	return (
+		<Nav
+			fill
+			variant="pills"
+			defaultActiveKey={props.activeElem}
+			className="pl-0 pr-0 mt-3 mb-3 bg-white"
+			onSelect={e => props.setActiveElem(e)}
+		>
+			{props.navList.map(navElem => {
+				return (
+					<Nav.Item key={navElem}>
+						<Nav.Link eventKey={navElem}>{navElem}</Nav.Link>
+					</Nav.Item>
+				);
+			})}
+		</Nav>
+	);
+}
+
 class JournalHome extends React.Component {
 	constructor(props) {
 		super(props);
@@ -39,7 +61,8 @@ class JournalHome extends React.Component {
 		typeFilter[T.BOOK] = true;
 		typeFilter[T.MOVIE] = true;
 		typeFilter[T.TV] = true;
-		this.state = { noteMediaFilter: { notes: true, media: false }, typeFilter };
+
+		this.state = { activeElem: "Notes", typeFilter };
 	}
 
 	componentDidMount() {
@@ -55,19 +78,17 @@ class JournalHome extends React.Component {
 		this.setState(stateObj);
 	};
 
+	setActiveElem = activeElem => {
+		this.setState({ activeElem });
+	};
+
 	render() {
-		console.log(this.props.notes.notes);
-		console.log(this.props.notes.notes.mKeysArr);
 		let keysArr = [...this.props.notes.notes.keysArr];
 		let mKeysArr = [...this.props.media.keysArr];
 
 		keysArr = keysArr.filter(key => {
 			let tempType = this.props.notes.notes[key].type;
-			console.log(
-				tempType,
-				this.state.typeFilter,
-				this.state.typeFilter[tempType]
-			);
+
 			if (this.state.typeFilter[tempType]) return key;
 		});
 
@@ -80,31 +101,46 @@ class JournalHome extends React.Component {
 		let mediaCopy = { ...this.props.media };
 		notesCopy.keysArr = keysArr;
 		mediaCopy.keysArr = mKeysArr;
-		console.log(mediaCopy);
 
 		return (
 			<div>
-				<Card className="p-3 mb-3 ">
-					Filter by Media Type:
-					<RenderFilter
-						label={"typeFilter"}
-						typeFilter={this.state.typeFilter}
-						setTypes={this.setTypes}
-					/>
-				</Card>
+				<AuthCard>
+					<Card className="p-3 mb-3 ">
+						Filter by Media Type:
+						<RenderFilter
+							label={"typeFilter"}
+							typeFilter={this.state.typeFilter}
+							setTypes={this.setTypes}
+						/>
+					</Card>
 
-				<NoteManager
-					mediaFlag={false}
-					buttonFlag={false}
-					givenNotes={notesCopy}
-					media={mediaCopy}
-				/>
+					{this.state.activeElem === "Notes" ? (
+						<NoteManager
+							mediaFlag={false}
+							buttonFlag={false}
+							givenNotes={notesCopy}
+							media={mediaCopy}
+						/>
+					) : (
+						<NoteManager
+							mediaFlag={true}
+							buttonFlag={false}
+							givenNotes={notesCopy}
+							media={mediaCopy}
+						/>
+					)}
+				</AuthCard>
 			</div>
 		);
 	}
 }
 
 /*
+<TheNav
+					navList={["Notes", "Media"]}
+					activeElem={this.state.activeElem}
+					setActiveElem={this.setActiveElem}
+				/>
 	
 	*/
 

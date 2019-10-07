@@ -8,6 +8,14 @@ export const breakpoints = {
 	arr: [576, 768, 992, 1200, 10000]
 };
 
+/* Firebase Auth */
+export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
+export const SIGNUP_ERROR = "SIGNUP_ERROR";
+export const SIGNIN_SUCCESS = "SIGNIN_SUCCESS";
+export const SIGNIN_ERROR = "SIGNIN_ERROR";
+export const SIGNOUT_SUCCESS = "SIGNOUT_SUCCESS";
+export const SIGNOUT_ERROR = "SIGNOUT_ERROR";
+
 /* Search Types */
 
 /* Data Types for Search */
@@ -62,6 +70,7 @@ export const ERRORED_GET_MEDIA = "ERRORED_GET_MEDIA";
 export const BEGAN_POST_NOTE = "BEGAN_POST_NOTE";
 export const FINISHED_POST_NOTE = "FINISHED_POST_NOTE";
 export const ERRORED_POST_NOTE = "ERRORED_POST_NOTE";
+export const FINISHED_POST_NOTE2 = "FINISHED_POST_NOTE2";
 
 export const BEGAN_EDIT_NOTE = "BEGAN_EDIT_NOTE";
 export const FINISHED_EDIT_NOTE = "FINISHED_EDIT_NOTE";

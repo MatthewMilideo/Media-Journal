@@ -27,10 +27,14 @@ const TitleDiv = styled.div`
 const StyledCard = styled(Card)`
     width: 100%;
     height: 425px; 
-    }
+	}
+	* {
+		pointer-events: none;
+	}
 `;
 
 const CardImageDiv = styled.div`
+	z-index: 100;
 	display: flex;
 	justify-content: center;
 	width: 100%;
@@ -41,6 +45,10 @@ const CardImageDiv = styled.div`
 		object-fit: cover;
 		object-position: top;
 	}
+`;
+
+const Img2 = styled.img`
+	visibility: hidden; 
 `;
 
 const BlurredDiv = styled.div`
@@ -114,14 +122,19 @@ class MediaCard extends React.Component {
 	renderLoading = () => {
 		return (
 			<BlurredDiv className="bg-dark">
-				<img
-					alt="Loading"
-					ref={this.ref}
-					src={null}
-					onLoad={() => {
-						this.setState({ load: true });
-					}}
-				/>
+				<CardImageDiv>
+					<Img2
+						alt="Loading"
+						ref={this.ref}
+						src = {null}
+						onLoad={() => {
+							this.setState({ load: true });
+						}}
+						onError={() => {
+							console.log("error");
+						}}
+					/>
+				</CardImageDiv>
 			</BlurredDiv>
 		);
 	};
@@ -136,7 +149,7 @@ class MediaCard extends React.Component {
 			>
 				<StyledCard
 					className="d-flex"
-					onMouseOver={e => this.delayMouseEnter(e)}
+					onMouseEnter={e => this.delayMouseEnter(e)}
 					onMouseOut={() => this.delayMouseEnter.cancel()}
 				>
 					<CardImageDiv>
@@ -227,7 +240,7 @@ class MediaCard extends React.Component {
 		);
 	};
 
-	delayMouseEnter = debounce(e => this.handleMouseEnter(e), 100);
+	delayMouseEnter = debounce(e => this.handleMouseEnter(e), 125);
 
 	handleMouseEnter = e => {
 		if (window.innerWidth > 575) this.setState({ hover: true });

@@ -1,31 +1,38 @@
+import { firebaseReducer } from "react-redux-firebase";
 import * as T from "../actions/types";
 
 const defaultState = {
 	status: null,
-	user_id: 61, 
+	user_id: 61
 };
 
 export default (state = defaultState, action) => {
 	switch (action.type) {
 		// ~~~~~~~~~~ Login and Logout Cases ~~~~~~~~~~~~
-		case T.BEGAN_LOGIN:
+		case T.SIGNUP_SUCCESS:
 			return {
-				...defaultState,
-				status: action.type
+				...state
 			};
-		case T.FINISHED_LOGIN:
+		case T.SIGNUP_ERROR:
 			return {
-				status: action.type,
-				user_id: 7, 
+				...state
 			};
-		case T.ERRORED_LOGIN:
+		case T.SIGNIN_SUCCESS:
 			return {
-				...state, 
+				user_id: action.payload,
+				...state
 			};
-		case T.LOGOUT:
+		case T.SIGNIN_ERROR:
 			return {
-				status: T.LOGOUT,
-				user_id: null, 
+				...state
+			};
+		case T.SIGNOUT_SUCCESS:
+			return {
+				...state
+			};
+		case T.SIGNOUT_ERROR:
+			return {
+				...state
 			};
 		default:
 			return state;
@@ -38,8 +45,6 @@ export function _getUser(store) {
 	return store;
 }
 
-
-
 // ~~~~~~~~~~ Getters ~~~~~~~~~~~
 
 export function _getUserInfo(store) {
@@ -49,4 +54,3 @@ export function _getUserInfo(store) {
 export function _getUserErr(store) {
 	return store.errType;
 }
-

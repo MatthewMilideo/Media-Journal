@@ -1,35 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Note from "./Note";
 
-import { getNotes, addNote } from "../actions";
+import { getNotes, addNote, deleteMediaUser } from "../actions";
 import { getNotesState } from "../reducers";
 import * as T from "../actions/types";
 
 const Media = props => {
+	const [showNotes, setShowNotes] = useState(false);
+	console.log(props.children);
 	return (
-		<Card>
-			<span>
-				{props.media.title} // {props.media.type}
-			</span>
-			{props.children}
+		<Card className="p-3 mb-3">
+			<Card.Title>
+				Media Title: {props.media.title} <br />
+				Media Type: {props.media.type}
+			</Card.Title>
+			{showNotes ? props.children : null}
+			{props.children.length > 0 ? (
+				<Button onClick={() => setShowNotes(!showNotes)}> Show Notes </Button>
+			) : (
+				<Button
+					onClick={() => {
+						console.log("hello");
+
+						props.deleteMediaUser(props.user_id, {
+							CID: props.media.CID,
+							title: props.media.title,
+							type: props.media.type
+						});
+					}}
+				>
+					Delete Media
+				</Button>
+			)}
 		</Card>
 	);
 };
-
-/*
-
-mediaFlag
-notes
-CID={id}
-type={type}
-title={title}
-user_id={user_id}
-
-
-*/
 
 class NoteManager extends React.Component {
 	componentDidMount() {
@@ -46,6 +54,11 @@ class NoteManager extends React.Component {
 			</Card>
 		);
 	}
+
+	deleteMediaUser = (user_id, mediaObj) => {
+		console.log(user_id, mediaObj);
+		this.props.deleteMediaUser(user_id, mediaObj);
+	};
 
 	renderNotesMedia() {
 		const { givenNotes, media } = this.props;
@@ -66,7 +79,14 @@ class NoteManager extends React.Component {
 					);
 				});
 			}
-			data.push(<Media media={media.media[elem]}>{temp}</Media>);
+			data.push(
+				<Media
+					deleteMediaUser={() => this.deleteMediaUser()}
+					media={media.media[elem]}
+				>
+					{temp}
+				</Media>
+			);
 			temp = [];
 		});
 		return <div> {data} </div>;

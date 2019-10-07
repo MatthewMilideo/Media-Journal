@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import ImageList from "../ImageList";
+import AuthCard from "../AuthCard";
 import NoteManager from "../NoteManager";
 import styled from "styled-components";
 
@@ -243,24 +244,28 @@ class MediaPage extends React.Component {
 					{type !== T.BOOK ? (
 						<div>
 							{this.renderMovie()}
-							<NoteManager
-								buttonFlag={true}
-								CID={id}
-								type={type}
-								title={title}
-								user_id={user_id}
-							/>
+							<AuthCard>
+								<NoteManager
+									buttonFlag={true}
+									CID={id}
+									type={type}
+									title={title}
+									user_id={user_id}
+								/>
+							</AuthCard>
 						</div>
 					) : (
 						<div>
 							{this.renderBook()}
-							<NoteManager
-								buttonFlag={true}
-								CID={id}
-								type={type}
-								title={title}
-								user_id={user_id}
-							/>
+							<AuthCard>
+								<NoteManager
+									buttonFlag={true}
+									CID={id}
+									type={type}
+									title={title}
+									user_id={user_id}
+								/>
+							</AuthCard>
 						</div>
 					)}
 				</div>
