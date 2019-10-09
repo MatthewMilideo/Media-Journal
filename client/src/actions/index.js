@@ -64,6 +64,29 @@ export const extSearch = (user_id, term, type, page) => async dispatch => {
 	}
 };
 
+export const postUser = user_id => async dispatch => {
+	console.log("in post user", user_id);
+	dispatch({ type: T.BEGAN_POST_USER });
+	try {
+		let res = await server.post("/user/", {
+			user_id
+		});
+		console.log(" in post user response", res);
+		dispatch({
+			type: T.SUCCESS_POST_USER,
+			payload: {
+				user_id
+			}
+		});
+	} catch (error) {
+		console.log("in post user error", error);
+		dispatch({
+			type: T.ERRORED_POST_USER,
+			payload: error
+		});
+	}
+};
+
 export const postMediaUser = (user_id, mediaObj) => async dispatch => {
 	const { type, CID } = mediaObj;
 	dispatch({ type: `${type}${T._BEGAN_POST_MEDIA_USER}` });
@@ -403,14 +426,6 @@ export const postNote = (
 		};
 
 		dispatch({
-			type: `${T.FINISHED_POST_NOTE2}`,
-			payload: {
-				noteObj,
-				old_id
-			}
-		});
-
-		dispatch({
 			type: `${T.FINISHED_POST_NOTE}`,
 			payload: {
 				noteObj,
@@ -454,6 +469,7 @@ export const removeNoteTag = (tag, note_id) => {
 };
 
 export const deleteNote = note => async dispatch => {
+	console.log(note);
 	if (note.new)
 		return dispatch({
 			type: `${T.FINISHED_DELETE_NOTE}`,
@@ -464,13 +480,18 @@ export const deleteNote = note => async dispatch => {
 		await server.delete("/notes/", {
 			data: {
 				media_id: note.media_id,
+
 				note_id: note.note_id,
 				user_id: note.user_id
 			}
 		});
 		dispatch({
 			type: `${T.FINISHED_DELETE_NOTE}`,
-			payload: { note_id: note.note_id }
+			payload: {
+				note_id: note.note_id,
+				CID: note.media.CID,
+				type: note.media.type
+			}
 		});
 	} catch (error) {
 		// Catch if my server is down.

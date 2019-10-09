@@ -81,7 +81,6 @@ exports.checkCIDTypeUser = function(arr) {
 		if (!arr[i].type) return false;
 		if (!exports.checkMediaType(arr[i].type)) return false;
 		if (!arr[i].user_id) return false;
-		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
 	}
 	return true;
 };
@@ -94,7 +93,6 @@ exports.checkMediaIDUserID = function(arr) {
 		if (!arr[i].media_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].media_id))) return false;
 		if (!arr[i].user_id) return false;
-		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
 	}
 	return true;
 };
@@ -106,7 +104,6 @@ exports.checkTagIDUserID = function(arr) {
 		if (!arr[i].tag_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].tag_id))) return false;
 		if (!arr[i].user_id) return false;
-		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
 	}
 	return true;
 };
@@ -119,7 +116,6 @@ exports.checkNoteIDUserID = function(arr) {
 		if (!arr[i].note_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
 		if (!arr[i].user_id) return false;
-		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
 	}
 	return true;
 };
@@ -132,7 +128,6 @@ exports.checkNoteTag = function(arr) {
 		if (!arr[i].note_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
 		if (!arr[i].user_id) return false;
-		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
 		if (!arr[i].title) return false;
 	}
 	return true;
@@ -146,7 +141,6 @@ exports.checkNTAll = function(arr) {
 		if (!arr[i].note_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].note_id))) return false;
 		if (!arr[i].user_id) return false;
-		if (!Number.isInteger(parseInt(arr[i].user_id))) return false;
 		if (!arr[i].tag_id) return false;
 		if (!Number.isInteger(parseInt(arr[i].tag_id))) return false;
 	}

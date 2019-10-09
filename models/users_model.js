@@ -33,7 +33,7 @@ User.getUserID = id => {
 		.select()
 		.then(data => {
 			if (data.length === 0)
-				return ( { status: 404, data: "The requested user was not found." });
+				return { status: 404, data: "The requested user was not found." };
 			return { status: 200, data: data };
 		})
 		.catch(error => {
@@ -61,26 +61,22 @@ User.getUserEmail = email => {
 };
 
 // Logs a User In
-User.postUser = async (email, name) => {
-	if (!helpers.checkArgs([], [email, name]))
-		return Promise.reject({
-			status: 400,
-			data: "You must provide a valid email and name."
-		});
+User.postUser = async user_id => {
 	return database("users")
-		.insert({ email, name }, ["id", "email", "name"])
+		.insert({ id: user_id }, ["id"])
 		.then(data => {
+			console.log("in model", data);
 			return { status: 201, data: data };
 		})
 		.catch(error => {
-			if (error.constraint === "users_email_unique")
-				throw {
+			if (error.constraint === "users_id_unique")
+				return {
 					status: 409,
 					data:
-						"There was a conflict during insertion. You must provide a unique email.",
+						"There was a conflict during insertion. You must provide a unique user_id.",
 					error
 				};
-			throw { status: 400, data: error.message, error };
+			return { status: 400, data: error.message, error };
 		});
 };
 

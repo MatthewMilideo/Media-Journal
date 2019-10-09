@@ -8,6 +8,7 @@ import HomePage from "./Navigation/HomePage";
 import SearchPage from "./Navigation/SearchPage";
 import JournalHome from "./Navigation/JournalHome";
 import MediaPage from "./Navigation/MediaPage";
+import TestPage from "./Navigation/TestPage";
 
 import Styled from "styled-components";
 
@@ -52,6 +53,11 @@ class App extends React.Component {
 									path={`${process.env.PUBLIC_URL}/login`}
 									exact
 									component={Signup}
+								/>
+								<Route
+									path={`${process.env.PUBLIC_URL}/TestPage`}
+									exact
+									component={TestPage}
 								/>
 							</Switch>
 						</Container>

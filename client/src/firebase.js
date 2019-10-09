@@ -32,9 +32,6 @@ firebase
 		return;
 	})
 	.catch(function(error) {
-		// Handle Errors here.
-		var errorCode = error.code;
-		var errorMessage = error.message;
 	});
 
 // Finally, export it to use it throughout your app

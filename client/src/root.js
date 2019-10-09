@@ -7,10 +7,8 @@ import thunk from "redux-thunk";
 import reducers from "./reducers";
 
 const config = {
-	userProfile: 'users', // firebase root where user profiles are stored
-	enableLogging: false, // enable/disable Firebase's database logging
-	updateProfileOnLogin: false
-  }
+	userProfile: "users" // firebase root where user profiles are stored
+};
 
 export default ({ children, initalState = {} }) => {
 	const createStoreWithFirebase = compose(reactReduxFirebase(firebase, config))(
@@ -26,4 +24,3 @@ export default ({ children, initalState = {} }) => {
 
 	return <Provider store={store}> {children} </Provider>;
 };
-

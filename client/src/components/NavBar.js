@@ -73,7 +73,7 @@ class NavBar extends React.Component {
 							eventKey="Sign In"
 							onClick={() => this.setState({ activeItem: "Sign In" })}
 						>
-							Sign In
+							Sign In/Sign Up
 						</Nav.Link>
 					) : (
 						<Nav.Link eventKey="Sign In" onClick={() => this.props.signOut()}>

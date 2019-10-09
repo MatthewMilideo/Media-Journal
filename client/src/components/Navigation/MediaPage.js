@@ -118,6 +118,12 @@ class MediaPage extends React.Component {
 		this.props.getItem(this.props.User.user_id, id, type);
 	}
 
+	componentDidUpdate(prevProps) {
+		const { id, type } = this.props.match.params;
+		if (prevProps.User.user_id !== this.props.User.user_id)
+			this.props.getItem(this.props.User.user_id, id, type);
+	}
+
 	renderBook() {
 		const { data } = this.props.Item.data;
 		return (
@@ -213,8 +219,13 @@ class MediaPage extends React.Component {
 
 					{data.viewed ? (
 						<div className=" mb-n3 ml-n3 mr-n3 p-1 pb-2 d-flex justify-content-center border-top text-white mt-auto bg-info">
-							<span className="ml-2">
+							<span className="ml-2 mr-auto">
 								Viewed: <span className="d-inline oi oi-circle-check"></span>
+								<span>
+									{" "}
+									Click here to remove from viewed.{" "}
+									<span className="d-inline oi oi-circle-check"></span>{" "}
+								</span>
 							</span>
 						</div>
 					) : null}

@@ -109,7 +109,7 @@ NoteTagService.postNT = async function(note_id, user_id, tag_ids) {
 	// Check that IDs is an array, and convert it into one if not.
 	if (!Array.isArray(tag_ids)) tag_ids = [tag_ids];
 	// Check that every element of every obj of the IDs array is an integer.
-	if (!helpers.checkArgs([note_id, user_id, ...tag_ids]))
+	if (!helpers.checkArgs([note_id, ...tag_ids], [user_id]))
 		return {
 			status: 400,
 			message:
@@ -137,7 +137,6 @@ NoteTagService.editNT = async function(
 	add_tag_titles,
 	rm_tag_ids
 ) {
-
 	add_tag_titles = add_tag_titles.map(tag => {
 		return tag.title;
 	});
@@ -147,7 +146,7 @@ NoteTagService.editNT = async function(
 	if (!Array.isArray(add_tag_titles)) add_tag_titles = [add_tag_titles];
 	if (!Array.isArray(rm_tag_ids)) rm_tag_ids = [rm_tag_ids];
 	// Check that every element of every obj of the IDs array is an integer.
-	if (!helpers.checkArgs([note_id, user_id]))
+	if (!helpers.checkArgs([note_id] , [user_id]))
 		return {
 			status: 400,
 			data: {
@@ -178,8 +177,6 @@ NoteTagService.editNT = async function(
 	let res = await NoteTagService.getByNoteAndUserID({ note_id, user_id });
 	results.final = res;
 
-
-
 	return { status: 200, data: results };
 };
 
@@ -190,7 +187,7 @@ NoteTagService.editNT = async function(
 NoteTagService.deleteNT = async function(note_id, user_id, tag_ids) {
 	if (!Array.isArray(tag_ids)) tag_ids = [tag_ids];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([note_id, user_id, ...tag_ids]))
+	if (!helpers.checkArgs([note_id, ...tag_ids], [user_id]))
 		return {
 			status: 400,
 			data: "You must provide a valid note_id, user_id, and tag_ids."
@@ -216,7 +213,7 @@ NoteTagService.deleteNT = async function(note_id, user_id, tag_ids) {
 NoteTagService.postTagAndNT = async function(note_id, user_id, tag_titles) {
 	// Verify the input.
 	if (!Array.isArray(tag_titles)) tag_titles = [tag_titles];
-	if (!helpers.checkArgs([note_id, user_id], [...tag_titles]))
+	if (!helpers.checkArgs([note_id] , [...tag_titles, user_id]))
 		return {
 			status: 400,
 			data: {

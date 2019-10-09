@@ -1,3 +1,4 @@
+const UserService = require("../services/UserService");
 const NoteService = require("../services/NoteService");
 const MediaService = require("../services/MediaService");
 const MediaNoteService = require("../services/MediaNoteService");
@@ -41,6 +42,16 @@ NotesController.deleteMN = (req, res) => {
 		.catch(error => {
 			res.status(error.status).send(error.data);
 		});
+};
+
+NotesController.postUser = async (req, res) => {
+	console.log('in post note');
+
+	const { user_id } = req.body;
+	console.log('user_id', user_id);
+	UserService.postUser(user_id)
+		.then(response => res.status(response.status).send(response.data))
+		.catch(error => res.status(error.status).send(error.message));
 };
 
 module.exports = NotesController;

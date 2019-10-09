@@ -23,13 +23,15 @@ SearchPageService.searchExt = async function(term, type, page = 0) {
 };
 
 SearchPageService.search = async function(user_id, term, type, page = 0) {
+	console.log('user_id in search', user_id);
 	// Check the incoming arguments.
-	if (!helpers.checkArgsType([user_id], [term, type], type))
+	if (!helpers.checkArgsType([], [user_id, term, type], type))
 		return {
 			status: 400,
 			data: "You must provide a valid user_id, search term and type."
 		};
-
+	console.log('got past first test')
+	
 	// Query External Database.
 	let results = await SearchPageService.searchExt(term, type, page);
 
@@ -48,6 +50,7 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 
 	//Get a list of all viewed media.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
+	console.log(' results2', results2)
 	if (results2.status !== 200) return { status: 200, data: results };
 
 	let IDtoCID = {};
@@ -60,6 +63,7 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 
 	// Get a count of all notes for viewed media.
 	results2 = await MediaNoteService.getByMediaID(ids);
+	console.log(' results2', results2)
 
 	if (results2.status !== 200) return { status: 200, data: results };
 

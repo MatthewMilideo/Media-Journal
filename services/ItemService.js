@@ -8,7 +8,7 @@ const ItemService = {};
 
 ItemService.get = async function(user_id, CID, type) {
 	/* Check the incoming arguments */
-	if (!helpers.checkArgsType([user_id], [CID, type], type))
+	if (!helpers.checkArgsType([], [user_id, CID, type], type))
 		return Promise.reject({
 			status: 400,
 			data: "You must provide a valid user_id, CID and type."
@@ -29,14 +29,14 @@ ItemService.get = async function(user_id, CID, type) {
 
 	try {
 		itemData = await queryFunc(CID, type);
-		itemData.data.viewed = false; 
+		itemData.data.viewed = false;
 		res = await MediaService.getByCIDUser({
 			CID,
 			type,
 			user_id
 		});
-		if (res.status === 200){
-			itemData.data.viewed = true; 
+		if (res.status === 200) {
+			itemData.data.viewed = true;
 		}
 	} catch (error) {
 		return Promise.reject(error);
@@ -54,7 +54,6 @@ ItemService.formatGBooksResponse = response => {
 	returnData.results = response.items.map(elem => {
 		if (elem.volumeInfo.imageLinks) {
 			if (elem.volumeInfo.imageLinks.thumbnail) {
-
 				elem.image = elem.volumeInfo.imageLinks.smallThumbnail;
 				elem.image = elem.image.replace("&zoom=5", "&zoom=3");
 			}
@@ -101,7 +100,6 @@ const formatDate = date => {
 };
 
 const formatMoney = num => {
-
 	if (num === 0) return null;
 
 	let returnStr = "$";

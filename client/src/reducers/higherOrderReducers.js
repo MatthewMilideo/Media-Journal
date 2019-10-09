@@ -34,10 +34,8 @@ function finishedNextSearch(state, action) {
 	for (let i = 0; i < keysArr.length; i++) {
 		let key = keysArr[i];
 		if (newState.media[key]) {
-		
 			cleanKeysArr = cleanKeysArr.filter(elem => elem !== key);
 			media = copyObj(media, key);
-
 		}
 	}
 	newState.keysArr = [...newState.keysArr, ...cleanKeysArr];
@@ -48,21 +46,44 @@ function finishedNextSearch(state, action) {
 }
 
 function finishedPostNote(state, action) {
-	let { type, CID } = action.payload;
+	let { type, CID } = action.payload.noteObj;
+	console.log(type, CID);
 	let newState = { ...state };
-	 newState[type] = {...newState[type]};
-	 newState[type] = {...newState[type].media};
-	 if (newState[type].media[CID]){
-		 newState[type].media[CID] = {...newState[type].media[CID] }
-		 newState[type].media[CID].viewed = true; 
-		 newState[type].media[CID].noteCount = newState[type].media[CID].noteCount += 1 ; 
+	console.log(newState);
+	newState.media = { ...newState.media };
 
-	 }
+	if (newState.media[CID]) {
+		newState.media[CID] = { ...newState.media[CID] };
+		newState.media[CID].viewed = true;
+		newState.media[CID].noteCount = newState.media[CID].noteCount += 1;
+	}
+
+	return newState;
+}
+
+function finishedDeleteNote(state, action) {
+	console.log(action.payload);
+	let { CID } = action.payload;
+	console.log(CID);
+	let newState = { ...state };
+	newState.media = { ...newState.media };
+	if (newState.media[CID]) {
+		newState.media[CID] = { ...newState.media[CID] };
+		newState.media[CID].noteCount = newState.media[CID].noteCount -= 1;
+	}
 	return newState;
 }
 
 export const searchHOR = type => (state = defaultSearchState, action) => {
 	switch (action.type) {
+		case T.SIGNIN_SUCCESS: {
+			return defaultSearchState;
+		}
+		case T.FINISHED_POST_NOTE: {
+			return finishedPostNote(state, action);
+		}
+		case T.FINISHED_DELETE_NOTE:
+			return finishedDeleteNote(state, action);
 		case `${type}${T._BEGAN_SEARCH}`:
 			return {
 				...state,
@@ -123,8 +144,6 @@ export const searchHOR = type => (state = defaultSearchState, action) => {
 			return {
 				...state
 			};
-		//case `${T.FINISHED_POST_NOTE2}` :
-		//	return finishedPostNote(state, action);
 		default:
 			return state;
 	}

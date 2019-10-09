@@ -22,7 +22,7 @@ MediaNoteService.getByUserID = async function(userIDs) {
 	// If there is only a single userID we wrap it in an array so the DB query functions properly.
 	if (!Array.isArray(userIDs)) userIDs = [userIDs];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs(userIDs))
+	if (!helpers.checkArgs([],userIDs))
 		return {
 			status: 400,
 			data: "You must provide valid mediaID(s)."
@@ -61,7 +61,7 @@ MediaNoteService.getByNoteAndUserID = async function(IDs) {
 
 MediaNoteService.postMN = async function(mediaID, noteID, userID) {
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([mediaID, noteID, userID]))
+	if (!helpers.checkArgs([mediaID, noteID],[ userID]))
 		return {
 			status: 400,
 			data: "You must provide a valid mediaID, noteID, and userID."
@@ -72,7 +72,7 @@ MediaNoteService.postMN = async function(mediaID, noteID, userID) {
 
 MediaNoteService.deleteMN = async function(mediaID, noteID, userID) {
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([mediaID, noteID, userID]))
+	if (!helpers.checkArgs([mediaID, noteID], [userID]))
 		return {
 			status: 400,
 			data: "You must provide a valid mediaID, noteID, and userID."

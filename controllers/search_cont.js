@@ -7,8 +7,7 @@ const TagService = require("../services/TagService");
 const SearchController = {};
 
 SearchController.search = (req, res) => {
-	let { user_id, term, page, type } = req.query;
-	user_id = parseInt(user_id);
+	let { user_id, term, page, type } = req.query;;
 	page = parseInt(page);
 
 	SearchPageService.search(user_id, term, type, page)

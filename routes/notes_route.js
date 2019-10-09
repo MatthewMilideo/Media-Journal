@@ -5,7 +5,7 @@ const NotesController = require("../controllers/notes_cont");
 const router = new Router();
 
 router.post("/media_user/", NotesController.postMediaUser);
-
+router.post("/user/", NotesController.postUser);
 router.post("/", NotesController.postNote);
 router.put("/", NotesController.editNote);
 router.delete("/", NotesController.deleteMN);

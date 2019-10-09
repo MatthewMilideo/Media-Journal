@@ -6,242 +6,287 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import debounce from "lodash/debounce";
 import Styled from "styled-components";
-import TheNav from "./Nav";
 import { signUp, signIn, signOut } from "../actions/firebase";
+import * as T from "../actions/types";
 
-const StyledForm = Styled(Form.Control)`
-    background-color: ${props => {
-			return props.valid === undefined
-				? `rgba(217, 83, 79, 0.0);`
-				: props.valid
-				? `rgb(212, 237, 214);`
-				: `rgb(248, 215, 218);`;
-		}}
-        
-    :focus {
-        background-color: ${props => {
-					return props.valid === undefined
-						? `rgba(217, 83, 79, 0.0);`
-						: props.valid
-						? `rgb(212, 237, 214);`
-						: `rgb(248, 215, 218);`;
-				}}
-    }
+const ValidtyDiv = Styled.div`
+    position: absolute;
+    width: auto;
+    bottom: 7px;
+    right: 10px;
+    margin-top: 0;
 `;
 
+const CheckedForm = props => {
+	const { validty, ...rest } = props;
+	if (props.validity === true) {
+		return (
+			<React.Fragment>
+				<Form.Control className="border-success" {...rest} />
+				<ValidtyDiv>
+					<span className=" text-success oi oi-check"></span>
+				</ValidtyDiv>
+			</React.Fragment>
+		);
+	} else if (props.validity === false) {
+		return (
+			<React.Fragment>
+				<Form.Control className="border-danger" {...rest} />
+				<ValidtyDiv>
+					<span className="text-danger oi oi-x"></span>
+				</ValidtyDiv>
+			</React.Fragment>
+		);
+	}
+	return <Form.Control {...props} />;
+};
+
 class Signup extends React.Component {
-	state = { type: "Sign In", email: "", pass1: "", pass2: "" };
+	state = {
+		type: "Sign In",
+		email: "",
+		pass1: "",
+		pass2: "",
+		emailV: null,
+		passV: null
+	};
 
 	onSubmit = e => {
 		e.preventDefault();
-
 		if (this.state.type === "Sign In") {
 			this.props.signIn(this.state.email, this.state.pass1);
 			return;
 		}
-
 		this.props.signUp(this.state.email, this.state.pass1);
 	};
 
-	numArray = {
-		1: true,
-		2: true,
-		3: true,
-		4: true,
-		5: true,
-		6: true,
-		7: true,
-		8: true,
-		9: true,
-		0: true
-	};
-
 	verifyEmail = () => {
-		const { email, vEmail } = this.state;
+		const { email } = this.state;
 		if (
 			/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
 				email
 			)
 		) {
 			this.setState({ emailV: true });
-			return true;
+			return;
 		}
 
 		this.setState({ emailV: false });
-		return false;
 	};
 
 	deVEmail = debounce(this.verifyEmail, 400);
 
-	verifyPass1 = () => {
-		const { pass1, pass2, pass2V } = this.state;
+	verifyPass = () => {
+		const { pass1, pass2 } = this.state;
+		if (pass1 === "" || pass2 === "") return this.setState({ passV: null });
+		if (pass1 !== pass2) return this.setState({ passV: false });
 		if (pass1.length >= 6) {
-			let flag = false;
 			for (let i = 0; i < pass1.length; i++) {
-				if (this.numArray[pass1[i]] === true) {
-					if (pass1 === pass2) this.setState({ pass1V: true, pass2V: true });
-					this.setState({ pass1V: true });
-					return true;
+				if (Number.isInteger(parseInt(pass1[i]))) {
+					this.setState({ passV: true });
+					return;
 				}
 			}
 		}
-		if (pass2V === true) {
-			this.setState({ pass1V: false, pass2V: false });
-			return;
-		}
-		this.setState({ pass1V: false });
-		return false;
+		this.setState({ passV: false });
+		return;
 	};
 
-	deVP1 = debounce(this.verifyPass1, 400);
+	deVPass = debounce(this.verifyPass, 400);
 
-	verifyPass2 = () => {
-		const { pass1, pass2 } = this.state;
-		if (this.verifyPass1()) {
-			if (pass1 === pass2) {
-				this.setState({ pass2V: true });
-				return;
-			}
-			this.setState({ pass2V: false });
-			return;
-		}
-		this.setState({ pass1V: false, pass2V: false });
-	};
+	renderLogIn = () => {
+		console.log(this.props.user);
+		const { status, message } = this.props.user;
+		let alert = null;
+		let className = null;
 
-	deVP2 = debounce(this.verifyPass2, 400);
-
-	render() {
-		const { auth } = this.props;
-		const { pass1V, pass2V, emailV } = this.state;
-
-		let variant = "primary";
-		let disabled = true;
-
-		if (pass1V === false || pass2V === false || emailV === false) {
-			variant = "danger";
-		}
-
-		if (this.state.type === "Sign In") {
-			if (emailV) {
-				disabled = false;
-			}
-		} else {
-			if (pass1V && pass2V && emailV) {
-				disabled = false;
-			}
+		if (status === T.SIGNIN_ERROR) {
+			className = "border-danger";
+			alert = (
+				<Alert variant="danger">
+					<Alert.Heading> Sign In Error: </Alert.Heading>
+					{message}
+				</Alert>
+			);
 		}
 
 		return (
-			<div>
-				<TheNav
-					activeElem={this.state.type}
-					navList={["Sign In", "Sign Up"]}
-					setActiveElem={e => this.setState({ type: e })}
-				/>
+			<Card className="p-3">
+				<Card.Title> Sign In</Card.Title>
+				<Form onSubmit={this.onSubmit}>
+					<Form.Group className="position-relative" controlid="formBasicEmail">
+						<Form.Label>Email address</Form.Label>
+						<Form.Control
+							type="email"
+							placeholder="Enter email"
+							value={this.state.email}
+							autoComplete="email"
+							onChange={e => {
+								this.setState({ email: e.target.value });
+							}}
+							flag={alert}
+							required
+						/>
+					</Form.Group>
 
-				<Card className="mb-3 p-3">
-					<Card.Title>
-						{this.state.type === "Sign In" ? "Sign In" : "Create an Account"}
-					</Card.Title>
-					<Form onSubmit={this.onSubmit}>
-						<Form.Group controlId="formBasicEmail">
-							<Form.Label>Email address</Form.Label>
-							<StyledForm
-								type="email"
-								placeholder="Enter email"
-								value={this.state.email}
-								onChange={e => {
-									this.setState({ email: e.target.value });
-									this.deVEmail();
-								}}
-								required
-								valid={this.state.emailV}
-							/>
-						</Form.Group>
+					<Form.Group
+						className="position-relative"
+						controlid="formBasicPassword"
+					>
+						<Form.Label>Password</Form.Label>
+						<Form.Control
+							type="password"
+							value={this.state.pass1}
+							placeholder="Password"
+							autoComplete="current-password"
+							onChange={e => {
+								this.setState({ pass1: e.target.value });
+							}}
+							className={className}
+							required
+						/>
+					</Form.Group>
 
-						<Form.Group controlId="formBasicPassword">
-							<Form.Label>Password</Form.Label>
-							<StyledForm
-								type="password"
-								value={this.state.pass1}
-								placeholder="Password"
-								onChange={e => {
-									this.setState({ pass1: e.target.value });
-									this.deVP1();
-								}}
-								required
-								valid={this.state.pass1V}
-							/>
-						</Form.Group>
+					<Button className="mb-3" type="submit">
+						Submit
+					</Button>
 
-						{this.state.type === "Sign Up" ? (
-							<React.Fragment>
-								<Form.Label className="mt-2">Verify Password</Form.Label>
-								<StyledForm
-									controlId="formBasicPassword2"
-									type="password"
-									value={this.state.pass2}
-									placeholder="Password"
-									onChange={e => {
-										this.setState({ pass2: e.target.value });
-										this.deVP2();
-									}}
-									valid={this.state.pass2V}
-									required
-								/>
-								<Alert className="mt-3" variant={variant}>
-									<span>
-										Note: Your password must be at least six characters long and
-										contain one number.
-									</span>
-								</Alert>{" "}
-							</React.Fragment>
-						) : null}
+					{alert}
+				</Form>
 
-						{this.state.pass}
-
-						<Button type="submit" disabled={disabled}>
-							{" "}
-							Submit
-						</Button>
-					</Form>
-				</Card>
-			</div>
+				<Card.Footer
+					onClick={() => this.setState({ type: "Sign Up" })}
+					className="mb-n3  ml-n3 mr-n3"
+				>
+					{" "}
+					<p> Don't have an account? Click here to create one. </p>{" "}
+				</Card.Footer>
+			</Card>
 		);
+	};
+
+	renderRegister = () => {
+		const { passV } = this.state;
+		const { status, message } = this.props.user;
+
+		let alertVariant = "primary";
+		let alertText =
+			"Note: Your password must contain at least six characters long and one number.";
+
+		if (passV === false) {
+			alertVariant = "danger";
+			alertText =
+				"Note: Both passwords must match, and your password must contain at least six characters and one number.";
+		}
+
+		if (status === T.SIGNUP_ERROR || status === T.SIGNUP_ERROR_AXIOS) {
+			alertVariant = "danger";
+			alertText = message;
+		}
+		return (
+			<Card className="p-3">
+				<Card.Title> Sign Up</Card.Title>
+				<Form onSubmit={this.onSubmit}>
+					<Form.Group className=" position-relative" controlid="formBasicEmail">
+						<Form.Label>Email address</Form.Label>
+						<CheckedForm
+							value={this.state.email}
+							type="email"
+							placeholder="Enter email"
+							autoComplete="email"
+							onChange={e => {
+								this.setState({ email: e.target.value });
+								this.deVEmail();
+							}}
+							required
+							validity={this.state.emailV}
+						/>
+					</Form.Group>
+					<Form.Group className="position-relative" controlid="formBasicPass1">
+						<Form.Label>Password</Form.Label>
+						<CheckedForm
+							type="password"
+							value={this.state.pass1}
+							placeholder="Password"
+							autoComplete="new-password"
+							onChange={e => {
+								this.setState({ pass1: e.target.value });
+								this.deVPass();
+							}}
+							validity={this.state.passV}
+							required
+						/>
+					</Form.Group>
+					<Form.Group className="position-relative" controlid="formBasicPass2">
+						<Form.Label className="mt-2">Verify Password</Form.Label>
+						<CheckedForm
+							value={this.state.pass2}
+							controlid="formBasicPassword2"
+							type="password"
+							placeholder="Password"
+							autoComplete="new-password"
+							onChange={e => {
+								this.setState({ pass2: e.target.value });
+								this.deVPass();
+							}}
+							validity={this.state.passV}
+							required
+						/>
+					</Form.Group>
+					<Alert className="mt-3" variant={alertVariant}>
+						<span>{alertText}</span>
+					</Alert>
+
+					<Button className="mb-3" type="submit">
+						Submit
+					</Button>
+				</Form>
+				<Card.Footer
+					onClick={() => this.setState({ type: "Sign In" })}
+					className="mb-n3  ml-n3 mr-n3"
+				>
+					{" "}
+					<p> Already have an account? Click here to sign in. </p>{" "}
+				</Card.Footer>
+			</Card>
+		);
+	};
+
+	renderLogOut = () => {
+		const { email } = this.props.auth;
+
+		return (
+			<Card className="p-3">
+				<Card.Title> Log Out </Card.Title>
+				<p> Hello {email}!</p>
+				<Button
+					className="mb-3"
+					type="submit"
+					onClick={() => this.props.signOut()}
+				>
+					Click here to sign out.
+				</Button>
+			</Card>
+		);
+	};
+
+	render() {
+		const { type } = this.state;
+		const { user_id } = this.props.user;
+
+		return user_id === "Default"
+			? type === "Sign In"
+				? this.renderLogIn()
+				: this.renderRegister()
+			: this.renderLogOut();
 	}
 }
 
-/*
-
-	<Form.Label className="mt-2">Verify Password</Form.Label>
-							<StyledForm
-								controlId="formBasicPassword2"
-								type="password"
-								value={this.state.pass2}
-								placeholder="Password"
-								onChange={e => {
-									this.setState({ pass2: e.target.value });
-									this.deVP2();
-								}}
-								valid={this.state.pass2V}
-								required
-							/>
-
-							<Alert className="mt-3" variant={variant}>
-							<span>
-								Your password must be at least six characters long and contain
-								at least one number.
-							</span>
-						</Alert>
-
-
-							*/
-
 const mapStateToProps = state => {
-	return { auth: state.firebaseReducer.auth };
+	return { auth: state.firebaseReducer.auth, user: state.user };
 };
 
 export default connect(
 	mapStateToProps,
-	{ signUp, signIn }
+	{ signUp, signIn, signOut }
 )(Signup);

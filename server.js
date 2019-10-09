@@ -15,9 +15,7 @@ const admin = require("./firebase-admin/admin");
 const app = express();
 
 async function verifyToken(req, res, next) {
-	console.log("hello");
 	const idToken = req.headers.authorization;
-	console.log(idToken);
 	try {
 		const decodedToken = await admin.auth().verifyIdToken(idToken);
 
@@ -66,7 +64,7 @@ if (app.get("env") === "development") {
 	});
 }
 
-app.listen(port, () => {});
+app.listen(port, () => {	});
 
 module.exports = {
 	app,

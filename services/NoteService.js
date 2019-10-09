@@ -23,7 +23,8 @@ NoteService.getByID = async function(IDs) {
 
 // Inserts Note //
 NoteService.postNote = async function(title, data, user_id) {
-	if (!helpers.checkArgs([user_id], [title, data]))
+
+	if (!helpers.checkArgs([], [user_id, title, data]))
 		return {
 			status: 400,
 			data: "You must provide a valid user_id, title, and data."
@@ -52,7 +53,7 @@ NoteService.deleteNote = async function(note_id) {
 NoteService.getbyTag = async function(tag_ids, user_id) {
 	if (!Array.isArray(tag_ids)) tag_ids = [tag_ids];
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([user_id, ...tag_ids])) {
+	if (!helpers.checkArgs([...tag_ids], [user_id])) {
 		return {
 			status: 400,
 			data: "You must provide a valid note_id."
@@ -65,7 +66,7 @@ NoteService.getbyTag = async function(tag_ids, user_id) {
 };
 
 NoteService.clientGetNotesUser = async function(user_id) {
-	if (!helpers.checkArgs([user_id], []))
+	if (!helpers.checkArgs([], [user_id, ]))
 		return {
 			status: 400,
 			data: "You must provide a valid user_id."
@@ -149,9 +150,9 @@ NoteService.clientGetNotesMedia = async function(IDs) {
 // Output: TBD
 NoteService.postNoteAll = async function(title, data, user_id, mediaObj, tags) {
 	// Add the Media and MU.
-
+	console.log(title, data, user_id, mediaObj, tags);
 	let media = await MediaService.postMediaAndMU(mediaObj, user_id);
-
+	console.log('media', media);
 	if (media.status !== 201 && media.status !== 409) return media;
 	media = media.data[0];
 
@@ -162,6 +163,7 @@ NoteService.postNoteAll = async function(title, data, user_id, mediaObj, tags) {
 		user_id,
 		media.media_id
 	);
+	console.log('note', note);
 
 	if (note.status !== 201) return note;
 
@@ -206,7 +208,7 @@ NoteService.editNote = async function(
 ) {
 	if (!Array.isArray(addTags)) addTags = [addTags];
 	if (!Array.isArray(rmTags)) rmTags = [rmTags];
-	if (!helpers.checkArgs([note_id, user_id], [title, data]))
+	if (!helpers.checkArgs([note_id], [title, data, user_id]))
 		return {
 			status: 400,
 			data: "You must provide a valid note_id, title, and data."

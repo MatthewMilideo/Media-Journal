@@ -35,7 +35,7 @@ MediaService.getByUserID = async function(user_ids) {
 	if (!Array.isArray(user_ids)) user_ids = [user_ids];
 	
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs(user_ids, [])) {
+	if (!helpers.checkArgs([],user_ids)) {
 		console.log('error');
 		return Promise.reject({
 			status: 400,
@@ -85,6 +85,7 @@ MediaService.getByMediaIDUser = async function(IDs) {
 		});
 	}
 	let results = await media.getByMediaIDUser(IDs);
+	console.log('in Media Service', results)
 
 	if (results.status !== 200) return Promise.reject(results);
 	return results;
@@ -106,7 +107,7 @@ MediaService.postMedia = async function(mediaObj) {
 /* Inserts Media Obj */
 MediaService.postMU = async function(media_id, user_id) {
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([media_id, user_id])) {
+	if (!helpers.checkArgs([media_id], [user_id])) {
 		return {
 			status: 400,
 			data: "You must provide a valid media and user pair."
@@ -118,7 +119,7 @@ MediaService.postMU = async function(media_id, user_id) {
 /* Inserts Media Obj */
 MediaService.deleteMU = async function(mediaObj, user_id) {
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj)) {
+	if (!helpers.checkArgsAndMedia([], [user_id], mediaObj)) {
 		return {
 			status: 400,
 			data: "You must provide a valid media and user pair."
@@ -140,7 +141,7 @@ MediaService.deleteMU = async function(mediaObj, user_id) {
 
 /* Inserts Media Obj and Media User */
 MediaService.postMediaAndMU = async function(mediaObj, user_id) {
-	if (!helpers.checkArgsAndMedia([user_id], [], mediaObj))
+	if (!helpers.checkArgsAndMedia([], [user_id], mediaObj))
 		return {
 			status: 400,
 			data: "You must provide a valid user_id mediaObj pair."

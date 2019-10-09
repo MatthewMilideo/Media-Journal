@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import debounce from "lodash/debounce";
 
@@ -31,6 +32,7 @@ const StyledCard = styled(Card)`
 	* {
 		pointer-events: none;
 	}
+	  
 `;
 
 const CardImageDiv = styled.div`
@@ -47,17 +49,13 @@ const CardImageDiv = styled.div`
 	}
 `;
 
-const Img2 = styled.img`
-	visibility: hidden; 
-`;
-
 const BlurredDiv = styled.div`
-	background-color: white;
+	background-color: grey;
 	width: 100%;
 	height: 425px;
 	opacity: 0.1;
 	position: relative;
-	z-index: 2;
+	z-index: 1;
 `;
 
 const InnerDiv = styled.div`
@@ -94,8 +92,25 @@ const StyledArea = styled.div`
 	}
 `;
 
+const Animation = styled(BlurredDiv)`
+	transition: 0.5s;
+	opacity: ${({ state }) => {
+		console.log(state);
+		switch (state) {
+			case "entering":
+				return 1;
+			case "entered":
+				return 1;
+			case "exiting":
+				return 0;
+			case "exited":
+				return 0;
+		}
+	}};
+`;
+
 class MediaCard extends React.Component {
-	state = { load: false, hover: false };
+	state = { load: false, hover: false, img: null };
 
 	ref = React.createRef();
 
@@ -103,8 +118,8 @@ class MediaCard extends React.Component {
 		entries => {
 			entries.forEach(entry => {
 				const { isIntersecting } = entry;
-				if (isIntersecting && this.props.data.largeImage) {
-					this.ref.current.src = this.props.data.largeImage;
+				if (isIntersecting && this.props.data.largeImage && this.ref.current) {
+					this.setState({ img: this.props.data.largeImage });
 					this.observer = this.observer.disconnect();
 				}
 			});
@@ -119,57 +134,41 @@ class MediaCard extends React.Component {
 		this.observer.observe(this.ref.current);
 	}
 
-	renderLoading = () => {
-		return (
-			<BlurredDiv className="bg-dark">
-				<CardImageDiv>
-					<Img2
-						alt="Loading"
-						ref={this.ref}
-						src = {null}
-						onLoad={() => {
-							this.setState({ load: true });
-						}}
-						onError={() => {
-							console.log("error");
-						}}
-					/>
-				</CardImageDiv>
-			</BlurredDiv>
-		);
-	};
-
-	renderMedia = () => {
+	renderMedia = state => {
 		let buttonText = this.props.type === "BOOK" ? "Read:" : "Viewed:";
-
 		return (
 			<Link
 				style={{ color: "inherit", textDecoration: "none" }}
 				to={`/media/${this.props.type}/${this.props.data.id}`}
 			>
-				<StyledCard
-					className="d-flex"
-					onMouseEnter={e => this.delayMouseEnter(e)}
-					onMouseOut={() => this.delayMouseEnter.cancel()}
-				>
-					<CardImageDiv>
-						<Card.Img src={this.props.data.largeImage} />
-					</CardImageDiv>
-					<TitleDiv className="d-flex bg-light">
-						<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
-						{this.props.data.viewed ? (
-							<div className="d-flex border-top text-white mt-auto bg-info">
-								<span className="ml-2">
-									{buttonText}{" "}
-									<span className="d-inline oi oi-circle-check"></span>
-								</span>
-								<span className="ml-auto  mr-2">
-									Notes: {this.props.data.noteCount}
-								</span>
-							</div>
-						) : null}
-					</TitleDiv>
-				</StyledCard>
+				<Animation state={state} className="bg-dark" ref={this.ref}>
+					<StyledCard
+						className="d-flex test"
+						onMouseEnter={e => this.delayMouseEnter(e)}
+						onMouseOut={() => this.delayMouseEnter.cancel()}
+					>
+						<CardImageDiv className="bg-dark">
+							<Card.Img
+								src={this.state.img}
+								onLoad={() => this.setState({ load: true })}
+							/>
+						</CardImageDiv>
+						<TitleDiv className="d-flex bg-light">
+							<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
+							{this.props.data.viewed ? (
+								<div className="d-flex border-top text-white mt-auto bg-info">
+									<span className="ml-2">
+										{buttonText}{" "}
+										<span className="d-inline oi oi-circle-check"></span>
+									</span>
+									<span className="ml-auto  mr-2">
+										Notes: {this.props.data.noteCount}
+									</span>
+								</div>
+							) : null}
+						</TitleDiv>
+					</StyledCard>
+				</Animation>
 			</Link>
 		);
 	};
@@ -186,7 +185,7 @@ class MediaCard extends React.Component {
 		let func;
 		this.props.data.viewed
 			? (func = this.props.deleteMediaUser)
-			: (func = this.props.postMediaUser);
+			: (func = this.props.postMedia);
 
 		return func !== null ? (
 			<Button
@@ -253,9 +252,15 @@ class MediaCard extends React.Component {
 			return this.renderMouseOver();
 		}
 
-		return !load ? this.renderLoading() : this.renderMedia();
+		return (
+			<Transition in={load} timeout={500}>
+				{state => this.renderMedia(state)}
+			</Transition>
+		);
 	}
 }
+
+//
 
 const mapStatetoProps = state => {
 	return {

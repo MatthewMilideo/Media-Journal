@@ -60,7 +60,6 @@ class SearchContainer extends React.Component {
 		this.observer.observe(this.myRef.current);
 	}
 
-
 	renderGrid(media, type) {
 		const mediaLength = media.length;
 		let returnObj;
