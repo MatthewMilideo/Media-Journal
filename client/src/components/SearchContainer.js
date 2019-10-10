@@ -8,6 +8,7 @@ import Alert from "react-bootstrap/Alert";
 import MediaCard from "./MediaCard";
 import { extSearch } from "../actions/index";
 import { getUser, getMediaState, getSearchActiveElem } from "../reducers";
+
 import * as T from "../actions/types";
 
 const PaddingDiv = Styled.div`
@@ -22,6 +23,8 @@ height: 50px;
 width: 100%;`;
 
 class SearchContainer extends React.Component {
+	state = { limit: 40 };
+
 	myRef = React.createRef();
 
 	callback = entries => {
@@ -61,32 +64,35 @@ class SearchContainer extends React.Component {
 	}
 
 	renderGrid(media, type) {
+		let refs = [];
 		const mediaLength = media.length;
 		let returnObj;
 		media
 			? (returnObj = media.map((elem, i) => {
-					return (
-						<Col
-							xs={12}
-							sm={6}
-							md={4}
-							lg={3}
-							key={elem.id}
-							className="mb-3"
-							onMouseEnter={() => {
-								console.log("entered grid");
-							}}
-						>
-							<MediaCard
+					refs.push();
+						return (
+							<Col
+								xs={12}
+								sm={6}
+								md={4}
+								lg={3}
 								key={elem.id}
-								index={i}
-								onHover={this.hoverChange}
-								data={elem}
-								type={type}
-								len={mediaLength}
-							/>
-						</Col>
-					);
+								className="mb-3"
+								onMouseEnter={() => {
+									console.log("entered grid");
+								}}
+							>
+								<MediaCard
+									ref={refs[i]}
+									key={elem.id}
+									index={i}
+									onHover={this.hoverChange}
+									data={elem}
+									type={type}
+									len={mediaLength}
+								/>
+							</Col>
+						);
 			  }))
 			: (returnObj = <div> </div>);
 

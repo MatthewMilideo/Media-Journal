@@ -9,6 +9,12 @@ const defaultState = {
 export default (state = defaultState, action) => {
 	switch (action.type) {
 		// ~~~~~~~~~~ Login and Logout Cases ~~~~~~~~~~~~
+		case T.HACKER_USER_ID:
+		return {
+			...state,
+			status: T.SIGNIN_SUCCESS,
+			user_id: action.payload,
+		};
 		case T.SIGNUP_SUCCESS:
 			return {
 				...state,

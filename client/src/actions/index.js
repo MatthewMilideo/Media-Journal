@@ -14,6 +14,13 @@ export const server = axios.create({
 // processes the data and adds information about the users interactions
 // with it and returns that data.
 
+export const hackerUserID = user_id => {
+	return {
+		type: T.HACKER_USER_ID,
+		payload: user_id
+	};
+};
+
 export const extSearch = (user_id, term, type, page) => async dispatch => {
 	// Checks if the search is an original search, or a request for more information
 	// on a previous search.
@@ -121,6 +128,7 @@ export const deleteMediaUser = (user_id, mediaObj) => async dispatch => {
 				mediaObj
 			}
 		});
+		console.log(res);
 
 		dispatch({
 			type: `${T._SUCCESS_DELETE_MEDIA_USER}`,

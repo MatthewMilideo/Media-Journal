@@ -29,9 +29,7 @@ const StyledCard = styled(Card)`
     width: 100%;
     height: 425px; 
 	}
-	* {
-		pointer-events: none;
-	}
+	
 	  
 `;
 
@@ -42,6 +40,7 @@ const CardImageDiv = styled.div`
 	width: 100%;
 	height: 100%;
 	background-color: light-gray;
+	min-height: 355px; 
 	img {
 		height: 100%;
 		object-fit: cover;
@@ -50,7 +49,6 @@ const CardImageDiv = styled.div`
 `;
 
 const BlurredDiv = styled.div`
-	background-color: grey;
 	width: 100%;
 	height: 425px;
 	opacity: 0.1;
@@ -141,13 +139,13 @@ class MediaCard extends React.Component {
 				style={{ color: "inherit", textDecoration: "none" }}
 				to={`/media/${this.props.type}/${this.props.data.id}`}
 			>
-				<Animation state={state} className="bg-dark" ref={this.ref}>
+				<Animation state={state}  ref={this.ref}>
 					<StyledCard
 						className="d-flex test"
 						onMouseEnter={e => this.delayMouseEnter(e)}
 						onMouseOut={() => this.delayMouseEnter.cancel()}
 					>
-						<CardImageDiv className="bg-dark">
+						<CardImageDiv>
 							<Card.Img
 								src={this.state.img}
 								onLoad={() => this.setState({ load: true })}
@@ -183,11 +181,12 @@ class MediaCard extends React.Component {
 			: (buttonText =
 					this.props.type === "BOOK" ? "Add to Read" : "Add to Viewed");
 		let func;
+
 		this.props.data.viewed
 			? (func = this.props.deleteMediaUser)
-			: (func = this.props.postMedia);
+			: (func = this.props.postMediaUser);
 
-		return func !== null ? (
+		return user_id !== 'Default' ? (
 			<Button
 				onClick={() => {
 					let mediaObj = {
@@ -195,6 +194,7 @@ class MediaCard extends React.Component {
 						CID: this.props.data.id,
 						type: this.props.type
 					};
+			
 					func(this.props.User.user_id, mediaObj);
 				}}
 			>

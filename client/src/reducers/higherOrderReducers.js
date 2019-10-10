@@ -74,6 +74,19 @@ function finishedDeleteNote(state, action) {
 	return newState;
 }
 
+function deleteMediaUser(state, action) {
+	let newState = { ...state };
+	newState.media = { ...newState.media };
+	console.log(newState.media[action.payload.CID]);
+	newState.media[action.payload.CID] = {
+		...newState.media[action.payload.CID]
+	};
+	console.log(newState.media[action.payload.CID]);
+	newState.media[action.payload.CID].viewed = false;
+	console.log(newState.media[action.payload.CID]);
+	return newState;
+}
+
 export const searchHOR = type => (state = defaultSearchState, action) => {
 	switch (action.type) {
 		case T.SIGNIN_SUCCESS: {
@@ -132,13 +145,7 @@ export const searchHOR = type => (state = defaultSearchState, action) => {
 				...state
 			};
 		case `${T._SUCCESS_DELETE_MEDIA_USER}`: {
-			let newState = { ...state };
-			newState.media = { ...newState.media };
-			newState.media[action.payload.CID] = {
-				...newState.media[action.payload.CID]
-			};
-			newState.media[action.payload.CID].viewed = false;
-			return newState;
+			return deleteMediaUser(state, action);
 		}
 		case `${T._ERRORED_DELETE_MEDIA_USER}`:
 			return {

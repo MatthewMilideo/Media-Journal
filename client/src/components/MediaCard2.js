@@ -1,104 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-
-import Card from "react-bootstrap/Card";
-import styled from "styled-components";
-import Form from "react-bootstrap/Form";
-import Button from 'react-bootstrap/Button'
-import { hackerUserID } from "../../actions/index";
-
-const TallDiv = styled.div`
-	width: 300px;
-	height: 700px;
-	background-color: blue;
-`;
-
-export const useIntersect = ({ root = null, rootMargin, threshold = 0.1 }) => {
-	const [entry, updateEntry] = useState({});
-	const [node, setNode] = useState(null);
-	console.log("test");
-
-	const observer = useRef(
-		new window.IntersectionObserver(([entry]) => updateEntry(entry), {
-			root,
-			rootMargin,
-			threshold
-		})
-	);
-
-	useEffect(() => {
-		const { current: currentObserver } = observer;
-		currentObserver.disconnect();
-
-		if (node) currentObserver.observe(node);
-
-		return () => currentObserver.disconnect();
-	}, [node]);
-
-	return [setNode, entry];
-};
-
-const IntersectBox = props => {
-	const [ref, entry] = useIntersect({
-		threshold: 0.5
-	});
-
-	if (entry.isIntersecting) {
-		return (
-			<Card className="bg-success p-5">
-				intersectionRatio: {props.name} {entry.intersectionRatio}
-			</Card>
-		);
-	} else {
-		return (
-			<Card className="bg-info p-5" ref={ref}>
-				intersectionRatio: {props.name} {entry.intersectionRatio}
-			</Card>
-		);
-	}
-};
-
-const TestPage = (props) => {
-	const [formValue, setForm] = useState("");
-
-	return (
-		<Card className="d-flex flex-column p-3">
-            <Card.Title> Change User ID </Card.Title>
-			<Form
-				onSubmit={e => {
-					e.preventDefault();
-					props.hackerUserID(formValue);
-				}}
-			>
-				<Form.Label> User Id: </Form.Label>
-				<Form.Control
-					type="text"
-					value={formValue}
-					onChange={e => setForm(e.target.value)}
-				/>
-				<Button className= 'mt-3'> Submit </Button>
-			</Form>
-		</Card>
-	);
-};
-
-export default connect(
-	null,
-	{ hackerUserID }
-)(TestPage);
-
-/*
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import debounce from "lodash/debounce";
 
-import { useIntersect } from "./Navigation/TestPage";
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+
+import { useIntersect2 } from "../hooks/Intersect";
 
 import { postMediaUser, deleteMediaUser } from "../actions";
 import { getUser } from "../reducers";
@@ -201,7 +111,11 @@ const Animation = styled(BlurredDiv)`
 `;
 
 
-const MediaCard = function(props) {
+
+
+
+
+const MediaCard = React.forwardRef((props, ref) => {
 	const [hover, setHover] = useState(false);
 	const [load, setLoad] = useState(false);
 	const [img, setImg] = useState(null);
@@ -214,16 +128,14 @@ const MediaCard = function(props) {
 
 	let buttonText = props.type === "BOOK" ? "Read:" : "Viewed:";
 
-	const [ref, entry] = useIntersect({
-		threshold: 0.1
-	});
+	//const [setNode, entry] = useIntersect2();
 
-	if (entry.isIntersecting && img === null && props.data.largeImage !== null) {
-		setImg(props.data.largeImage);
-	}
+	//if (entry.isIntersecting && img === null && props.data.largeImage !== null) {
+	//	setImg(props.data.largeImage);
+	//}
 
 	return (
-		<Transition in={img !== null} timeout={500}>
+		<Transition in={load === true} timeout={500}>
 			{state => (
 				<Link
 					style={{ color: "inherit", textDecoration: "none" }}
@@ -232,7 +144,7 @@ const MediaCard = function(props) {
 					<Animation
 						state={state}
 						className="bg-dark"
-						ref={img === null ? ref : null}
+				//		ref={img === null ? setNode : null}
 					>
 						<StyledCard
 							className="d-flex test"
@@ -240,7 +152,7 @@ const MediaCard = function(props) {
 							onMouseOut={() => delayMouseEnter.cancel()}
 						>
 							<CardImageDiv>
-								<Card.Img src={img} onLoad={() => setLoad(true)} />
+								<Card.Img ref={ref} src={null}  data-src = {props.data.largeImage} onLoad={() => setLoad(true)} />
 							</CardImageDiv>
 							<TitleDiv className="d-flex bg-light">
 								<span className="ml-2 mr-2 mt-1"> {props.data.title} </span>
@@ -262,10 +174,10 @@ const MediaCard = function(props) {
 			)}
 		</Transition>
 	);
-};
-
+});
+/*
 const RenderMedia = props => {
-	console.log(props.ref);
+	console.log(props.setNode);
 	let buttonText = props.type === "BOOK" ? "Read:" : "Viewed:";
 	return (
 		<Link
@@ -300,6 +212,7 @@ const RenderMedia = props => {
 		</Link>
 	);
 };
+*/
 
 const renderButton = props => {
 	let buttonText;
@@ -334,9 +247,9 @@ const mapStatetoProps = state => {
 
 export default connect(
 	mapStatetoProps,
-	{ postMediaUser, deleteMediaUser }
+	{ postMediaUser, deleteMediaUser }, null, {forwardRef : true}
 )(MediaCard);
-
+/*
 
 const renderMouseOver = props => {
 	return (

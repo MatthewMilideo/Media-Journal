@@ -7,12 +7,14 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
+
 import ImageList from "../ImageList";
 import AuthCard from "../AuthCard";
 import NoteManager from "../NoteManager";
 import styled from "styled-components";
 
-import { getItem } from "../../actions";
+import { getItem, deleteMediaUser } from "../../actions";
 import { getItemData, getUser } from "../../reducers";
 
 import * as T from "../../actions/types";
@@ -124,7 +126,7 @@ class MediaPage extends React.Component {
 			this.props.getItem(this.props.User.user_id, id, type);
 	}
 
-	renderBook() {
+	renderBook(mediaObj, user_id) {
 		const { data } = this.props.Item.data;
 		return (
 			<RenderCard image={data.largeImage}>
@@ -147,16 +149,24 @@ class MediaPage extends React.Component {
 				</div>
 				{data.viewed ? (
 					<div className=" mb-n3 ml-n3 mr-n3 p-1 pb-2 d-flex justify-content-center border-top text-white mt-auto bg-info">
-						<span className="ml-2">
+						<span className="ml-2 mr-auto">
 							Read: <span className="d-inline oi oi-circle-check"></span>
 						</span>
+						<Button
+							className="ml-auto"
+							variant="danger"
+							onClick={() => this.props.deleteMediaUser(user_id, mediaObj)}
+						>
+					
+							Click Here to Remove from Read{" "}
+						</Button>
 					</div>
 				) : null}
 			</RenderCard>
 		);
 	}
 
-	renderMovie() {
+	renderMovie(mediaObj, user_id) {
 		const { data } = this.props.Item.data;
 
 		return (
@@ -224,6 +234,14 @@ class MediaPage extends React.Component {
 								<span>
 									{" "}
 									Click here to remove from viewed.{" "}
+									<Button
+										onClick={() =>
+											this.props.deleteMediaUser(user_id, mediaObj)
+										}
+									>
+										{" "}
+										Delete{" "}
+									</Button>
 									<span className="d-inline oi oi-circle-check"></span>{" "}
 								</span>
 							</span>
@@ -240,6 +258,7 @@ class MediaPage extends React.Component {
 		const { user_id } = this.props.User;
 		let title;
 		if (this.props.Item.data.data) title = this.props.Item.data.data.title;
+		const mediaObj = { CID: id, title, type };
 
 		if (status === T.BEGAN_ITEM) return <div> LOADING </div>;
 		else if (status === T.ERRORED_ITEM)
@@ -254,7 +273,7 @@ class MediaPage extends React.Component {
 				<div>
 					{type !== T.BOOK ? (
 						<div>
-							{this.renderMovie()}
+							{this.renderMovie(mediaObj, user_id)}
 							<AuthCard>
 								<NoteManager
 									buttonFlag={true}
@@ -267,7 +286,7 @@ class MediaPage extends React.Component {
 						</div>
 					) : (
 						<div>
-							{this.renderBook()}
+							{this.renderBook(mediaObj, user_id)}
 							<AuthCard>
 								<NoteManager
 									buttonFlag={true}
@@ -294,5 +313,5 @@ const mapStateToProps = state => {
 
 export default connect(
 	mapStateToProps,
-	{ getItem }
+	{ getItem, deleteMediaUser }
 )(MediaPage);

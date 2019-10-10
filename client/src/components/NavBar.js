@@ -13,7 +13,9 @@ class NavBar extends React.Component {
 			this.setState({ activeItem: "Notes" });
 		else if (this.props.location === "/login")
 			this.setState({ activeItem: "Sign In" });
-		else this.setState({ activeItem: "Content" });
+		else if (this.props.location === "/Testpage") {
+			this.setState({ activeItem: "TestPage" });
+		} else this.setState({ activeItem: "Content" });
 	}
 
 	componentDidUpdate(prevProps) {
@@ -24,7 +26,9 @@ class NavBar extends React.Component {
 				this.setState({ activeItem: "Notes" });
 			else if (this.props.location === "/login")
 				this.setState({ activeItem: "Sign In" });
-			else this.setState({ activeItem: "Content" });
+			else if (this.props.location === "/Testpage") {
+				this.setState({ activeItem: "TestPage" });
+			} else this.setState({ activeItem: "Content" });
 		}
 	}
 
@@ -63,6 +67,16 @@ class NavBar extends React.Component {
 						onClick={() => this.setState({ activeItem: "Notes" })}
 					>
 						Browse Notes
+					</Nav.Link>
+				</Nav.Item>
+				<Nav.Item>
+					<Nav.Link
+						as={Link}
+						to="/TestPage"
+						eventKey="TestPage"
+						onClick={() => this.setState({ activeItem: "TestPage" })}
+					>
+						Test Page
 					</Nav.Link>
 				</Nav.Item>
 				<Nav.Item className="ml-auto">

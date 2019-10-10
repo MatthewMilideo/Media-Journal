@@ -6,8 +6,19 @@ const defaultState = {
 	data: {},
 };
 
+function deleteMediaUser(state, action){
+	let newState = {...state};
+	newState.data = {...newState.data};
+	newState.data.data= {...newState.data.data};
+	newState.data.data.viewed = false; 
+	return newState; 
+}
+
 export default (state = defaultState, action) => {
 	switch (action.type) {
+		case `${T._SUCCESS_DELETE_MEDIA_USER}`: {
+			return deleteMediaUser(state, action);
+		}
         case T.BEGAN_ITEM:
 			return {
 				...defaultState,
