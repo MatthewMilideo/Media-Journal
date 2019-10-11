@@ -23,7 +23,6 @@ NoteService.getByID = async function(IDs) {
 
 // Inserts Note //
 NoteService.postNote = async function(title, data, user_id) {
-
 	if (!helpers.checkArgs([], [user_id, title, data]))
 		return {
 			status: 400,

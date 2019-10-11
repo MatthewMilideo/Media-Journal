@@ -4,19 +4,23 @@ import { Link } from "react-router-dom";
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import debounce from "lodash/debounce";
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-
 import { postMediaUser, deleteMediaUser } from "../actions";
 import { getUser } from "../reducers";
 
-const TitleDiv = styled.div`
+const FixedSizeCard = styled(Card)`
+	width: 100%;
+	height: 425px;
+	border: 1px;
+	opacity: ${({ blur }) => blur};
+`;
+
+const CardTitleDiv = styled.div`
 	flex-direction: column;
 	text-align: center;
 	font-size: 13px;
 	min-height: 65px;
-
 	span {
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -25,22 +29,10 @@ const TitleDiv = styled.div`
 	}
 `;
 
-const StyledCard = styled(Card)`
-    width: 100%;
-    height: 425px; 
-	}
-	
-	  
-`;
-
 const CardImageDiv = styled.div`
-	z-index: 100;
-	display: flex;
-	justify-content: center;
 	width: 100%;
 	height: 100%;
-	background-color: light-gray;
-	min-height: 355px; 
+	min-height: 355px;
 	img {
 		height: 100%;
 		object-fit: cover;
@@ -48,22 +40,7 @@ const CardImageDiv = styled.div`
 	}
 `;
 
-const BlurredDiv = styled.div`
-	width: 100%;
-	height: 425px;
-	opacity: 0.1;
-	position: relative;
-	z-index: 1;
-`;
-
-const InnerDiv = styled.div`
-	position: relative;
-	z-index: 2;
-	width: 100%;
-	height: 425px;
-`;
-
-const ContentDiv = styled.div`
+const HoveredCardDiv = styled.div`
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -76,24 +53,16 @@ const ContentDiv = styled.div`
 	height: 100%;
 `;
 
-const StyledArea = styled.div`
-	display: flex;
-	flex-direction: column;
-	margin: auto;
-
-	:hover {
-		background-color: grey;
-	}
-
-	div {
-		opacity: 1;
-	}
+const InnerDiv = styled.div`
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	height: 425px;
 `;
 
-const Animation = styled(BlurredDiv)`
+const Animation = styled(FixedSizeCard)`
 	transition: 0.5s;
 	opacity: ${({ state }) => {
-		console.log(state);
 		switch (state) {
 			case "entering":
 				return 1;
@@ -107,160 +76,114 @@ const Animation = styled(BlurredDiv)`
 	}};
 `;
 
-class MediaCard extends React.Component {
-	state = { load: false, hover: false, img: null };
+const MediaCard = React.forwardRef((props, ref) => {
+	//const [hover, setHover] = useState(false);
+	const [load, setLoad] = useState(false);
 
-	ref = React.createRef();
-
-	observer = new IntersectionObserver(
-		entries => {
-			entries.forEach(entry => {
-				const { isIntersecting } = entry;
-				if (isIntersecting && this.props.data.largeImage && this.ref.current) {
-					this.setState({ img: this.props.data.largeImage });
-					this.observer = this.observer.disconnect();
-				}
-			});
-		},
-		{
-			root: null,
-			threshold: 0.1
-		}
-	);
-
-	componentDidMount() {
-		this.observer.observe(this.ref.current);
-	}
-
-	renderMedia = state => {
-		let buttonText = this.props.type === "BOOK" ? "Read:" : "Viewed:";
-		return (
-			<Link
-				style={{ color: "inherit", textDecoration: "none" }}
-				to={`/media/${this.props.type}/${this.props.data.id}`}
-			>
-				<Animation state={state}  ref={this.ref}>
-					<StyledCard
-						className="d-flex test"
-						onMouseEnter={e => this.delayMouseEnter(e)}
-						onMouseOut={() => this.delayMouseEnter.cancel()}
-					>
-						<CardImageDiv>
-							<Card.Img
-								src={this.state.img}
-								onLoad={() => this.setState({ load: true })}
-							/>
-						</CardImageDiv>
-						<TitleDiv className="d-flex bg-light">
-							<span className="ml-2 mr-2 mt-1"> {this.props.data.title} </span>
-							{this.props.data.viewed ? (
-								<div className="d-flex border-top text-white mt-auto bg-info">
-									<span className="ml-2">
-										{buttonText}{" "}
-										<span className="d-inline oi oi-circle-check"></span>
-									</span>
-									<span className="ml-auto  mr-2">
-										Notes: {this.props.data.noteCount}
-									</span>
-								</div>
-							) : null}
-						</TitleDiv>
-					</StyledCard>
-				</Animation>
-			</Link>
-		);
+	const handleMouseEnter = e => {
+		if (window.innerWidth > 575) props.setHover(props.index);
 	};
 
-	renderButton = user_id => {
-		let buttonText;
-		this.props.data.viewed
-			? (buttonText =
-					this.props.type === "BOOK"
-						? "Remove from Read"
-						: "Remove from Viewed")
-			: (buttonText =
-					this.props.type === "BOOK" ? "Add to Read" : "Add to Viewed");
-		let func;
+	const delayMouseEnter = debounce(e => handleMouseEnter(e), 0);
 
-		this.props.data.viewed
-			? (func = this.props.deleteMediaUser)
-			: (func = this.props.postMediaUser);
-
-		return user_id !== 'Default' ? (
-			<Button
-				onClick={() => {
-					let mediaObj = {
-						title: this.props.data.title,
-						CID: this.props.data.id,
-						type: this.props.type
-					};
-			
-					func(this.props.User.user_id, mediaObj);
-				}}
-			>
-				<span className="oi oi-plus" /> <span> {buttonText}</span>
-			</Button>
-		) : null;
-	};
-
-	renderMouseOver = () => {
-		return (
-			<InnerDiv
-				onMouseLeave={e => {
-					this.delayMouseEnter.cancel();
-					this.setState({ hover: false });
-				}}
-			>
-				<ContentDiv>
-					<StyledArea>
-						<Link
-							to={`/media/${this.props.type}/${this.props.data.id}`}
-							as={Button}
+	return !props.hover ? (
+		<Transition in={load === true} timeout={500}>
+			{state => (
+				<Link
+					style={{ color: "inherit", textDecoration: "none" }}
+					to={`/media/${props.type}/${props.data.id}`}
+				>
+					<Animation state={state}>
+						<FixedSizeCard
+							className="d-flex shadow"
+							onMouseEnter={e => delayMouseEnter(e)}
+							blur="1"
 						>
-							<span className="oi oi-plus"> View Media </span>
-						</Link>
-					</StyledArea>
-					{this.props.data.viewed && this.props.data.noteCount > 0 ? null : (
-						<StyledArea>
-							{this.renderButton(this.props.User.user_id)}
-						</StyledArea>
-					)}
-				</ContentDiv>
+							<CardImageDiv>
+								<Card.Img
+									ref={ref}
+									src={null}
+									data-src={props.data.largeImage}
+									onLoad={() => setLoad(true)}
+								/>
+							</CardImageDiv>
+							<CardBottomDiv {...props} />
+						</FixedSizeCard>
+					</Animation>
+				</Link>
+			)}
+		</Transition>
+	) : (
+		<InnerDiv onMouseLeave={e => props.setHover(-1)}>
+			<HoveredCardDiv>
+				<div className="d-flex flex-column m-auto">
+					<Link to={`/media/${props.type}/${props.data.id}`} as={Button}>
+						<span className="oi oi-plus"> View Media </span>
+					</Link>
+				</div>
+				{props.data.viewed && props.data.noteCount > 0 ? null : (
+					<div className="d-flex flex-column m-auto">
+						<RenderButton {...props} />
+					</div>
+				)}
+			</HoveredCardDiv>
 
-				<BlurredDiv>
-					<StyledCard>
-						<CardImageDiv>
-							<Card.Img src={this.props.data.largeImage} />
-						</CardImageDiv>
-						<TitleDiv> {this.props.data.title} </TitleDiv>
-					</StyledCard>
-				</BlurredDiv>
-			</InnerDiv>
-		);
-	};
+			<FixedSizeCard blur="0.1" className="d-flex shadow">
+				<CardImageDiv>
+					<Card.Img src={props.data.largeImage} />
+				</CardImageDiv>
+				<CardBottomDiv {...props} />
+			</FixedSizeCard>
+		</InnerDiv>
+	);
+});
 
-	delayMouseEnter = debounce(e => this.handleMouseEnter(e), 125);
+const CardBottomDiv = props => {
+	let buttonText = props.type === "BOOK" ? "Read:" : "Viewed:";
 
-	handleMouseEnter = e => {
-		if (window.innerWidth > 575) this.setState({ hover: true });
-	};
+	return (
+		<CardTitleDiv className="d-flex bg-light">
+			<span className="ml-2 mr-2 mt-1"> {props.data.title} </span>
+			{props.data.viewed ? (
+				<div className="d-flex border-top text-white mt-auto bg-info">
+					<span className="ml-2">
+						{buttonText}
+						<span className="d-inline oi oi-circle-check"></span>
+					</span>
+					<span className="ml-auto  mr-2">Notes: {props.data.noteCount}</span>
+				</div>
+			) : null}
+		</CardTitleDiv>
+	);
+};
 
-	render() {
-		const { load } = this.state;
+const RenderButton = props => {
+	let buttonText;
+	props.data.viewed
+		? (buttonText =
+				props.type === "BOOK" ? "Remove from Read" : "Remove from Viewed")
+		: (buttonText = props.type === "BOOK" ? "Add to Read" : "Add to Viewed");
+	let func;
 
-		if (this.state.hover === true) {
-			return this.renderMouseOver();
-		}
+	props.data.viewed
+		? (func = props.deleteMediaUser)
+		: (func = props.postMediaUser);
 
-		return (
-			<Transition in={load} timeout={500}>
-				{state => this.renderMedia(state)}
-			</Transition>
-		);
-	}
-}
-
-//
+	return func !== null ? (
+		<Button
+			onClick={() => {
+				let mediaObj = {
+					title: props.data.title,
+					CID: props.data.id,
+					type: props.type
+				};
+				func(props.User.user_id, mediaObj);
+			}}
+		>
+			<span className="oi oi-plus" /> <span> {buttonText}</span>
+		</Button>
+	) : null;
+};
 
 const mapStatetoProps = state => {
 	return {
@@ -270,5 +193,7 @@ const mapStatetoProps = state => {
 
 export default connect(
 	mapStatetoProps,
-	{ postMediaUser, deleteMediaUser }
+	{ postMediaUser, deleteMediaUser },
+	null,
+	{ forwardRef: true }
 )(MediaCard);

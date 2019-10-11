@@ -118,7 +118,7 @@ class TagSearch extends React.Component {
 
 	tagClick = elem => {
 		this.props.addNoteTag(elem);
-		
+
 		this.setState({ formValue: "" });
 	};
 
@@ -127,17 +127,12 @@ class TagSearch extends React.Component {
 	};
 
 	renderDBTags = (tags, max) => {
-
 		max = 4;
 		tags = [...tags];
 		let bgFlag = false;
 
-		//	if (tags.length === 0 || tags[0].title !== this.state.formValue) {
-		//		tags.unshift({ title: this.state.formValue, id: this.state.formValue });
-		//	}
-
 		return (
-			<ULStyled2 >
+			<ULStyled2>
 				{tags.map((elem, index) => {
 					bgFlag = !bgFlag;
 					return index < max ? (
@@ -159,7 +154,6 @@ class TagSearch extends React.Component {
 		return (
 			<ULStyled>
 				{arr.map(elem => {
-	
 					return (
 						<li key={elem.id}>
 							{" "}
@@ -182,13 +176,13 @@ class TagSearch extends React.Component {
 
 	renderEdit() {
 		return (
-			<ParentDiv className="mb-3" >
+			<ParentDiv className="mb-3">
 				{this.renderSelectedTags(this.props.tags)}
-				<Form ref = {node => this.node= node}
+				<Form
+					ref={node => (this.node = node)}
 					onSubmit={this.onFormSubmit}
 					onBlur={e => {
-				
-					//	this.setState({ renderTags: false });
+						//	this.setState({ renderTags: false });
 					}}
 					onFocus={() => this.setState({ renderTags: true })}
 				>

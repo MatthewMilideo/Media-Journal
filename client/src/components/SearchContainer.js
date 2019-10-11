@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import Styled from "styled-components";
 import Row from "react-bootstrap/Row";
@@ -6,14 +6,15 @@ import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import MediaCard from "./MediaCard";
+import { useLazyLoad, useIntersect } from "../hooks/Intersect";
 import { extSearch } from "../actions/index";
 import { getUser, getMediaState, getSearchActiveElem } from "../reducers";
 
 import * as T from "../actions/types";
 
-const PaddingDiv = Styled.div`
-height: 100px; 
-width: 100px;`;
+const IntersectionObserverDiv = Styled.div`
+height: 50px; 
+width: 100%;`;
 
 const SpinnerDiv = Styled.div`
 display: flex; 
@@ -22,202 +23,131 @@ align-items: center;
 height: 50px; 
 width: 100%;`;
 
-class SearchContainer extends React.Component {
-	state = { limit: 40 };
+function usePrevious(value) {
+	const ref = useRef();
+	useEffect(() => {
+		ref.current = value;
+	});
+	return ref.current;
+}
 
-	myRef = React.createRef();
+const SearchContainer = props => {
+	const [doneFlag, setDone] = useState(false);
+	const [hoverIndex, setHover] = useState(-1);
 
-	callback = entries => {
-		const type = this.props.search;
-		const data = this.props[type];
-		const { user_id } = this.props.User;
-		console.log("callback");
-		console.log(data);
+	// Loads images for Media Cards
+	const [ref] = useLazyLoad();
+	// Detects when to load more data.
+	const AlertObj = useRef({});
+	const [setRef, intVal] = useIntersect();
 
-		if (
-			data.keysArr.length !== 0 &&
-			data.status !== `${type}${T._BEGAN_SEARCH}_NEXT` &&
-			data.status !== `${type}${T._ERRORED_SEARCH}` &&
-			data.status !== `${type}${T._ERRORED_SEARCH}_NEXT`
-		) {
-			if (data.queryData.total_pages > data.queryData.page) {
-				let newElem = data.queryData.page + 1;
+	const type = props.search;
+	const data = props[type];
 
-				this.props.extSearch(user_id, data.queryData.term, type, newElem);
-			}
-			if (
-				data.queryData.total_pages &&
-				data.queryData.total_pages === data.queryData.page
-			) {
-				this.observer.unobserve(this.myRef.current);
-			}
+	const prevType = usePrevious(type);
+	useEffect(() => {
+		if (type !== prevType) {
+			setDone(false);
 		}
-	};
-
-	observer = new IntersectionObserver(this.callback, {
-		root: null,
-		threshold: 0.1
 	});
 
-	componentDidMount() {
-		this.observer.observe(this.myRef.current);
-	}
-
-	renderGrid(media, type) {
-		let refs = [];
-		const mediaLength = media.length;
-		let returnObj;
-		media
-			? (returnObj = media.map((elem, i) => {
-					refs.push();
-						return (
-							<Col
-								xs={12}
-								sm={6}
-								md={4}
-								lg={3}
-								key={elem.id}
-								className="mb-3"
-								onMouseEnter={() => {
-									console.log("entered grid");
-								}}
-							>
-								<MediaCard
-									ref={refs[i]}
-									key={elem.id}
-									index={i}
-									onHover={this.hoverChange}
-									data={elem}
-									type={type}
-									len={mediaLength}
-								/>
-							</Col>
-						);
-			  }))
-			: (returnObj = <div> </div>);
-
-		return (
-			<div className="pb-3 pr-3 pl-3">
-				<Row className="d-flex justify-content-center"> {returnObj} </Row>
-			</div>
-		);
-	}
-
-	// Converts the Redux Object into an array.
-	// Hopefully this function becomes uncessary as I optimize the code.
-	makeGrid = (data, type) => {
-		let media = [];
-		for (let i = 0; i < data.keysArr.length; i++) {
-			let key = data.keysArr[i];
-			media.push({
-				...data.media[key]
-			});
+	useEffect(() => {
+		if (
+			data.queryData.total_pages &&
+			data.queryData.total_pages === data.queryData.page
+		) {
+			setDone(true);
+			return;
 		}
-		return this.renderGrid(media, type);
-	};
-
-	emptyGrid = () => {
-		let arr = [];
-		for (let i = 0; i < 9; i++) {
-			arr.push({
-				id: i,
-				smallImage: null,
-				largeImage: null,
-				title: null,
-				loaded: false
-			});
-		}
-		return this.renderGrid(arr, "MOVIE");
-	};
-
-	renderAlert = (title, body, variant = "danger") => {
-		return (
-			<Alert className="mt-3" variant={variant}>
-				<Alert.Heading> {title} </Alert.Heading>
-				<p>{body}</p>
-			</Alert>
-		);
-	};
-
-	render() {
-		const type = this.props.search;
-		const data = this.props[type];
-
-		let returnData;
-		if (data.status === null)
-			returnData = this.renderAlert(
-				"Search for some content!",
-				"You can search for a piece of media above.",
-				"primary"
+		if (intVal.isIntersecting && doneFlag !== true) {
+			props.extSearch(
+				props.User.user_id,
+				data.queryData.term,
+				type,
+				data.queryData.page + 1
 			);
-		else if (data.status === `${type}${T._BEGAN_SEARCH}`) {
-			returnData = (
-				<React.Fragment>
-					<SpinnerDiv>
+		}
+	}, [intVal.isIntersecting]);
+
+	if (data.status === null) {
+		return renderAlert(
+			"Search for some content!",
+			"You can search for a piece of media above.",
+			"primary"
+		);
+	} else if (data.status === `${type}${T._ERRORED_SEARCH}`) {
+		console.log(data.data.serverStatus);
+		if (data.data.serverStatus === 503)
+			return renderAlert(
+				"Could Not Connect",
+				"There was a problem connecting to the server."
+			);
+		else if (data.data.serverStatus === 404)
+			return renderAlert(
+				"No Media Found!",
+				"Try searching for something else."
+			);
+		else
+			return renderAlert(
+				"Error!",
+				"There was an error with input or an internal server error!"
+			);
+	} else {
+		return (
+			<React.Fragment>
+				<SpinnerDiv>
+					{data.status === `${type}${T._BEGAN_SEARCH}` ? (
 						<Spinner animation="border" />
-					</SpinnerDiv>
-					{this.emptyGrid()}
-				</React.Fragment>
-			);
-		} else if (data.status === `${type}${T._BEGAN_SEARCH}${T._NEXT}`) {
-			returnData = (
-				<React.Fragment>
-					<SpinnerDiv />
-					{this.makeGrid(data, type)}
-					<SpinnerDiv>
-						<Spinner animation="border" />
-					</SpinnerDiv>
-				</React.Fragment>
-			);
-		} else if (data.status === `${type}${T._ERRORED_SEARCH}`) {
-			if (data.serverStatus === 503)
-				returnData = this.renderAlert(
-					"Could Not Connect",
-					"There was a problem connecting to the server."
-				);
-			else if (data.serverStatus === 404)
-				returnData = this.renderAlert(
-					"No Media Found!",
-					"Try searching for something else."
-				);
-			else
-				returnData = this.renderAlert(
-					"Error!",
-					"There was an error with input or an internal server error!"
-				);
-		} else if (data.status === `${type}${T._ERRORED_SEARCH}_NEXT`) {
-			if (data.serverStatus === 503)
-				returnData = this.renderAlert(
-					"Could Not Connect",
-					"There was a problem connecting to the server."
-				);
-			else if (data.serverStatus === 404)
-				returnData = this.renderAlert(
-					"No Media Found!",
-					"Try searching for something else."
-				);
-			else
-				returnData = this.renderAlert(
-					"Error!",
-					"There was an error with input or an internal server error!"
-				);
-		} else {
-			returnData = (
-				<React.Fragment>
-					<SpinnerDiv />
-					{this.makeGrid(data, type)}
-				</React.Fragment>
-			);
-		}
+					) : null}
+				</SpinnerDiv>
+				<div className="pb-3 pr-3 pl-3">
+					<Row className="d-flex justify-content-center">
+						{data.keysArr.map((key, i) => {
+							return (
+								<Col xs={12} sm={6} md={4} lg={3} key={key} className="mb-3">
+									<MediaCard
+										ref={ref}
+										index={i}
+										key={key}
+										data={data.media[key]}
+										type={data.media[key].type}
+										hover={i === hoverIndex}
+										setHover={setHover}
+									/>
+								</Col>
+							);
+						})}
+					</Row>
+				</div>
 
-		return (
-			<div>
-				{returnData}
-				<PaddingDiv ref={this.myRef} />
-			</div>
+				{doneFlag !== true ? (
+					<IntersectionObserverDiv
+						className="d-flex justify-content-center"
+						ref={setRef}
+					>
+						{data.status === `${type}${T._BEGAN_SEARCH_NEXT}` ? (
+							<Spinner animation="border" />
+						) : null}
+					</IntersectionObserverDiv>
+				) : (
+					<IntersectionObserverDiv ref={setRef}>
+						{" "}
+						<Alert variant="success"> End of search results!</Alert>{" "}
+					</IntersectionObserverDiv>
+				)}
+			</React.Fragment>
 		);
 	}
-}
+};
+
+const renderAlert = (title, body, variant = "danger") => {
+	return (
+		<Alert className="mt-3" variant={variant}>
+			<Alert.Heading> {title} </Alert.Heading>
+			<p>{body}</p>
+		</Alert>
+	);
+};
 
 const mapStateToProps = state => {
 	return {

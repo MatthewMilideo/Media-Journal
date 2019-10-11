@@ -86,6 +86,35 @@ function renderDangerous(title, elem) {
 	) : null;
 }
 
+function ViewedBar(props) {
+	let mediaObj = { BOOK: "book", TV: "TV show", MOVIE: "movie" };
+	let noun = props.type === T.BOOK ? "read" : "viewed";
+	return (
+		<div className=" mb-n3 ml-n3 mr-n3 p-1 pb-2 d-flex justify-content-center border-top text-white mt-auto bg-info">
+			{() => {
+				switch (props.viewed) {
+					case true:
+						return (
+							<span className="ml-2 mr-auto">
+								You've viewed this {mediaObj[props.type]}. Click here to remove
+								it from {noun}.
+							</span>
+						);
+					case false:
+						return (
+							<span className="ml-2 mr-auto">
+								You haven't viewed this {mediaObj[props.type]}. Click here to
+								add it to {noun}.
+							</span>
+						);
+					default:
+						return null;
+				}
+			}}
+		</div>
+	);
+}
+
 const RenderCard = props => {
 	return (
 		<Card className=" mb-3 bg-light shadow">
@@ -157,7 +186,6 @@ class MediaPage extends React.Component {
 							variant="danger"
 							onClick={() => this.props.deleteMediaUser(user_id, mediaObj)}
 						>
-					
 							Click Here to Remove from Read{" "}
 						</Button>
 					</div>
@@ -224,27 +252,6 @@ class MediaPage extends React.Component {
 								flag={true}
 								number={3}
 							/>
-						</div>
-					) : null}
-
-					{data.viewed ? (
-						<div className=" mb-n3 ml-n3 mr-n3 p-1 pb-2 d-flex justify-content-center border-top text-white mt-auto bg-info">
-							<span className="ml-2 mr-auto">
-								Viewed: <span className="d-inline oi oi-circle-check"></span>
-								<span>
-									{" "}
-									Click here to remove from viewed.{" "}
-									<Button
-										onClick={() =>
-											this.props.deleteMediaUser(user_id, mediaObj)
-										}
-									>
-										{" "}
-										Delete{" "}
-									</Button>
-									<span className="d-inline oi oi-circle-check"></span>{" "}
-								</span>
-							</span>
 						</div>
 					) : null}
 				</div>

@@ -13,7 +13,7 @@ import * as T from "../actions/types";
 class SearchBar extends React.Component {
 	componentDidMount() {
 		const { user_id } = this.props.User;
-		this.props.extSearch(user_id, "Star Wars", T.MOVIE, 1);
+		this.props.extSearch(user_id, "Star Wars", T.MOVIE, 0);
 	}
 
 	renderType = type => {
