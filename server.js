@@ -13,6 +13,17 @@ const database = require("knex")(configuration);
 const admin = require("./firebase-admin/admin");
 
 const app = express();
+app.disable("x-powered-by");
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "client/build"))); 
+
+// need to declare a "catch all" route on your express server
+// that captures all page requests and directs them to the client
+// the react-router do the route part
+app.get("/", function(req, res) {
+	res.sendFile(path.join(__dirname, "client/build", "client/index.html"));
+});
 
 async function verifyToken(req, res, next) {
 	const idToken = req.headers.authorization;
@@ -62,9 +73,12 @@ if (app.get("env") === "development") {
 	});
 }
 
-app.listen(port, () => {	});
+app.listen(port, () => {});
 
 module.exports = {
 	app,
 	database
 };
+
+
+
