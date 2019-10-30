@@ -4,9 +4,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mountRoutes = require("./routes");
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-const environment = process.env.NODE_ENV || "development";
+const environment = "production";
 const configuration = require("./knexfile")[environment];
 const database = require("knex")(configuration);
 
@@ -15,7 +15,7 @@ const admin = require("./firebase-admin/admin");
 const app = express();
 app.disable("x-powered-by");
 const path = require("path");
-
+console.log(environment); 
 app.use(express.static(path.join(__dirname, "client/build"))); 
 
 // need to declare a "catch all" route on your express server
@@ -25,6 +25,7 @@ app.get("/", function(req, res) {
 	res.sendFile(path.join(__dirname, "client/build", "client/index.html"));
 });
 
+console.log(process.env.POSTGRES_PASS);
 async function verifyToken(req, res, next) {
 	const idToken = req.headers.authorization;
 	try {
@@ -51,7 +52,8 @@ app.use(
 
 app.use(
 	cors({
-		origin: "http://localhost:3000"
+
+		
 	})
 );
 

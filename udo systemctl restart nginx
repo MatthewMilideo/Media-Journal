@@ -1,0 +1,17 @@
+[0;1;32m●[0m jenkins.service - LSB: Start Jenkins at boot time
+   Loaded: loaded (/etc/init.d/jenkins; generated)
+   Active: [0;1;32mactive (exited)[0m since Sat 2019-10-12 14:50:15 UTC; 6s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 5507 ExecStop=/etc/init.d/jenkins stop (code=exited, status=0/SUCCESS)
+  Process: 5549 ExecStart=/etc/init.d/jenkins start (code=exited, status=0/SUCCESS)
+
+Oct 12 14:50:13 MmilideoDev systemd[1]: Starting LSB: Start Jenkins at boot time...
+Oct 12 14:50:13 MmilideoDev jenkins[5549]: /etc/default/jenkins: line 9: -Djava.awt.headless=true --httpListenAddress=127.0.0.1: command not found
+Oct 12 14:50:13 MmilideoDev jenkins[5549]: Correct java version found
+Oct 12 14:50:13 MmilideoDev jenkins[5549]:  * Starting Jenkins Automation Server jenkins
+Oct 12 14:50:13 MmilideoDev su[5593]: Successful su for jenkins by root
+Oct 12 14:50:13 MmilideoDev su[5593]: + ??? root:jenkins
+Oct 12 14:50:13 MmilideoDev su[5593]: pam_unix(su:session): session opened for user jenkins by (uid=0)
+Oct 12 14:50:14 MmilideoDev su[5593]: pam_unix(su:session): session closed for user jenkins
+Oct 12 14:50:15 MmilideoDev jenkins[5549]:    ...done.
+Oct 12 14:50:15 MmilideoDev systemd[1]: Started LSB: Start Jenkins at boot time.

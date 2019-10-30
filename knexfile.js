@@ -1,24 +1,31 @@
 module.exports = {
+	development: {
+		client: "pg",
+		connection: "postgresql://matthew:localhost:5432/matthew",
+		migrations: {
+			directory: "./db/migrations"
+		},
+		seeds: {
+			directory: "./db/seeds/dev2"
+		},
+		useNullAsDefault: true
+	},
+	production: {
+		client: "pg",
+		connection:{
+		socketPath: '/var/run/postgresql',
+		user: 'matthew',
+		password: 'test',
+		database: 'matthew',
+		},
+		migrations: {
 
-  test: {
-    client: 'pg',
-    connection: 'postgres://localhost/media_journal_test',
-    migrations: {
-      directory: __dirname + '/db/migrations'
-    },
-    seeds: {
-      directory: __dirname + '/db/seeds/dev'
-    }
-  },
-  development: {
-    client: 'pg',
-    connection: 'postgres://localhost/media_journal',
-    migrations: {
-      directory: './db/migrations'
-    },
-    seeds: {
-      directory: './db/seeds/dev2'
-    },
-    useNullAsDefault: true
-  },
+			directory: "./db/migrations"
+		},
+		seeds: {
+			directory: "./db/seeds/dev2"
+		},
+		useNullAsDefault: true
+	}
 };
+

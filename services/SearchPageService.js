@@ -34,7 +34,6 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 	
 	// Query External Database.
 	let results = await SearchPageService.searchExt(term, type, page);
-
 	if (results.status !== 200) return results;
 	// Create the return objects
 	if (type === types.BOOK) {
@@ -48,9 +47,9 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 		results = SearchPageService.processTMDB(results.data, user_id, type, term);
 	}
 
-	//Get a list of all viewed media.
+	//Get a list of all viewed media
+	//.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
-	console.log(' results2', results2)
 	if (results2.status !== 200) return { status: 200, data: results };
 
 	let IDtoCID = {};

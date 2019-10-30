@@ -3,7 +3,7 @@ import * as T from "../actions/types";
 import axios from "axios";
 
 export const server = axios.create({
-	baseURL: "http://localhost:5000/"
+	baseURL: "https://www.mmilideo.dev/"
 });
 
 // Input: user_id: int, term: string, type: specific string, page: int

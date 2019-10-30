@@ -2,10 +2,10 @@ const { Pool } = require("pg");
 
 // Pool Config needs to go in process.env once the DB is migrated to the cloud. 
 const poolConfig = process.env.POOL || {
-	user: "matthewmilideo",
-	host: "localhost",
-	database: "Media-Journal",
-	password: "password",
+	user: "matthew",
+	host: process.env.POSTGRES_URL,
+	database: "matthew",
+	password: process.env.POSTGRES_PASS,
 	port: 5432
 };
 
