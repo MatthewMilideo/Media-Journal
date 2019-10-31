@@ -33,7 +33,7 @@ class NavBar extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.match);
+		console.log(this.props);
 		console.log(this.props.location);
 		return (
 			<Nav
@@ -44,7 +44,7 @@ class NavBar extends React.Component {
 				<Nav.Item href="/home">
 					<Nav.Link
 						as={Link}
-						to="/home"
+						to={`${process.env.PUBLIC_URL}/Home`}
 						eventKey="home"
 						onClick={() => this.setState({ activeItem: "home" })}
 					>
@@ -54,7 +54,7 @@ class NavBar extends React.Component {
 				<Nav.Item>
 					<Nav.Link
 						as={Link}
-						to="/"
+						to={`${process.env.PUBLIC_URL}/`}
 						eventKey="Content"
 						onClick={() => this.setState({ activeItem: "Content" })}
 					>
@@ -64,7 +64,7 @@ class NavBar extends React.Component {
 				<Nav.Item>
 					<Nav.Link
 						as={Link}
-						to="/journal"
+						to={`${process.env.PUBLIC_URL}/Journal`}
 						eventKey="Notes"
 						onClick={() => this.setState({ activeItem: "Notes" })}
 					>
@@ -74,7 +74,7 @@ class NavBar extends React.Component {
 				<Nav.Item>
 					<Nav.Link
 						as={Link}
-						to="/TestPage"
+						to={`${process.env.PUBLIC_URL}/TestPage`}
 						eventKey="TestPage"
 						onClick={() => this.setState({ activeItem: "TestPage" })}
 					>
@@ -85,7 +85,7 @@ class NavBar extends React.Component {
 					{this.props.auth.isLoaded && this.props.auth.isEmpty ? (
 						<Nav.Link
 							as={Link}
-							to="/login"
+							to={`${process.env.PUBLIC_URL}/Login`}
 							eventKey="Sign In"
 							onClick={() => this.setState({ activeItem: "Sign In" })}
 						>

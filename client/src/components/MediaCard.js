@@ -91,7 +91,7 @@ const MediaCard = React.forwardRef((props, ref) => {
 			{state => (
 				<Link
 					style={{ color: "inherit", textDecoration: "none" }}
-					to={`/media/${props.type}/${props.data.id}`}
+					to={`${process.env.PUBLIC_URL}/media/${props.type}/${props.data.id}`}
 				>
 					<Animation state={state}>
 						<FixedSizeCard
@@ -117,7 +117,7 @@ const MediaCard = React.forwardRef((props, ref) => {
 		<InnerDiv onMouseLeave={e => props.setHover(-1)}>
 			<HoveredCardDiv>
 				<div className="d-flex flex-column m-auto">
-					<Link to={`/media/${props.type}/${props.data.id}`} as={Button}>
+					<Link to={`${process.env.PUBLIC_URL}/media/${props.type}/${props.data.id}`} as={Button}>
 						<span className="oi oi-plus"> View Media </span>
 					</Link>
 				</div>

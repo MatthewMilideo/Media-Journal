@@ -1,4 +1,4 @@
 import createBrowserHistory from 'history/createBrowserHistory';
 
 
-export default createBrowserHistory({ basename: "/journal/" });
+export default createBrowserHistory();

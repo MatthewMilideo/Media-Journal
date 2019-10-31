@@ -22,12 +22,13 @@ min-height: 100%;
 
 class App extends React.Component {
 	render() {
-		console.log('in app', history.location);
+		console.log("in app", history.location);
+		console.log( `${process.env.PUBLIC_URL}/Home`);
 		return (
 			<StyledContainer fluid className=" d-flex flex-column pl-0 pr-0">
-				<Router history={history}>
+				<Router basename={"/journal/"} history={history}>
 					<div>
-						<NavBar location={history.location.pathname} />
+						<NavBar location={history} />
 						<Container className="mt-3 bg-white">
 							<Switch>
 								<Route
@@ -51,7 +52,7 @@ class App extends React.Component {
 									component={MediaPage}
 								/>
 								<Route
-									path={`${process.env.PUBLIC_URL}/login`}
+									path={`${process.env.PUBLIC_URL}/Login`}
 									exact
 									component={Signup}
 								/>

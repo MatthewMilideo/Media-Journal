@@ -4,8 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mountRoutes = require("./routes");
-const port =  3000;
-console.log('hello'); 
+const port = 3000;
 
 const environment = "production";
 const configuration = require("./knexfile")[environment];
@@ -16,15 +15,24 @@ const admin = require("./firebase-admin/admin");
 const app = express();
 app.disable("x-powered-by");
 const path = require("path");
-console.log(environment); 
-app.use(express.static(path.join(__dirname, "client/build"))); 
-// need to declare a "catch all" route on your express server
-// that captures all page requests and directs them to the client
-// the react-router do the route part
+
+console.log(__dirname);
+
+
+app.use(express.static(path.join(__dirname, "client/build")));
 app.get("/", function(req, res) {
 	console.log(req.url);
 	res.sendFile(path.join(__dirname, "client/build", "client/index.html"));
 });
+
+app.use(bodyParser.json());
+app.use(
+	bodyParser.urlencoded({
+		extended: true
+	})
+);
+
+app.use(cors({}));
 
 async function verifyToken(req, res, next) {
 	const idToken = req.headers.authorization;
@@ -42,20 +50,6 @@ async function verifyToken(req, res, next) {
 		return res.status(401).send("You are not authorized!");
 	}
 }
-
-app.use(bodyParser.json());
-app.use(
-	bodyParser.urlencoded({
-		extended: true
-	})
-);
-
-app.use(
-	cors({
-
-		
-	})
-);
 
 app.use("/notes", verifyToken);
 app.use("/search/notes", verifyToken);
@@ -81,6 +75,3 @@ module.exports = {
 	app,
 	database
 };
-
-
-
