@@ -33,6 +33,7 @@ class NavBar extends React.Component {
 	}
 
 	render() {
+		console.log(this.props.match);
 		console.log(this.props.location);
 		return (
 			<Nav
