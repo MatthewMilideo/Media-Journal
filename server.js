@@ -15,13 +15,13 @@ const admin = require("./firebase-admin/admin");
 const app = express();
 app.disable("x-powered-by");
 const path = require("path");
-console.log(environment); 
-app.use(express.static(path.join(__dirname, "client/build"))); 
+console.log(environment);
+app.use(express.static(path.join(__dirname, "client/build")));
 
 // need to declare a "catch all" route on your express server
 // that captures all page requests and directs them to the client
 // the react-router do the route part
-app.get("/", function(req, res) {
+app.get("/*", function(req, res) {
 	res.sendFile(path.join(__dirname, "client/build", "client/index.html"));
 });
 
@@ -50,12 +50,7 @@ app.use(
 	})
 );
 
-app.use(
-	cors({
-
-		
-	})
-);
+app.use(cors({}));
 
 app.use("/notes", verifyToken);
 app.use("/search/notes", verifyToken);
@@ -81,6 +76,3 @@ module.exports = {
 	app,
 	database
 };
-
-
-
