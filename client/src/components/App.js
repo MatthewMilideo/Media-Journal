@@ -22,9 +22,10 @@ min-height: 100%;
 
 class App extends React.Component {
 	render() {
+		console.log('in app', history.location);
 		return (
 			<StyledContainer fluid className=" d-flex flex-column pl-0 pr-0">
-				<Router basename={"/journal/client/build/"} history={history}>
+				<Router history={history}>
 					<div>
 						<NavBar location={history.location.pathname} />
 						<Container className="mt-3 bg-white">
