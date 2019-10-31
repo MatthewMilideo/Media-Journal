@@ -24,7 +24,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<StyledContainer fluid className=" d-flex flex-column pl-0 pr-0">
-				<Router /*basename={"/journal/client/build/"}*/ history={history}>
+				<Router basename={"/journal/client/build/"} history={history}>
 					<div>
 						<NavBar location={history.location.pathname} />
 						<Container className="mt-3 bg-white">
