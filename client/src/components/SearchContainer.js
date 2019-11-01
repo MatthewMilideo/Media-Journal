@@ -102,21 +102,30 @@ const SearchContainer = props => {
 				</SpinnerDiv>
 				<div className="pb-3 pr-3 pl-3">
 					<Row className="d-flex justify-content-center">
-						{ return data.keysArr !== undefined ? data.keysArr.map((key, i) => {
-							return (
-								<Col xs={12} sm={6} md={4} lg={3} key={key} className="mb-3">
-									<MediaCard
-										ref={ref}
-										index={i}
-										key={key}
-										data={data.media[key]}
-										type={data.media[key].type}
-										hover={i === hoverIndex}
-										setHover={setHover}
-									/>
-								</Col>
-							);
-						}) : null }
+						{data.keysArr !== undefined
+							? data.keysArr.map((key, i) => {
+									return (
+										<Col
+											xs={12}
+											sm={6}
+											md={4}
+											lg={3}
+											key={key}
+											className="mb-3"
+										>
+											<MediaCard
+												ref={ref}
+												index={i}
+												key={key}
+												data={data.media[key]}
+												type={data.media[key].type}
+												hover={i === hoverIndex}
+												setHover={setHover}
+											/>
+										</Col>
+									);
+							  })
+							: null}
 					</Row>
 				</div>
 

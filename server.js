@@ -2,7 +2,6 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const mountRoutes = require("./routes");
 const port = process.env.PORT || 3000;
 
@@ -16,12 +15,16 @@ const app = express();
 app.disable("x-powered-by");
 const path = require("path");
 
+const cors = require("cors");
+app.options("*", cors());
+
+console.log(__dirname);
+
 app.use(express.static(path.join(__dirname, "client/build")));
 app.get("/*", function(req, res) {
 	res.sendFile(path.join(__dirname, "client/build/index.html"));
 });
-console.log(cors);
-app.use(cors());
+
 async function verifyToken(req, res, next) {
 	const idToken = req.headers.authorization;
 	try {
