@@ -17,13 +17,8 @@ app.disable("x-powered-by");
 const path = require("path");
 console.log(environment);
 app.use(express.static(path.join(__dirname, "client/build")));
-console.log(__dirname);
-
-// need to declare a "catch all" route on your express server
-// that captures all page requests and directs them to the client
-// the react-router do the route part
 app.get("/*", function(req, res) {
-	res.sendFile(path.join(__dirname, "client/build", "client/index.html"));
+	res.sendFile(path.join(__dirname, "client/build/index.html"));
 });
 
 async function verifyToken(req, res, next) {

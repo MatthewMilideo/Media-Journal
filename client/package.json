@@ -2,7 +2,7 @@
 	"name": "media-journal",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "http://mmilideo.dev/journal",
+	"homepage": "http://mmilideo.dev/journal/",
 	"dependencies": {
 		"axios": "^0.18.1",
 		"bootstrap": "^4.3.1",

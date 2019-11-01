@@ -16,13 +16,10 @@ const app = express();
 app.disable("x-powered-by");
 const path = require("path");
 
-console.log(__dirname);
-
 
 app.use(express.static(path.join(__dirname, "client/build")));
 app.get("/", function(req, res) {
-	console.log(req.url);
-	res.sendFile(path.join(__dirname, "client/build", "client/index.html"));
+	res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
 app.use(bodyParser.json());
