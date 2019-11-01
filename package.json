@@ -33,7 +33,7 @@
     "express-promise-router": "^3.0.3",
     "firebase-admin": "^8.6.0",
     "json-server": "^0.14.2",
-    "knex": "^0.17.0",
+    "knex": "^0.19.5",
     "lodash": "^4.17.15",
     "nodemon": "^1.18.11",
     "path": "^0.12.7",
