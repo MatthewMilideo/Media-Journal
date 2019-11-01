@@ -11,16 +11,17 @@ const configuration = require("./knexfile")[environment];
 const database = require("knex")(configuration);
 
 const admin = require("./firebase-admin/admin");
-
 const app = express();
+
 app.disable("x-powered-by");
 const path = require("path");
-console.log(environment);
+
 app.use(express.static(path.join(__dirname, "client/build")));
 app.get("/*", function(req, res) {
 	res.sendFile(path.join(__dirname, "client/build/index.html"));
 });
-
+console.log(cors);
+app.use(cors());
 async function verifyToken(req, res, next) {
 	const idToken = req.headers.authorization;
 	try {
@@ -44,9 +45,6 @@ app.use(
 		extended: true
 	})
 );
-
-app.use(cors({}));
-
 app.use("/notes", verifyToken);
 app.use("/search/notes", verifyToken);
 app.use("/search/notesUser", verifyToken);
