@@ -1,0 +1,47 @@
+{
+  "name": "media-journal",
+  "version": "1.0.0",
+  "description": "A website to catalouge my media consumption.",
+  "main": "server.js",
+  "homepage": "mmilideo.dev/journal",
+  "scripts": {
+    "client-install": "npm install --prefix client",
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "build-client": "npm build --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatthewMilideo/Media-Journal.git"
+  },
+  "author": "Matthew Milideo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatthewMilideo/Media-Journal/issues"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "chai-as-promised": "^7.1.1",
+    "concurrently": "^4.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "express": "^4.16.4",
+    "express-promise-router": "^3.0.3",
+    "firebase-admin": "^8.6.0",
+    "json-server": "^0.14.2",
+    "knex": "^0.17.0",
+    "lodash": "^4.17.15",
+    "nodemon": "^1.18.11",
+    "path": "^0.12.7",
+    "pg": "^7.12.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.2.0"
+  }
+}
