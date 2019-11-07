@@ -29,9 +29,9 @@
 		"styled-components": "^4.4.0",
 		"typescript": "^3.6.3"
 	},
-	"proxy": "http://localhost:5000/",
 	"scripts": {
 		"start": "react-scripts start",
+		"dev": "(cd client && npm run start) & npm run start",
 		"build": "react-scripts build",
 		"test:coverage": "react-scripts --coverage",
 		"test": "NODE_ENV=test mocha --require @babel/register --require ignore-styles ./test/*.test.js",
