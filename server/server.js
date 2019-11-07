@@ -14,11 +14,28 @@ const database = require("knex")(configuration);
 
 const app = express();
 app.options("*", cors());
+
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+  });
+
+app.all('/', function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+});
+
+var logger = function(req, res, next) {
+    next(); // Passing the request to the next handler in the stack.
+}
+
+app.use(logger); // Here you add your logger to the stack.
+
+
 let dirname2 = `${__dirname}/`;
 app.use(express.static(path.join(dirname2, "../client/build")));
-console.log(environment);
-console.log(__dirname);
-console.log(dirname2);
 
 app.get("/", function(req, res) {
 	res.sendFile("/usr/src/app/client/public/index.html");

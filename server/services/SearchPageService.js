@@ -34,6 +34,7 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 	
 	// Query External Database.
 	let results = await SearchPageService.searchExt(term, type, page);
+	console.log('got past second test', results.status)
 	if (results.status !== 200) return results;
 	// Create the return objects
 	if (type === types.BOOK) {
@@ -46,12 +47,13 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 	} else {
 		results = SearchPageService.processTMDB(results.data, user_id, type, term);
 	}
-
+	//console.log('got past second test', results)
 	//Get a list of all viewed media
 	//.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
+	console.log('results2', results2.status);
 	if (results2.status !== 200) return { status: 200, data: results };
-
+	
 	let IDtoCID = {};
 
 	results2.data.forEach(elem => {
@@ -62,7 +64,7 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 
 	// Get a count of all notes for viewed media.
 	results2 = await MediaNoteService.getByMediaID(ids);
-	console.log(' results2', results2)
+	console.log(' results2', results2.status)
 
 	if (results2.status !== 200) return { status: 200, data: results };
 

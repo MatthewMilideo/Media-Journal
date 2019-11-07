@@ -9,8 +9,14 @@ const poolConfig = process.env.POOL || {
 	port: 5432
 };
 
+console.log(process.env.POOL);
+
 const pool = new Pool(poolConfig); 
 
 module.exports = {
     query: (text, params) => pool.query(text, params)
   }
+
+
+
+

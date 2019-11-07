@@ -59,7 +59,6 @@ MediaService.getByUserID = async function(user_ids) {
 /* Input: [{CID, type, user_id}]
    Output: [{Media JOIN Media User}] from DB */
 MediaService.getByCIDUser = async function(IDs) {
-
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkCIDTypeUser(IDs)) {
@@ -69,6 +68,7 @@ MediaService.getByCIDUser = async function(IDs) {
 			data: "You must provide a valid CID, type, and user object(s)."
 		};
 	}
+	console.log('here');
 	return await media.getByCIDUser(IDs);
 };
 

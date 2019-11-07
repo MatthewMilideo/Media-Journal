@@ -88,12 +88,14 @@ Media.getByCIDUser = IDs => {
 			)
 		)
 		.then(data => {
+			console.log('in then');
 			if (data.length === 0) {
 				return { status: 404, data: "The requested media were not found." };
 			}
 			return { status: 200, data };
 		})
 		.catch(error => {
+			console.log('in catch', error);
 			return Promise.reject({ status: 400, data: error.message, error });
 		});
 };
