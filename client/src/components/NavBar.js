@@ -8,32 +8,36 @@ class NavBar extends React.Component {
 	state = { activeItem: "" };
 
 	componentDidMount() {
-		if (this.props.location === "/home") this.setState({ activeItem: "home" });
-		else if (this.props.location === "/journal")
+		let location = this.props.location.location.pathname; 
+		console.log(location);
+		if (location === "/home") this.setState({ activeItem: "home" });
+		else if (location === "/Journal")
 			this.setState({ activeItem: "Notes" });
-		else if (this.props.location === "/login")
+		else if (location === "/login")
 			this.setState({ activeItem: "Sign In" });
-		else if (this.props.location === "/Testpage") {
+		else if (location === "/Testpage") {
 			this.setState({ activeItem: "TestPage" });
 		} else this.setState({ activeItem: "Content" });
 	}
 
 	componentDidUpdate(prevProps) {
-		if (this.props.location !== prevProps.location) {
-			if (this.props.location === "/home")
+		console.log(this.props);
+		let location = this.props.location.location.pathname; 
+		console.log(location);
+		if (location !== prevProps.location.location.pathname) {
+			if (location === "/home")
 				this.setState({ activeItem: "home" });
-			else if (this.props.location === "/journal")
+			else if (location === "/Journal")
 				this.setState({ activeItem: "Notes" });
-			else if (this.props.location === "/login")
+			else if (location === "/login")
 				this.setState({ activeItem: "Sign In" });
-			else if (this.props.location === "/Testpage") {
+			else if (location === "/Testpage") {
 				this.setState({ activeItem: "TestPage" });
 			} else this.setState({ activeItem: "Content" });
 		}
 	}
 
 	render() {
-		console.log(this.props);
 		console.log(this.props.location);
 		return (
 			<Nav
