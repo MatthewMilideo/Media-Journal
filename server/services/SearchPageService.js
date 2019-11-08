@@ -23,18 +23,18 @@ SearchPageService.searchExt = async function(term, type, page = 0) {
 };
 
 SearchPageService.search = async function(user_id, term, type, page = 0) {
-	console.log('user_id in search', user_id);
+	console.log("user_id in search", user_id);
 	// Check the incoming arguments.
 	if (!helpers.checkArgsType([], [user_id, term, type], type))
 		return {
 			status: 400,
 			data: "You must provide a valid user_id, search term and type."
 		};
-	console.log('got past first test')
-	
+	console.log("got past first test");
+
 	// Query External Database.
 	let results = await SearchPageService.searchExt(term, type, page);
-	console.log('got past second test', results.status)
+	console.log("got past second test", results.status);
 	if (results.status !== 200) return results;
 	// Create the return objects
 	if (type === types.BOOK) {
@@ -47,28 +47,31 @@ SearchPageService.search = async function(user_id, term, type, page = 0) {
 	} else {
 		results = SearchPageService.processTMDB(results.data, user_id, type, term);
 	}
-	//console.log('got past second test', results)
+	console.log("got past second test", results);
 	//Get a list of all viewed media
 	//.
 	let results2 = await MediaService.getByCIDUser(results.searchArr);
-	console.log('results2', results2.status);
+	console.log("results2", results2.status);
 	if (results2.status !== 200) return { status: 200, data: results };
-	
+
 	let IDtoCID = {};
 
 	results2.data.forEach(elem => {
 		results.media[elem.CID].viewed = true;
 		IDtoCID[elem.media_id] = elem.CID;
 	});
-	let ids = Object.keys(IDtoCID);
+	let ids = Object.keys(IDtoCID).map(elem => {
+		return { user_id, media_id: elem };
+	});
 
 	// Get a count of all notes for viewed media.
-	results2 = await MediaNoteService.getByMediaID(ids);
-	console.log(' results2', results2.status)
+	results2 = await MediaNoteService.getByMediaAndUserID(ids);
+	console.log(" results2", results2.status);
 
 	if (results2.status !== 200) return { status: 200, data: results };
 
 	results2.data.forEach(elem => {
+		console.log(elem);
 		let theCID = IDtoCID[elem.media_id];
 		results.media[theCID].noteCount += 1;
 	});
@@ -129,8 +132,7 @@ SearchPageService.processGBooks = function(data, user_id, term, page) {
 				elem.smallImage = book.volumeInfo.imageLinks.smallThumbnail;
 				elem.largeImage = elem.smallImage.replace("&zoom=5", "&zoom=3");
 			}
-		}
-		else {
+		} else {
 			elem.largeImage =
 				"https://images.unsplash.com/photo-1476081718509-d5d0b661a376?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2466&q=80";
 			elem.smallImage =

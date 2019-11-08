@@ -1,4 +1,6 @@
 const media = require("../models/media_model");
+const MediaNoteService = require("../services/MediaNoteService");
+const NoteTagService = require("../services/NoteTagService");
 const mediaUser = require("../models/media_user_model");
 
 const helpers = require("../models/helpers");
@@ -31,29 +33,75 @@ MediaService.getByCID = async function(IDs) {
 };
 
 MediaService.getByUserID = async function(user_ids) {
-	
 	if (!Array.isArray(user_ids)) user_ids = [user_ids];
-	
+
 	// Check that every element of the mediaIDs array is a integer.
-	if (!helpers.checkArgs([],user_ids)) {
-		console.log('error');
+	if (!helpers.checkArgs([], user_ids)) {
+		console.log("error");
 		return Promise.reject({
 			status: 400,
 			data: "You must provide a valid user_id."
 		});
 	}
 
-	let results = await media.getByUserID(user_ids); 
+	let results = await media.getByUserID(user_ids);
 	if (results.status !== 200) return Promise.reject(results);
 
 	let returnObj = {};
 	returnObj.keysArr = [];
-	results.data.forEach( elem => {
+	results.data.forEach(elem => {
 		returnObj[elem.CID] = elem;
-		returnObj.keysArr.push(elem.CID); 
-	}); 
+		returnObj.keysArr.push(elem.CID);
+	});
 
-	return {status: 200, data: returnObj};
+	return { status: 200, data: returnObj };
+};
+
+MediaService.getByUserID2 = async function(user_ids) {
+	console.log("hello sweetie");
+	if (!Array.isArray(user_ids)) user_ids = [user_ids];
+	// Check that every element of the mediaIDs array is a integer.
+	if (!helpers.checkArgs([], user_ids)) {
+		console.log("error");
+		return Promise.reject({
+			status: 400,
+			data: "You must provide a valid user_id."
+		});
+	}
+
+	let results = await media.getByUserID(user_ids);
+	if (results.status !== 200) return Promise.reject(results);
+
+	let returnObj = {};
+	let queryArr = [];
+	returnObj.keysArr = [];
+	returnObj.MIDToCID = {};
+	results.data.forEach(elem => {
+		returnObj[elem.CID] = elem;
+		returnObj[elem.CID].notes = [];
+		returnObj.keysArr.push(elem.CID);
+		returnObj.MIDToCID[elem.media_id] = elem.CID;
+		queryArr.push({ user_id: elem.user_id, media_id: elem.media_id });
+	});
+
+	let notes = await MediaNoteService.getByMediaAndUserID(queryArr);
+	if (results.status === 200) {
+		queryArr = [];
+		notes.data.forEach(elem => {
+			queryArr.push({ user_id: user_ids[0], note_id: elem.note_id });
+		});
+
+		let tags = await NoteTagService.getByNoteAndUserID(queryArr);
+		console.log('tags', tags);
+
+		notes.data.forEach(elem => {
+			let CID = returnObj.MIDToCID[elem.media_id];
+			console.log(CID);
+			returnObj[CID].notes.push(elem);
+		});
+	}
+	console.log(returnObj["11"]);
+	return { status: 200, data: returnObj };
 };
 
 /* Input: [{CID, type, user_id}]
@@ -62,20 +110,17 @@ MediaService.getByCIDUser = async function(IDs) {
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkCIDTypeUser(IDs)) {
-
 		return {
 			status: 400,
 			data: "You must provide a valid CID, type, and user object(s)."
 		};
 	}
-	console.log('here');
 	return await media.getByCIDUser(IDs);
 };
 
 /* Input: [{media_id, user_id}]
    Output: [{Media JOIN Media User}] from DB */
 MediaService.getByMediaIDUser = async function(IDs) {
-
 	if (!Array.isArray(IDs)) IDs = [IDs];
 	// Check that every element of the mediaIDs array is a integer.
 	if (!helpers.checkMediaIDUserID(IDs)) {
@@ -85,7 +130,6 @@ MediaService.getByMediaIDUser = async function(IDs) {
 		});
 	}
 	let results = await media.getByMediaIDUser(IDs);
-	console.log('in Media Service', results)
 
 	if (results.status !== 200) return Promise.reject(results);
 	return results;
@@ -148,7 +192,6 @@ MediaService.postMediaAndMU = async function(mediaObj, user_id) {
 		};
 
 	let results = await MediaService.postMedia(mediaObj);
-
 
 	let media_id = results.data[0].id;
 	if (results.status === 409) {

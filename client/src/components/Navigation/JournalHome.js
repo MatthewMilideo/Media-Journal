@@ -70,6 +70,11 @@ class JournalHome extends React.Component {
 		this.props.getNotesUser(this.props.user);
 	}
 
+	componentDidUpdate(prevProps) {
+		if (this.props.auth !== prevProps.auth)
+			this.props.getNotesUser(this.props.user);
+	}
+
 	setTypes = (label, type) => {
 		let stateObj = {};
 		let filter = this.state[label];
@@ -148,7 +153,8 @@ const mapStateToProps = state => {
 	return {
 		notes: state.notes,
 		media: state.viewed,
-		user: state.user.user_id
+		user: state.user.user_id,
+		auth: state.firebaseReducer.auth
 	};
 };
 

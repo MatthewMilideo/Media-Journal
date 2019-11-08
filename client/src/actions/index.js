@@ -3,7 +3,7 @@ import * as T from "../actions/types";
 import axios from "axios";
 
 export const server = axios.create({
-	baseURL: "https://www.mmilideo.dev/journal/"
+	baseURL: process.env.REACT_APP_SERVER_URL
 });
 
 // Input: user_id: int, term: string, type: specific string, page: int
@@ -185,6 +185,7 @@ export const getItem = (user_id, CID, type) => async (dispatch, getState) => {
 
 export const getNotesUser = user_id => async dispatch => {
 	dispatch({ type: `${T.BEGAN_GET_NOTES}` });
+	console.log("in action", user_id);
 	try {
 		let res = await server.get("/search/notesUser/", {
 			params: {

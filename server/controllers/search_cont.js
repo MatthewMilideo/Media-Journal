@@ -57,9 +57,8 @@ SearchController.getNotesUser = (req, res) => {
 
 SearchController.getMediaUser = (req, res) => {
 	let { user_id } = req.query;
-	MediaService.getByUserID(user_id)
+	MediaService.getByUserID2(user_id)
 		.then(response => {
-			console.log("res", response);
 			res.status(response.status).send(response.data);
 		})
 		.catch(error => {
